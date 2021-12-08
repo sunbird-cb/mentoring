@@ -6,3 +6,4 @@
  */
 
  require("./mongodb")();
+ require("./kafka")();

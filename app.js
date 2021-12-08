@@ -41,6 +41,7 @@ if (process.env.APPLICATION_ENV !== 'development') {
 
 /* Registered routes here */
 require('./routes')(app);
+require("./generics/cron");
 
 // Server listens to given port
 app.listen(process.env.APPLICATION_PORT, 'localhost', (res, err) => {

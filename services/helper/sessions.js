@@ -352,7 +352,6 @@ module.exports = class SessionsHelper {
             try {
                 const mentor = await userProfile.details(token);
 
-                console.log("new",mentor);
                 if (mentor.data.responseCode !== "OK") {
                     return common.failureResponse({
                         message: apiResponses.MENTORS_NOT_FOUND,

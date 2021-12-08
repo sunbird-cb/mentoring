@@ -52,6 +52,7 @@ const getCurrentQuarterRange = () => {
     return [startFullQuarter, endFullQuarter];
 };
 
+
 module.exports = {
     hash: hash,
     getCurrentMonthRange: getCurrentMonthRange,
