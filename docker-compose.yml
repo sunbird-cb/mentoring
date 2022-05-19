@@ -53,10 +53,10 @@ services:
         logging:
             driver: none
     mentoring:
-        build: './mentoring/'
+        build: './'
         image: elevate/mentoring:1.0
         volumes:
-            - ./mentoring/:/opt/mentoring
+            - ./src/:/opt/mentoring
         ports:
             - '3000:3000'
         command: ['nodemon', 'app.js']
@@ -70,10 +70,10 @@ services:
         networks:
             - elevate_net
     user:
-        build: './User/'
+        build: '../User/'
         image: elevate/user:1.0
         volumes:
-            - ./User/:/opt/user
+            - ../User/src/:/opt/user
         ports:
             - '3001:3001'
         command: ['nodemon', 'app.js']
@@ -88,10 +88,10 @@ services:
         networks:
             - elevate_net
     notification:
-        build: './Notification/'
+        build: '../Notification/'
         image: elevate/notification:1.0
         volumes:
-            - ./Notification/:/opt/notification
+            - ../Notification/src/:/opt/notification
         ports:
             - '3002:3002'
         command: ['nodemon', 'app.js']
