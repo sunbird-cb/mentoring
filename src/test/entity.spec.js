@@ -43,7 +43,6 @@ describe('Entity api test.', () => {
 				type: 'categories',
 				image: 'entity/SQAA.jpg',
 				createdBy: '62d00b7c082b1ebc88a2a095',
-				updatedBy: '62d00b7c082b1ebc88a2a095',
 				updatedBy: _id,
 				updatedAt: new Date().getTime(),
 			}
