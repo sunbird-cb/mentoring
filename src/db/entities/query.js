@@ -32,6 +32,17 @@ module.exports = class UserEntityData {
 		})
 	}
 
+	static findEntityById(id) {
+		return new Promise(async (resolve, reject) => {
+			try {
+				const entitiesData = await Entities.findOne({ _id: id, deleted: false }).lean()
+				resolve(entitiesData)
+			} catch (error) {
+				reject(error)
+			}
+		})
+	}
+
 	static findAllEntities(filter) {
 		const projection = { value: 1, label: 1, _id: 0 }
 		return new Promise(async (resolve, reject) => {
