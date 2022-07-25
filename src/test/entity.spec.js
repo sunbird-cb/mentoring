@@ -10,8 +10,9 @@ describe('Entity api test.', () => {
 		return
 	}
 
-	describe('Create and update entity test', () => {
+	describe('Create,Read,Update and Delete test', () => {
 		let entitiesData
+		let entitiesId
 
 		beforeAll(async () => {
 			await loadMongo()
@@ -22,7 +23,7 @@ describe('Entity api test.', () => {
 
 		test('Should return true on create', async () => {
 			const bodyData = {
-				value: 'sqaa',
+				value: 'sqa',
 				label: 'SQAA',
 				type: 'categories',
 				image: 'entity/SQAA.jpg',
@@ -35,7 +36,15 @@ describe('Entity api test.', () => {
 			expect(actualResponse).toEqual(true)
 		})
 
-		test('Should return error', async () => {
+		test('Read entity test', async () => {
+			const bodyData = { type: 'categories', deleted: 'false', status: 'ACTIVE' }
+
+			const actualResponse = await entitiesData.findAllEntities(bodyData)
+			entitiesId = actualResponse[0]._id
+			expect(actualResponse[0].value).toEqual('sqa')
+		})
+
+		test('Should update an entity', async () => {
 			let _id = '62d00b7c082b1ebc88a2a095'
 			const bodyData = {
 				value: 'sqaa',
@@ -47,8 +56,13 @@ describe('Entity api test.', () => {
 				updatedAt: new Date().getTime(),
 			}
 
-			const actualResponse = await entitiesData.updateOneEntity(_id, bodyData)
-			expect(actualResponse).toEqual('ENTITY_NOT_FOUND')
+			const actualResponse = await entitiesData.updateOneEntity(entitiesId, bodyData)
+			expect(actualResponse).toEqual('ENTITY_UPDATED')
+		})
+
+		test('Should delete an entity', async () => {
+			const actualResponse = await entitiesData.deleteOneEntity(entitiesId)
+			expect(actualResponse).toEqual('ENTITY_UPDATED')
 		})
 
 		afterAll(async () => {
