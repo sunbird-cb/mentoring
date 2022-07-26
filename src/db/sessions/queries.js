@@ -76,7 +76,7 @@ module.exports = class SessionsData {
 						},
 					},
 					{
-						$sort: { _id: -1 },
+						$sort: { startDate: -1 },
 					},
 					{
 						$project: {
@@ -91,6 +91,7 @@ module.exports = class SessionsData {
 							endDateUtc: 1,
 							userId: 1,
 							categories: 1,
+							startDateUtc: 1,
 						},
 					},
 					{
@@ -108,6 +109,7 @@ module.exports = class SessionsData {
 						},
 					},
 				])
+
 				resolve(sessionData)
 			} catch (error) {
 				reject(error)
