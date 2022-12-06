@@ -1,6 +1,6 @@
 const request = require('request')
 const parser = require('xml2json')
-
+const correlationId = require(`../log/correlation-id`)
 var get = function (url, token = '', internal_access_token = false) {
 	return new Promise(async (resolve, reject) => {
 		try {
@@ -35,9 +35,12 @@ var get = function (url, token = '', internal_access_token = false) {
 				headers['x-auth-token'] = token
 			}
 
+			headers['X-Request-Ids'] = correlationId.getId()
+
 			const options = {
 				headers: headers,
 			}
+			console.log(options)
 
 			request.get(url, options, callback)
 		} catch (error) {

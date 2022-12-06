@@ -42,9 +42,13 @@ const app = express()
 
 // Health check
 require('@health-checks')(app)
-
+const { requestLoggingMiddleware } = require(`./log/request-logging-middleware`)
+const { correlationIdMiddleware } = require(`./log/correlation-id-middleware`)
+const { logger } = require('./log/logger')
 app.use(cors())
 app.use(middleware.handle(i18next))
+app.use(correlationIdMiddleware)
+// app.use(requestLoggingMiddleware)
 
 app.use(bodyParser.urlencoded({ extended: true, limit: '50MB' }))
 app.use(bodyParser.json({ limit: '50MB' }))
@@ -57,8 +61,14 @@ app.get(process.env.API_DOC_URL, function (req, res) {
 
 /* Logs request info if environment is not development*/
 if (process.env.ENABLE_LOG === 'true') {
-	app.all('*', (req, res, next) => {
-		console.log('***Mentoring Service Logs Starts Here***')
+	app.all('*', async (req, res, next) => {
+		if (req.headers['x-request-ids'] == 'ankit') {
+			await new Promise((r) => setTimeout(r, 10000))
+		}
+		logger.info(`Request Type ${req.method} for ${req.url} on ${new Date()} from `)
+		logger.info(req.headers)
+		logger.info('Request Body: ', req.body)
+		logger.info('Mentoring Service Logs Starts Here')
 		console.log('%s %s on %s from ', req.method, req.url, new Date(), req.headers['user-agent'])
 		console.log('Request Headers: ', req.headers)
 		console.log('Request Body: ', req.body)

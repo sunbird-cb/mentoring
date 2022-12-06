@@ -77,15 +77,15 @@ module.exports = async function (req, res, next) {
 		const userBaseUrl = process.env.USER_SERIVCE_HOST + process.env.USER_SERIVCE_BASE_URL
 		const profileUrl = userBaseUrl + endpoints.USER_PROFILE_DETAILS + '/' + decodedToken.data._id
 
-		const user = await requests.get(profileUrl, null, true)
+		// const user = await requests.get(profileUrl, null, true)
 
-		if (user.data.result.isAMentor !== decodedToken.data.isAMentor) {
-			throw common.failureResponse({
-				message: 'USER_ROLE_UPDATED',
-				statusCode: httpStatusCode.unauthorized,
-				responseCode: 'UNAUTHORIZED',
-			})
-		}
+		// if (user.data.result.isAMentor !== decodedToken.data.isAMentor) {
+		// 	throw common.failureResponse({
+		// 		message: 'USER_ROLE_UPDATED',
+		// 		statusCode: httpStatusCode.unauthorized,
+		// 		responseCode: 'UNAUTHORIZED',
+		// 	})
+		// }
 
 		req.decodedToken = {
 			_id: decodedToken.data._id,
