@@ -1,6 +1,7 @@
 const request = require('request')
 const parser = require('xml2json')
-const correlationId = require(`../log/correlation-id`)
+const correlationId = require(`@log/correlation-id`)
+const { logger } = require('@log/logger')
 var get = function (url, token = '', internal_access_token = false) {
 	return new Promise(async (resolve, reject) => {
 		try {
@@ -18,6 +19,7 @@ var get = function (url, token = '', internal_access_token = false) {
 					}
 
 					response = JSON.parse(response)
+
 					result.data = response
 				}
 
@@ -40,7 +42,7 @@ var get = function (url, token = '', internal_access_token = false) {
 			const options = {
 				headers: headers,
 			}
-			console.log(options)
+			logger.info(options)
 
 			request.get(url, options, callback)
 		} catch (error) {

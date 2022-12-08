@@ -9,7 +9,8 @@ const validator = require('@middlewares/validator')
 const authenticator = require('@middlewares/authenticator')
 const pagination = require('@middlewares/pagination')
 const expressValidator = require('express-validator')
-
+const { logger } = require('@log/logger')
+const correlationId = require(`@log/correlation-id`)
 module.exports = (app) => {
 	app.use(authenticator)
 	app.use(pagination)
@@ -47,6 +48,7 @@ module.exports = (app) => {
 				? await new controller()[req.params.method](req)
 				: next()
 		} catch (error) {
+			logger.error(error)
 			// If controller or service throws some random error
 			return next(error)
 		}
@@ -86,7 +88,6 @@ module.exports = (app) => {
 		const responseCode = error.responseCode || 'SERVER_ERROR'
 		const message = error.message || ''
 		let errorData = []
-
 		if (error.data) {
 			errorData = error.data
 		}
@@ -94,6 +95,7 @@ module.exports = (app) => {
 			responseCode,
 			message: req.t(message),
 			error: errorData,
+			correlation: correlationId.getId(),
 		})
 	})
 }

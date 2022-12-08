@@ -27,6 +27,7 @@ module.exports = class UserProfileHelper {
 					internalToken = true
 				}
 				const profileDetails = await requests.get(profileUrl, token, internalToken)
+
 				return resolve(profileDetails)
 			} catch (error) {
 				return reject(error)

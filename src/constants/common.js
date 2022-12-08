@@ -7,7 +7,8 @@
 
 const FormsData = require('@db/forms/queries')
 const utils = require('@generics/utils')
-const correlationId = require(`../log/correlation-id`)
+const correlationId = require(`@log/correlation-id`)
+const { logger } = require('@log/logger')
 const successResponse = async ({ statusCode = 500, responseCode = 'OK', message, result = [], meta = {} }) => {
 	const formVersionData = (await utils.internalGet('formVersion')) || false
 	let versions = {}
@@ -30,7 +31,7 @@ const failureResponse = ({ message = 'Oops! Something Went Wrong.', statusCode =
 	const error = new Error(message)
 	error.statusCode = statusCode
 	error.responseCode = responseCode
-
+	logger.warn(error)
 	return error
 }
 

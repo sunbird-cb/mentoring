@@ -7,7 +7,7 @@
 
 const utils = require('@generics/utils')
 const Kafka = require('kafka-node')
-
+const { logger } = require('@log/logger')
 module.exports = () => {
 	const Producer = Kafka.Producer
 	const KafkaClient = new Kafka.KafkaClient({
@@ -22,19 +22,19 @@ module.exports = () => {
 	/* Registered events */
 
 	KafkaClient.on('error', (error) => {
-		console.log('Kafka connection error: ', error)
+		logger.info('Kafka connection error: ', error)
 	})
 
 	KafkaClient.on('connect', () => {
-		console.log('Connected to kafka client')
+		logger.info('Connected to kafka client')
 	})
 
 	producer.on('error', (error) => {
-		console.log('Kafka producer intialization error: ', error)
+		logger.info('Kafka producer intialization error: ', error)
 	})
 
 	producer.on('ready', () => {
-		console.log('Producer intialized successfully')
+		logger.info('Producer intialized successfully')
 	})
 
 	const consumer = new Kafka.ConsumerGroup(

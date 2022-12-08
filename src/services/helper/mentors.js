@@ -65,7 +65,6 @@ module.exports = class MentorsHelper {
 				})
 			}
 		} catch (err) {
-			console.log(err)
 			return err
 		}
 	}
@@ -90,6 +89,7 @@ module.exports = class MentorsHelper {
 					statusCode: httpStatusCode.ok,
 					message: 'PROFILE_FTECHED_SUCCESSFULLY',
 					result: {
+						userCorrelationId: mentorsDetails.data.meta.correlation,
 						sessionsAttended: totalSessionsAttended,
 						sessionsHosted: totalSessionHosted,
 						...mentorsDetails.data.result,

@@ -42,13 +42,12 @@ const app = express()
 
 // Health check
 require('@health-checks')(app)
-const { requestLoggingMiddleware } = require(`./log/request-logging-middleware`)
-const { correlationIdMiddleware } = require(`./log/correlation-id-middleware`)
-const { logger } = require('./log/logger')
+
+const { correlationIdMiddleware } = require(`@log/correlation-id-middleware`)
+const { logger } = require('@log/logger')
 app.use(cors())
 app.use(middleware.handle(i18next))
 app.use(correlationIdMiddleware)
-// app.use(requestLoggingMiddleware)
 
 app.use(bodyParser.urlencoded({ extended: true, limit: '50MB' }))
 app.use(bodyParser.json({ limit: '50MB' }))
@@ -62,18 +61,27 @@ app.get(process.env.API_DOC_URL, function (req, res) {
 /* Logs request info if environment is not development*/
 if (process.env.ENABLE_LOG === 'true') {
 	app.all('*', async (req, res, next) => {
-		if (req.headers['x-request-ids'] == 'ankit') {
-			await new Promise((r) => setTimeout(r, 10000))
-		}
+		// if (req.headers['x-request-ids'] == 'ankit') {
+		// 	await new Promise((r) => setTimeout(r, 10000))
+		// }
+		// logger.info(`Request Type ${req.method} for ${req.url} on ${new Date()} from `)
+		// logger.info(req.headers)
+		// logger.info('Request Body: ', req.body)
+		// logger.info('Mentoring Service Logs Starts Here')
+		// console.log('%s %s on %s from ', req.method, req.url, new Date(), req.headers['user-agent'])
+		// console.log('Request Headers: ', req.headers)
+		// console.log('Request Body: ', req.body)
+		// console.log('Request Files: ', req.files)
+		// console.log('***Mentoring Service Logs Ends Here***')
+		logger.info('<===User Service Logs Starts Here===>')
 		logger.info(`Request Type ${req.method} for ${req.url} on ${new Date()} from `)
+		logger.info('Request Headers: ')
 		logger.info(req.headers)
-		logger.info('Request Body: ', req.body)
-		logger.info('Mentoring Service Logs Starts Here')
-		console.log('%s %s on %s from ', req.method, req.url, new Date(), req.headers['user-agent'])
-		console.log('Request Headers: ', req.headers)
-		console.log('Request Body: ', req.body)
-		console.log('Request Files: ', req.files)
-		console.log('***Mentoring Service Logs Ends Here***')
+		logger.info('Request Body: ')
+		logger.info(req.body)
+		logger.info('Request Files: ')
+		logger.info(req.files)
+		logger.info('<===User Service Logs Ends Here===>')
 		next()
 	})
 }
@@ -86,18 +94,18 @@ app.listen(process.env.APPLICATION_PORT, (res, err) => {
 	if (err) {
 		onError(err)
 	}
-	console.log('Environment: ' + process.env.APPLICATION_ENV)
-	console.log('Application is running on the port:' + process.env.APPLICATION_PORT)
+	logger.info('Environment: ' + process.env.APPLICATION_ENV)
+	logger.info('Application is running on the port:' + process.env.APPLICATION_PORT)
 })
 
 // Handles specific listen errors with friendly messages
 function onError(error) {
 	switch (error.code) {
 		case 'EACCES':
-			console.log(process.env.APPLICATION_PORT + ' requires elevated privileges')
+			logger.info(process.env.APPLICATION_PORT + ' requires elevated privileges')
 			process.exit(1)
 		case 'EADDRINUSE':
-			console.log(process.env.APPLICATION_PORT + ' is already in use')
+			logger.info(process.env.APPLICATION_PORT + ' is already in use')
 			process.exit(1)
 		default:
 			throw error
