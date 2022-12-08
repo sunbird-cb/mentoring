@@ -56,8 +56,10 @@ module.exports = async function (req, res, next) {
 				responseCode: 'UNAUTHORIZED',
 			})
 		}
+		let decodedToken
 		try {
 			decodedToken = jwt.verify(authHeaderArray[1], process.env.ACCESS_TOKEN_SECRET)
+			console.log('DECODED TOKEN: ', decodedToken)
 		} catch (err) {
 			err.statusCode = httpStatusCode.unauthorized
 			err.responseCode = 'UNAUTHORIZED'
@@ -77,7 +79,13 @@ module.exports = async function (req, res, next) {
 		const userBaseUrl = process.env.USER_SERIVCE_HOST + process.env.USER_SERIVCE_BASE_URL
 		const profileUrl = userBaseUrl + endpoints.USER_PROFILE_DETAILS + '/' + decodedToken.data._id
 
-		const user = await requests.get(profileUrl, null, true)
+		const user = await requests.get(
+			profileUrl,
+			'bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7Il9pZCI6IjYzOTA5ZDVhNmUxYTBlMjJhMDgwNjIxMSIsImVtYWlsIjoiam9mZmluYkB0dW5lcmxhYnMuY29tIiwibmFtZSI6ImpvZmZpbmIiLCJpc0FNZW50b3IiOnRydWV9LCJpYXQiOjE2NzA0MjE4NTAsImV4cCI6MTY3MDUwODI1MH0.O6Wbr49HWjiFhUhSfcHguLUJB5YocC-D9eNL3rqVXZU',
+			true
+		)
+
+		console.log('USSSSSSSSSSSSSSSSSSSSSSSSSSER : ', user)
 
 		if (user.data.result.isAMentor !== decodedToken.data.isAMentor) {
 			throw common.failureResponse({

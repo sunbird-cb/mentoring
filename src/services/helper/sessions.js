@@ -28,15 +28,17 @@ module.exports = class SessionsHelper {
 	 */
 
 	static async create(bodyData, loggedInUserId) {
+		console.log('BOOOOOOOOOOOOOOOOOODY DATA: ', bodyData)
+		console.log('LOGGED IN USSSSSSER ID: ', loggedInUserId)
 		bodyData.userId = ObjectId(loggedInUserId)
 		try {
-			if (!(await this.verifyMentor(loggedInUserId))) {
+			/* if (!(await this.verifyMentor(loggedInUserId))) {
 				return common.failureResponse({
 					message: 'INVALID_PERMISSION',
 					statusCode: httpStatusCode.bad_request,
 					responseCode: 'CLIENT_ERROR',
 				})
-			}
+			} */
 
 			if (bodyData.startDate) {
 				bodyData['startDateUtc'] = moment.unix(bodyData.startDate).utc().format(common.UTC_DATE_TIME_FORMAT)
@@ -67,7 +69,7 @@ module.exports = class SessionsHelper {
 
 			await this.setMentorPassword(data._id, data.userId.toString())
 			await this.setMenteePassword(data._id, data.createdAt)
-
+			await kafkaCommunication.pushSessionToKafka(bodyData)
 			return common.successResponse({
 				statusCode: httpStatusCode.created,
 				message: 'SESSION_CREATED_SUCCESSFULLY',
@@ -92,13 +94,13 @@ module.exports = class SessionsHelper {
 	static async update(sessionId, bodyData, userId, method) {
 		let isSessionReschedule = false
 		try {
-			if (!(await this.verifyMentor(userId))) {
+			/* if (!(await this.verifyMentor(userId))) {
 				return common.failureResponse({
 					message: 'INVALID_PERMISSION',
 					statusCode: httpStatusCode.bad_request,
 					responseCode: 'CLIENT_ERROR',
 				})
-			}
+			} */
 
 			const sessionDetail = await sessionData.findSessionById(ObjectId(sessionId))
 

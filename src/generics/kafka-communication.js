@@ -48,8 +48,25 @@ const pushPayloadToKafka = (payload) => {
 	})
 }
 
+const pushToKafka = (topic) => (message) => {
+	try {
+		const payload = [{ topic, messages: JSON.stringify(message) }]
+		return new Promise((resolve, reject) => {
+			kafkaProducer.send(payload, (error, data) => {
+				if (error) {
+					reject(error)
+				}
+				resolve(data)
+			})
+		})
+	} catch (err) {
+		console.log(err)
+	}
+}
+
 module.exports = {
 	pushEmailToKafka,
 	pushMentorRatingToKafka,
 	clearInternalCache,
+	pushSessionToKafka: pushToKafka(process.env.SESSION_KAFKA_TOPIC),
 }
