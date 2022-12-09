@@ -11,6 +11,7 @@ const httpStatusCode = require('@generics/http-status')
 const common = require('@constants/common')
 const requests = require('@generics/requests')
 const endpoints = require('@constants/endpoints')
+const { logger } = require('@log/logger')
 
 module.exports = async function (req, res, next) {
 	try {
@@ -76,9 +77,9 @@ module.exports = async function (req, res, next) {
 		/* Invalidate token when user role is updated, say from mentor to mentee or vice versa */
 		const userBaseUrl = process.env.USER_SERIVCE_HOST + process.env.USER_SERIVCE_BASE_URL
 		const profileUrl = userBaseUrl + endpoints.USER_PROFILE_DETAILS + '/' + decodedToken.data._id
-
+		logger.info(profileUrl)
 		const user = await requests.get(profileUrl, null, true)
-
+		logger.info(user)
 		if (user.data.result.isAMentor !== decodedToken.data.isAMentor) {
 			throw common.failureResponse({
 				message: 'USER_ROLE_UPDATED',

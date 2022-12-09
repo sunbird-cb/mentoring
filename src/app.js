@@ -73,7 +73,7 @@ if (process.env.ENABLE_LOG === 'true') {
 		// console.log('Request Body: ', req.body)
 		// console.log('Request Files: ', req.files)
 		// console.log('***Mentoring Service Logs Ends Here***')
-		logger.info('<===User Service Logs Starts Here===>')
+		logger.info('<===mentoring Service Logs Starts Here===>')
 		logger.info(`Request Type ${req.method} for ${req.url} on ${new Date()} from `)
 		logger.info('Request Headers: ')
 		logger.info(req.headers)
@@ -81,7 +81,7 @@ if (process.env.ENABLE_LOG === 'true') {
 		logger.info(req.body)
 		logger.info('Request Files: ')
 		logger.info(req.files)
-		logger.info('<===User Service Logs Ends Here===>')
+		logger.info('<===mentoring Service Logs Ends Here===>')
 		next()
 	})
 }
