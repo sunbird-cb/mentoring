@@ -69,7 +69,7 @@ module.exports = class SessionsHelper {
 
 			await this.setMentorPassword(data._id, data.userId.toString())
 			await this.setMenteePassword(data._id, data.createdAt)
-
+			await kafkaCommunication.pushSessionToKafka(bodyData)
 			return common.successResponse({
 				statusCode: httpStatusCode.created,
 				message: 'SESSION_CREATED_SUCCESSFULLY',
