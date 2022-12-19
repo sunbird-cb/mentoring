@@ -7,7 +7,7 @@
 
 const utils = require('@generics/utils')
 const Kafka = require('kafka-node')
-const { logger } = require('@log/logger')
+const { logger } = require('elevate-logger')
 module.exports = () => {
 	const Producer = Kafka.Producer
 	const KafkaClient = new Kafka.KafkaClient({

@@ -10,7 +10,7 @@ const json2Csv = require('json2csv').Transform
 const stream = require('stream')
 const fs = require('fs')
 const moment = require('moment-timezone')
-const { logger } = require('@log/logger')
+const { logger } = require('elevate-logger')
 /**
  * FileStream
  * @class

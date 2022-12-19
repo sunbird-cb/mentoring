@@ -11,7 +11,7 @@ const httpStatusCode = require('@generics/http-status')
 const common = require('@constants/common')
 const requests = require('@generics/requests')
 const endpoints = require('@constants/endpoints')
-const { logger } = require('@log/logger')
+const { logger } = require('elevate-logger')
 
 module.exports = async function (req, res, next) {
 	try {

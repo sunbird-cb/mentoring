@@ -9,8 +9,7 @@ const validator = require('@middlewares/validator')
 const authenticator = require('@middlewares/authenticator')
 const pagination = require('@middlewares/pagination')
 const expressValidator = require('express-validator')
-const { logger } = require('@log/logger')
-const correlationId = require(`@log/correlation-id`)
+const { logger, correlationId } = require('elevate-logger')
 module.exports = (app) => {
 	app.use(authenticator)
 	app.use(pagination)
@@ -95,7 +94,7 @@ module.exports = (app) => {
 			responseCode,
 			message: req.t(message),
 			error: errorData,
-			correlation: correlationId.getId(),
+			correlationId: correlationId.getId(),
 		})
 	})
 }

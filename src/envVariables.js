@@ -1,5 +1,5 @@
 let table = require('cli-table')
-const { logger } = require('@log/logger')
+const { logger } = require('elevate-logger')
 let tableData = new table()
 
 let enviromentVariables = {
