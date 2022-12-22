@@ -7,7 +7,8 @@
 
 const FormsData = require('@db/forms/queries')
 const utils = require('@generics/utils')
-const { logger, correlationId } = require('elevate-logger')
+const { elevateLog, correlationId } = require('elevate-logger')
+const logger = elevateLog.init()
 const successResponse = async ({ statusCode = 500, responseCode = 'OK', message, result = [], meta = {} }) => {
 	const formVersionData = (await utils.internalGet('formVersion')) || false
 	let versions = {}

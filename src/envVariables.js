@@ -144,6 +144,14 @@ let enviromentVariables = {
 		message: 'Big blue button session end url.',
 		optional: false,
 	},
+	ERROR_LOG_LEVEL: {
+		message: 'Required Error log level',
+		optional: false,
+	},
+	DISABLE_LOG: {
+		message: 'Required disable log level',
+		optional: false,
+	},
 }
 
 let success = true
