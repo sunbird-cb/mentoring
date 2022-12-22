@@ -8,7 +8,10 @@ require('module-alias/register')
 const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
-const { logger, correlationIdMiddleware } = require('elevate-logger')
+const { elevateLog, correlationIdMiddleware } = require('elevate-logger')
+elevateLog.config(process.env.ERROR_LOG_LEVEL, 'mentoring', process.env.DISABLE_LOG)
+const logger = elevateLog.init()
+
 require('dotenv').config({ path: './.env' })
 const path = require('path')
 const i18next = require('i18next')
@@ -101,7 +104,7 @@ app.listen(process.env.APPLICATION_PORT, (res, err) => {
 function onError(error) {
 	switch (error.code) {
 		case 'EACCES':
-			logger.info(process.env.APPLICATION_PORT + ' requires elevated privileges')
+			logger().info(process.env.APPLICATION_PORT + ' requires elevated privileges')
 			process.exit(1)
 		case 'EADDRINUSE':
 			logger.info(process.env.APPLICATION_PORT + ' is already in use')

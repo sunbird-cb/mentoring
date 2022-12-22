@@ -1,6 +1,7 @@
 const request = require('request')
 const parser = require('xml2json')
-const { logger, correlationId } = require('elevate-logger')
+const { elevateLog, correlationId } = require('elevate-logger')
+const logger = elevateLog.init()
 var get = function (url, token = '', internal_access_token = false) {
 	return new Promise(async (resolve, reject) => {
 		try {

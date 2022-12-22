@@ -11,7 +11,8 @@ const httpStatusCode = require('@generics/http-status')
 const common = require('@constants/common')
 const requests = require('@generics/requests')
 const endpoints = require('@constants/endpoints')
-const { logger } = require('elevate-logger')
+const { elevateLog } = require('elevate-logger')
+const logger = elevateLog.init()
 
 module.exports = async function (req, res, next) {
 	try {

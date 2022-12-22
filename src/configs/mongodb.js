@@ -9,7 +9,9 @@
 let mongoose = require('mongoose')
 const mongoose_autopopulate = require('mongoose-autopopulate')
 const mongoose_timestamp = require('mongoose-timestamp')
-const { logger } = require('elevate-logger')
+const { elevateLog } = require('elevate-logger')
+
+logger = elevateLog.init()
 module.exports = function () {
 	// Added to remove depreciation warnings from logs.
 	// mongoose.set('useCreateIndex', true) // Default is true in mongoose v6

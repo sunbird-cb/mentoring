@@ -9,7 +9,9 @@ const validator = require('@middlewares/validator')
 const authenticator = require('@middlewares/authenticator')
 const pagination = require('@middlewares/pagination')
 const expressValidator = require('express-validator')
-const { logger, correlationId } = require('elevate-logger')
+const { elevateLog, correlationId } = require('elevate-logger')
+const logger = elevateLog.init()
+
 module.exports = (app) => {
 	app.use(authenticator)
 	app.use(pagination)

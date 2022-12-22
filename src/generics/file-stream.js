@@ -10,7 +10,8 @@ const json2Csv = require('json2csv').Transform
 const stream = require('stream')
 const fs = require('fs')
 const moment = require('moment-timezone')
-const { logger } = require('elevate-logger')
+const { elevateLog } = require('elevate-logger')
+const logger = elevateLog.init()
 /**
  * FileStream
  * @class
