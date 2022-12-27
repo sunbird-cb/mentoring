@@ -63,27 +63,16 @@ app.get(process.env.API_DOC_URL, function (req, res) {
 /* Logs request info if environment is not development*/
 if (process.env.ENABLE_LOG === 'true') {
 	app.all('*', async (req, res, next) => {
-		// if (req.headers['x-request-ids'] == 'ankit') {
-		// 	await new Promise((r) => setTimeout(r, 10000))
-		// }
-		// logger.info(`Request Type ${req.method} for ${req.url} on ${new Date()} from `)
-		// logger.info(req.headers)
-		// logger.info('Request Body: ', req.body)
-		// logger.info('Mentoring Service Logs Starts Here')
-		// console.log('%s %s on %s from ', req.method, req.url, new Date(), req.headers['user-agent'])
-		// console.log('Request Headers: ', req.headers)
-		// console.log('Request Body: ', req.body)
-		// console.log('Request Files: ', req.files)
-		// console.log('***Mentoring Service Logs Ends Here***')
-		logger.info('<===mentoring Service Logs Starts Here===>')
-		logger.info(`Request Type ${req.method} for ${req.url} on ${new Date()} from `)
-		logger.info('Request Headers: ')
-		logger.info(req.headers)
-		logger.info('Request Body: ')
-		logger.info(req.body)
-		logger.info('Request Files: ')
-		logger.info(req.files)
-		logger.info('<===mentoring Service Logs Ends Here===>')
+		console.log('Hereeeeeeeeeee')
+		logger.info('***Mentoring Service Request Log***', {
+			request: {
+				requestType: `Request Type ${req.method} for ${req.url} on ${new Date()} from `,
+				requestHeaders: req.headers,
+				requestBody: req.body,
+				requestFiles: req.files,
+			},
+		})
+
 		next()
 	})
 }

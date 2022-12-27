@@ -29,7 +29,7 @@
 		"cors": "^2.8.5",
 		"crypto": "^1.0.1",
 		"dotenv": "^10.0.0",
-		"elevate-logger": "^2.0.4",
+		"elevate-logger": "^2.0.6",
 		"elevate-node-cache": "^1.0.6",
 		"express": "^4.17.1",
 		"express-validator": "^5.3.1",

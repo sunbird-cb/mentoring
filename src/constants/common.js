@@ -18,20 +18,22 @@ const successResponse = async ({ statusCode = 500, responseCode = 'OK', message,
 		versions = await FormsData.findAllTypeFormVersion()
 		await utils.internalSet('formVersion', versions)
 	}
-	return {
+	let response = {
 		statusCode,
 		responseCode,
 		message,
 		result,
 		meta: { ...meta, formsVersion: versions, correlationId: correlationId.getId() },
 	}
+	logger.info('Request Response', { response: response })
+
+	return response
 }
 
 const failureResponse = ({ message = 'Oops! Something Went Wrong.', statusCode = 500, responseCode }) => {
 	const error = new Error(message)
 	error.statusCode = statusCode
 	error.responseCode = responseCode
-	logger.warn(error)
 	return error
 }
 
