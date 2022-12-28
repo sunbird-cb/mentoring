@@ -25,60 +25,40 @@ describe('Sessions controller and helper test', () => {
 
 	test('should return Profile of mentor', async () => {
 		const expectedResult = {
-			statusCode: 200,
 			responseCode: 'OK',
-			message: 'PROFILE_FTECHED_SUCCESSFULLY',
+			message: 'Profile fetched successfully.',
 			result: {
+				userCorrelationId: '6b8d993b-aea0-4286-9c01-21b194de5e1f',
 				sessionsAttended: 2,
 				sessionsHosted: 2,
+				_id: '63abdafcf00f30df0ac1c256',
 				email: {
-					address: 'ankit.s@pacewisdomss.com',
+					address: 'ameliementor@gmail.com',
 					verified: false,
 				},
-				_id: '62a820225ff93f30cfe5f990',
-				name: 'Ankit',
+				name: 'Nevil Mentor',
 				isAMentor: true,
-				hasAcceptedTAndC: true,
-				educationQualification: 'B.A.',
+				hasAcceptedTAndC: false,
 				deleted: false,
-				designation: [
-					{
-						value: '1',
-						label: 'Teacher',
-					},
-					{
-						value: '2',
-						label: 'District Official',
-					},
-				],
-				location: [
-					{
-						value: '1',
-						label: 'Bangalore',
-					},
-				],
-				areasOfExpertise: [
-					{
-						value: '1',
-						label: 'Educational Leadership',
-					},
-					{
-						value: '2',
-						label: 'SQAA',
-					},
-				],
+				educationQualification: null,
+				preferredLanguage: 'en',
+				designation: [],
+				location: [],
+				areasOfExpertise: [],
 				languages: [],
-				updatedAt: '2022-06-14T06:18:23.423Z',
-				createdAt: '2022-06-14T05:44:02.911Z',
-				__v: 0,
-				lastLoggedInAt: '2022-07-07T01:43:53.097Z',
-				about: 'This is test about of mentee',
-				experience: '4.2',
-				gender: 'MALE',
-				image: 'https://aws-bucket-storage-name.s3.ap-south-1.amazonaws.com/https://cloudstorage.com/container/abc.png',
+				updatedAt: '2022-12-28T05:58:20.237Z',
+				createdAt: '2022-12-28T05:58:20.237Z',
+				lastLoggedInAt: '2022-12-28T05:58:38.497Z',
 			},
 			meta: {
-				formsVersion: [],
+				formsVersion: [
+					{
+						_id: '63aaabf8380877db9e98b724',
+						type: 'Automotive',
+						__v: 0,
+					},
+				],
+				correlationId: '6b8d993b-aea0-4286-9c01-21b194de5e1f',
 			},
 		}
 
@@ -88,51 +68,25 @@ describe('Sessions controller and helper test', () => {
 				responseCode: 'OK',
 				message: 'Profile fetched successfully.',
 				result: {
-					email: {
-						address: 'ankit.s@pacewisdomss.com',
-						verified: false,
-					},
-					_id: '62a820225ff93f30cfe5f990',
-					name: 'Ankit',
+					_id: '63abdafcf00f30df0ac1c256',
+					email: { address: 'ameliementor@gmail.com', verified: false },
+					name: 'Nevil Mentor',
 					isAMentor: true,
-					hasAcceptedTAndC: true,
-					educationQualification: 'B.A.',
+					hasAcceptedTAndC: false,
 					deleted: false,
-					designation: [
-						{
-							value: '1',
-							label: 'Teacher',
-						},
-						{
-							value: '2',
-							label: 'District Official',
-						},
-					],
-					location: [
-						{
-							value: '1',
-							label: 'Bangalore',
-						},
-					],
-					areasOfExpertise: [
-						{
-							value: '1',
-							label: 'Educational Leadership',
-						},
-						{
-							value: '2',
-							label: 'SQAA',
-						},
-					],
+					educationQualification: null,
+					preferredLanguage: 'en',
+					designation: [],
+					location: [],
+					areasOfExpertise: [],
 					languages: [],
-					updatedAt: '2022-06-14T06:18:23.423Z',
-					createdAt: '2022-06-14T05:44:02.911Z',
-					__v: 0,
-					lastLoggedInAt: '2022-07-07T01:43:53.097Z',
-					about: 'This is test about of mentee',
-					experience: '4.2',
-					gender: 'MALE',
-					image: 'https://aws-bucket-storage-name.s3.ap-south-1.amazonaws.com/https://cloudstorage.com/container/abc.png',
+					updatedAt: '2022-12-28T05:58:20.237Z',
+					createdAt: '2022-12-28T05:58:20.237Z',
+					lastLoggedInAt: '2022-12-28T05:58:38.497Z',
+				},
+				meta: {
+					formsVersion: [],
+					correlation: '6b8d993b-aea0-4286-9c01-21b194de5e1f',
 				},
 			},
 		}
