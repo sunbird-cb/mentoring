@@ -45,10 +45,10 @@ const pushPayloadToKafka = async (payload) => {
 	}
 }
 
-const pushToKafka = (topic) => async (message) => {
+const pushToKafka = (topic) => async (key, value) => {
 	try {
 		console.log(topic)
-		const payload = { topic, messages: [{ value: JSON.stringify(message) }] }
+		const payload = { topic, messages: [{ key, value: JSON.stringify(value) }] }
 		let response = await kafkaProducer.send(payload)
 		return response
 	} catch (err) {

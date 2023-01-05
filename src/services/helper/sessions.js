@@ -69,7 +69,22 @@ module.exports = class SessionsHelper {
 
 			await this.setMentorPassword(data._id, data.userId.toString())
 			await this.setMenteePassword(data._id, data.createdAt)
-			await kafkaCommunication.pushSessionToKafka(bodyData)
+			console.log('DATA: ', data)
+			console.log('KEY', data._id.valueOf(), typeof data._id.valueOf())
+			await kafkaCommunication.pushSessionToKafka(data._id.valueOf(), data)
+			const newData = {
+				title: 'Modified Title',
+				categories: [
+					{
+						value: 'Modified Leadership',
+						label: 'Modified Leadership',
+					},
+				],
+			}
+			await setTimeout(async () => {
+				console.log('INSIDE TIMEOUT')
+				await kafkaCommunication.pushSessionToKafka(data._id.valueOf(), newData)
+			}, 15000)
 			return common.successResponse({
 				statusCode: httpStatusCode.created,
 				message: 'SESSION_CREATED_SUCCESSFULLY',
