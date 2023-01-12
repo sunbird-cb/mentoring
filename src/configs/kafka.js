@@ -13,6 +13,11 @@ module.exports = async () => {
 	const KafkaClient = new Kafka({
 		clientId: 'mentoring',
 		brokers: kafkaIps,
+		connectionTimeout: 60000,
+		retry: {
+			initialRetryTime: 1000,
+			retries: 8,
+		},
 	})
 
 	const producer = KafkaClient.producer()

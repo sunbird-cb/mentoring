@@ -81,10 +81,10 @@ module.exports = class SessionsHelper {
 					},
 				],
 			}
-			await setTimeout(async () => {
+			/* await setTimeout(async () => {
 				console.log('INSIDE TIMEOUT')
 				await kafkaCommunication.pushSessionToKafka(data._id.valueOf(), newData)
-			}, 15000)
+			}, 15000) */
 			return common.successResponse({
 				statusCode: httpStatusCode.created,
 				message: 'SESSION_CREATED_SUCCESSFULLY',
