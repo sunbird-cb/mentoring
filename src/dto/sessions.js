@@ -1,3 +1,9 @@
+/**
+ * name : sessions.js
+ * author : Nevil Mathew
+ * created-date : 17-Jan-2023
+ * Description : DTO for sessions.
+ */
 const ObjectId = require('mongoose').Types.ObjectId
 const sessionData = require('@db/sessions/queries')
 const userProfile = require('../services/helper/userProfile')
