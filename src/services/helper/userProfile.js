@@ -105,4 +105,40 @@ module.exports = class UserProfileHelper {
 			}
 		})
 	}
+
+	/**
+	 * Get organization details
+	 * @method
+	 * @name getOrganizationData
+	 * @param {String} organizationId - organization id.
+	 * @returns {JSON} - Organization details
+	 */
+
+	static getOrganizationData(organizationId) {
+		console.log(organizationId)
+		return new Promise(async (resolve, reject) => {
+			const apiUrl = userBaseUrl + endpoints.ORGANIZATION_DETAILS + '/' + organizationId
+			try {
+				let organizationDetails = await requests.get(apiUrl, false, true)
+				if (organizationDetails.data.responseCode === 'CLIENT_ERROR') {
+					return resolve(
+						common.failureResponse({
+							message: organizationDetails.data.message,
+							statusCode: httpStatusCode.bad_request,
+							responseCode: 'CLIENT_ERROR',
+						})
+					)
+				}
+				return resolve(
+					common.successResponse({
+						statusCode: httpStatusCode.ok,
+						message: organizationDetails.data.message,
+						result: organizationDetails.data.result,
+					})
+				)
+			} catch (error) {
+				reject(error)
+			}
+		})
+	}
 }

@@ -8,4 +8,5 @@ module.exports = {
 	USERS_LIST: 'v1/account/list',
 	SHARE_MENTOR_PROFILE: 'v1/profile/share',
 	USERS_ENTITY_READ: 'v1/userentity/read',
+	ORGANIZATION_DETAILS: 'v1/organisations/details',
 }
