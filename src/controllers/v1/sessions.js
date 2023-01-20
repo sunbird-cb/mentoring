@@ -132,7 +132,7 @@ module.exports = class Sessions {
 		try {
 			const enrolledSession = await sessionsHelper.enroll(
 				req.params.id,
-				req.decodedToken,
+				req.decodedToken || req.body,
 				req.headers['timeZone']
 			)
 			return enrolledSession
@@ -153,7 +153,7 @@ module.exports = class Sessions {
 
 	async unEnroll(req) {
 		try {
-			const unEnrolledSession = await sessionsHelper.unEnroll(req.params.id, req.decodedToken)
+			const unEnrolledSession = await sessionsHelper.unEnroll(req.params.id, req.decodedToken || req.body)
 			return unEnrolledSession
 		} catch (error) {
 			return error
