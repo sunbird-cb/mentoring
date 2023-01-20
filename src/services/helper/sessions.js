@@ -484,8 +484,8 @@ module.exports = class SessionsHelper {
 				process.env.MENTEE_SESSION_ENROLLMENT_EMAIL_TEMPLATE
 			)
 
-			if (templateData) {
-				// Push successfull enrollment to session in kafka
+			if (templateData && name && email) {
+				// Push successful enrollment to session in kafka
 				const payload = {
 					type: 'email',
 					email: {
@@ -565,7 +565,7 @@ module.exports = class SessionsHelper {
 				process.env.MENTEE_SESSION_CANCELLATION_EMAIL_TEMPLATE
 			)
 
-			if (templateData) {
+			if (templateData && name && email) {
 				// Push successfull unenrollment to session in kafka
 				const payload = {
 					type: 'email',
