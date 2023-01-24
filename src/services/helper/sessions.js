@@ -449,8 +449,12 @@ module.exports = class SessionsHelper {
 		const userId = userTokenData._id
 		const email = userTokenData.email
 		const name = userTokenData.name
-
 		try {
+			let sendNotification = true
+			if ('sendNotification' in userTokenData) {
+				sendNotification = userTokenData.sendNotification
+			}
+
 			const session = await sessionData.findSessionById(sessionId)
 			if (!session) {
 				return common.failureResponse({
@@ -478,13 +482,12 @@ module.exports = class SessionsHelper {
 				timeZone,
 			}
 
-			await sessionAttendesData.create(attendee)
-
+			let sessionAttendees = await sessionAttendesData.create(attendee)
 			const templateData = await notificationTemplateData.findOneEmailTemplate(
 				process.env.MENTEE_SESSION_ENROLLMENT_EMAIL_TEMPLATE
 			)
 
-			if (templateData && name && email) {
+			if (templateData && sendNotification) {
 				// Push successful enrollment to session in kafka
 				const payload = {
 					type: 'email',
@@ -515,6 +518,7 @@ module.exports = class SessionsHelper {
 			return common.successResponse({
 				statusCode: httpStatusCode.created,
 				message: 'USER_ENROLLED_SUCCESSFULLY',
+				result: sessionAttendees,
 			})
 		} catch (error) {
 			throw error
@@ -539,6 +543,11 @@ module.exports = class SessionsHelper {
 		const email = userTokenData.email
 
 		try {
+			let sendNotification = true
+			if ('sendNotification' in userTokenData) {
+				sendNotification = userTokenData.sendNotification
+			}
+
 			const session = await sessionData.findSessionById(sessionId)
 			if (!session) {
 				return common.failureResponse({
@@ -565,8 +574,8 @@ module.exports = class SessionsHelper {
 				process.env.MENTEE_SESSION_CANCELLATION_EMAIL_TEMPLATE
 			)
 
-			if (templateData && name && email) {
-				// Push successfull unenrollment to session in kafka
+			if (templateData && sendNotification) {
+				// Push successful unenrollment to session in kafka
 				const payload = {
 					type: 'email',
 					email: {

@@ -130,9 +130,16 @@ module.exports = class Sessions {
 
 	async enroll(req) {
 		try {
+			let body = req.body
+
+			if (!req.decodedToken) {
+				req.params.id = body.sessionId
+				Object.defineProperty(body, '_id', Object.getOwnPropertyDescriptor(body, 'userId'))
+				delete body.userId
+			}
 			const enrolledSession = await sessionsHelper.enroll(
 				req.params.id,
-				req.decodedToken || req.body,
+				req.decodedToken || body,
 				req.headers['timeZone']
 			)
 			return enrolledSession
@@ -153,7 +160,14 @@ module.exports = class Sessions {
 
 	async unEnroll(req) {
 		try {
-			const unEnrolledSession = await sessionsHelper.unEnroll(req.params.id, req.decodedToken || req.body)
+			let body = req.body
+
+			if (!req.decodedToken) {
+				req.params.id = body.sessionId
+				Object.defineProperty(body, '_id', Object.getOwnPropertyDescriptor(body, 'userId'))
+				delete body.userId
+			}
+			const unEnrolledSession = await sessionsHelper.unEnroll(req.params.id, req.decodedToken || body)
 			return unEnrolledSession
 		} catch (error) {
 			return error
