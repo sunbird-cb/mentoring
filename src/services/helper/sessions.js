@@ -475,11 +475,22 @@ module.exports = class SessionsHelper {
 					responseCode: 'CLIENT_ERROR',
 				})
 			}
+			let link = encodeURI(
+				process.env.APPLICATION_URL +
+					process.env.APPLICATION_BASE_URL +
+					'v1/sessions/join/' +
+					sessionId +
+					'?user=' +
+					userId +
+					'&name=' +
+					name
+			)
 
 			const attendee = {
 				userId,
 				sessionId,
 				timeZone,
+				link,
 			}
 
 			let sessionAttendees = await sessionAttendesData.create(attendee)
@@ -971,39 +982,4 @@ module.exports = class SessionsHelper {
 			throw error
 		}
 	}
-
-	/**
-	 * Get recording details.
-	 * @method
-	 * @name updateRecordingUrl
-	 * @param {String} internalMeetingID - Internal Meeting ID
-	 * @returns {JSON} - Recording link updated.
-	 */
-
-	/* 	static async transformSessionData(sessionId, userId) {
-		try {
-			const filter = {}
-
-			if (ObjectId.isValid(sessionId)) {
-				filter._id = sessionId
-			}
-			let sessionDetails = await sessionData.findOneSession(filter)
-			let mentorsDetails = await userProfile.details('', userId)
-			const mentorFilter = ['_id', 'name', 'image', 'rating', 'gender']
-
-			const filteredMentorDetails = Object.keys(mentorsDetails.data.result)
-				.filter((key) => mentorFilter.includes(key))
-				.reduce((obj, key) => {
-					obj[key] = mentorsDetails.data.result[key]
-					return obj
-				}, {})
-			sessionDetails.mentor = filteredMentorDetails
-
-			console.log('sesssion details', sessionDetails)
-			 			let res = await kafkaCommunication.pushSessionToKafka(data)
-			console.log('Session data', res) 
-		} catch (error) {
-			throw error
-		}
-	} */
 }
