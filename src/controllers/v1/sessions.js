@@ -130,9 +130,16 @@ module.exports = class Sessions {
 
 	async enroll(req) {
 		try {
+			let body = req.body
+
+			if (!req.decodedToken) {
+				req.params.id = body.sessionId
+				Object.defineProperty(body, '_id', Object.getOwnPropertyDescriptor(body, 'userId'))
+				delete body.userId
+			}
 			const enrolledSession = await sessionsHelper.enroll(
 				req.params.id,
-				req.decodedToken || req.body,
+				req.decodedToken || body,
 				req.headers['timeZone']
 			)
 			return enrolledSession
@@ -153,7 +160,14 @@ module.exports = class Sessions {
 
 	async unEnroll(req) {
 		try {
-			const unEnrolledSession = await sessionsHelper.unEnroll(req.params.id, req.decodedToken || req.body)
+			let body = req.body
+
+			if (!req.decodedToken) {
+				req.params.id = body.sessionId
+				Object.defineProperty(body, '_id', Object.getOwnPropertyDescriptor(body, 'userId'))
+				delete body.userId
+			}
+			const unEnrolledSession = await sessionsHelper.unEnroll(req.params.id, req.decodedToken || body)
 			return unEnrolledSession
 		} catch (error) {
 			return error
@@ -249,6 +263,29 @@ module.exports = class Sessions {
 		const recordingUrl = req.body.recordingUrl
 		try {
 			const sessionUpdated = await sessionsHelper.updateRecordingUrl(internalMeetingId, recordingUrl)
+			return sessionUpdated
+		} catch (error) {
+			return error
+		}
+	}
+
+	/**
+	 * Join session link for mentee
+	 * @method
+	 * @name join
+	 * @param {Object} req -request data.
+	 * @param {String} req.params.sessionId - sessionId
+	 * @param {String} req.query.user -userid
+	 * @param {String} req.query.name - name of the user
+	 * @returns {JSON} - Joining link for the session
+	 */
+
+	async join(req) {
+		const sessionId = req.params.id
+		const userId = req.query.user
+		const name = req.query.name
+		try {
+			const sessionUpdated = await sessionsHelper.join(sessionId, userId, name)
 			return sessionUpdated
 		} catch (error) {
 			return error

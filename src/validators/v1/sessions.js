@@ -32,11 +32,49 @@ module.exports = {
 	},
 
 	enroll: (req) => {
-		req.checkParams('id').notEmpty().withMessage('id param is empty').isMongoId().withMessage('id is invalid')
+		if (req.decodedToken) {
+			req.checkParams('id').notEmpty().withMessage('id param is empty').isMongoId().withMessage('id is invalid')
+		} else {
+			req.checkBody('userId')
+				.notEmpty()
+				.withMessage('userId field is empty')
+				.isMongoId()
+				.withMessage('userId is invalid')
+			req.checkBody('sendNotification')
+				.notEmpty()
+				.withMessage('sendNotification field is empty')
+				.isBoolean()
+				.withMessage('sendNotification field is invalid')
+			req.checkBody('name').notEmpty().withMessage('name field is empty')
+			req.checkBody('sessionId')
+				.notEmpty()
+				.withMessage('sessionId field is empty')
+				.isMongoId()
+				.withMessage('sessionId is invalid')
+		}
 	},
 
 	unEnroll: (req) => {
-		req.checkParams('id').notEmpty().withMessage('id param is empty').isMongoId().withMessage('id is invalid')
+		if (req.decodedToken) {
+			req.checkParams('id').notEmpty().withMessage('id param is empty').isMongoId().withMessage('id is invalid')
+		} else {
+			req.checkBody('userId')
+				.notEmpty()
+				.withMessage('userId field is empty')
+				.isMongoId()
+				.withMessage('userId is invalid')
+			req.checkBody('sendNotification')
+				.notEmpty()
+				.withMessage('sendNotification field is empty')
+				.isBoolean()
+				.withMessage('sendNotification field is invalid')
+			req.checkBody('name').notEmpty().withMessage('name field is empty')
+			req.checkBody('sessionId')
+				.notEmpty()
+				.withMessage('sessionId field is empty')
+				.isMongoId()
+				.withMessage('sessionId is invalid')
+		}
 	},
 
 	share: (req) => {
