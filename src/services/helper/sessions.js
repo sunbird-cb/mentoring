@@ -78,6 +78,7 @@ module.exports = class SessionsHelper {
 				result: data,
 			})
 		} catch (error) {
+			console.log(error)
 			throw error
 		}
 	}
@@ -1080,5 +1081,4 @@ module.exports = class SessionsHelper {
 			throw error
 		}
 	}
-
 }
