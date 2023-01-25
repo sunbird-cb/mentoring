@@ -53,6 +53,17 @@ module.exports = (app) => {
 			return next(error)
 		}
 
+		if (controllerResponse.statusCode == 307) {
+			res.render(controllerResponse.result.url, {
+				data: {
+					message: req.t(controllerResponse.message),
+				},
+			})
+		}
+		if (controllerResponse.statusCode == 301) {
+			res.redirect(controllerResponse.result.url)
+		}
+
 		if (
 			controllerResponse &&
 			controllerResponse.statusCode !== 200 &&

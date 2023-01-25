@@ -79,7 +79,7 @@ module.exports = async function (req, res, next) {
 
 		const user = await requests.get(profileUrl, null, true)
 
-		if (user.data.result.isAMentor !== decodedToken.data.isAMentor) {
+		if (user.data && user.data.result && user.data.result.isAMentor !== decodedToken.data.isAMentor) {
 			throw common.failureResponse({
 				message: 'USER_ROLE_UPDATED',
 				statusCode: httpStatusCode.unauthorized,
