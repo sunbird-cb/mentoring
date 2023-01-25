@@ -1080,4 +1080,5 @@ module.exports = class SessionsHelper {
 			throw error
 		}
 	}
+
 }
