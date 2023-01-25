@@ -268,4 +268,27 @@ module.exports = class Sessions {
 			return error
 		}
 	}
+
+	/**
+	 * Join session link for mentee
+	 * @method
+	 * @name join
+	 * @param {Object} req -request data.
+	 * @param {String} req.params.sessionId - sessionId
+	 * @param {String} req.query.user -userid
+	 * @param {String} req.query.name - name of the user
+	 * @returns {JSON} - Joining link for the session
+	 */
+
+	async join(req) {
+		const sessionId = req.params.id
+		const userId = req.query.user
+		const name = req.query.name
+		try {
+			const sessionUpdated = await sessionsHelper.join(sessionId, userId, name)
+			return sessionUpdated
+		} catch (error) {
+			return error
+		}
+	}
 }

@@ -631,6 +631,7 @@ module.exports = class SessionsHelper {
 				}
 
 				let apiUrl = apiBaseUrl + apiEndpoints.VERIFY_MENTOR + '?userId=' + id
+
 				try {
 					request.post(apiUrl, options, (err, data) => {
 						if (err) {
@@ -982,4 +983,102 @@ module.exports = class SessionsHelper {
 			throw error
 		}
 	}
+
+	/**
+	 * Get recording details.
+	 * @method
+	 * @name updateRecordingUrl
+	 * @param {String} internalMeetingID - Internal Meeting ID
+	 * @returns {JSON} - Recording link updated.
+	 */
+
+	/* 	static async transformSessionData(sessionId, userId) {
+		try {
+			const filter = {}
+
+			if (ObjectId.isValid(sessionId)) {
+				filter._id = sessionId
+			}
+			let sessionDetails = await sessionData.findOneSession(filter)
+			let mentorsDetails = await userProfile.details('', userId)
+			const mentorFilter = ['_id', 'name', 'image', 'rating', 'gender']
+
+			const filteredMentorDetails = Object.keys(mentorsDetails.data.result)
+				.filter((key) => mentorFilter.includes(key))
+				.reduce((obj, key) => {
+					obj[key] = mentorsDetails.data.result[key]
+					return obj
+				}, {})
+			sessionDetails.mentor = filteredMentorDetails
+
+			console.log('sesssion details', sessionDetails)
+			 			let res = await kafkaCommunication.pushSessionToKafka(data)
+			console.log('Session data', res) 
+		} catch (error) {
+			throw error
+		}
+	} */
+
+	/**
+	 * join session.
+	 * @method
+	 * @name start
+	 * @param {String} sessionId - session id.
+	 * @param {String} userId - user id.
+	 * @param {String} name - name of the mentee.
+	 * @returns {JSON} - start session link
+	 */
+
+	static async join(sessionId, userId, name) {
+		try {
+			const session = await sessionData.findSessionById(sessionId)
+
+			let message
+			if (!session) {
+				message = 'SESSION_NOT_FOUND'
+			}
+
+			if (session && session.status == 'completed') {
+				message = 'SESSION_ENDED'
+			}
+
+			if (session && session.status !== 'live') {
+				message = 'JOIN_ONLY_LIVE_SESSION'
+			}
+			if (message) {
+				return common.successResponse({
+					statusCode: httpStatusCode.temporarily_moved,
+					message: message,
+					result: {
+						url: common.JOIN_SESSION_EJS,
+					},
+				})
+			}
+			const sessionAttendee = await sessionAttendesData.findAttendeeBySessionAndUserId(userId, sessionId)
+
+			if (!sessionAttendee) {
+				return common.successResponse({
+					statusCode: httpStatusCode.temporarily_moved,
+					message: 'USER_NOT_ENROLLED',
+					result: {
+						url: common.JOIN_SESSION_EJS,
+					},
+				})
+			}
+
+			const attendeeLink = await bigBlueButton.joinMeetingAsAttendee(sessionId, name, session.menteePassword)
+			link = attendeeLink
+
+			return common.successResponse({
+				statusCode: httpStatusCode.moved_Permanently,
+				message: 'SESSION_LINK_GENERATED_SUCCESSFULLY',
+				result: {
+					url: link,
+				},
+			})
+		} catch (error) {
+			throw error
+		}
+	}
+
 }

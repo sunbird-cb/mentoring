@@ -16,4 +16,6 @@ module.exports = {
 	not_acceptable: 406,
 	unprocessable_entity: 422,
 	internal_server_error: 500,
+	temporarily_moved: 307,
+	moved_Permanently: 301,
 }

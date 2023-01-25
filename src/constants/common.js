@@ -8,7 +8,7 @@
 const form = require('@generics/form')
 const { elevateLog, correlationId } = require('elevate-logger')
 const logger = elevateLog.init()
-const successResponse = async ({ statusCode = 500, responseCode = 'OK', message, result = [], meta = {} }) => {
+const successResponse = async ({ statusCode = 202, responseCode = 'OK', message, result = [], meta = {} }) => {
 	const versions = await form.getAllFormsVersion()
 	let response = {
 		statusCode,
@@ -37,7 +37,7 @@ module.exports = {
 	},
 	successResponse,
 	failureResponse,
-	guestUrls: ['/sessions/completed', '/sessions/updateRecordingUrl', '/sessions/details'],
+	guestUrls: ['/sessions/completed', '/sessions/updateRecordingUrl', '/sessions/details', '/sessions/join'],
 	DELETE_METHOD: 'DELETE',
 	dateFormat: 'dddd, Do MMMM YYYY',
 	timeFormat: 'hh:mm A',
@@ -52,4 +52,5 @@ module.exports = {
 	MENTOR_EVALUATING: 'mentor',
 	internalCacheExpirationTime: process.env.INTERNAL_CACHE_EXP_TIME, // In Seconds
 	RedisCacheExpiryTime: process.env.REDIS_CACHE_EXP_TIME,
+	JOIN_SESSION_EJS: 'session-join.ejs',
 }
