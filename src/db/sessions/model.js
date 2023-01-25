@@ -8,6 +8,9 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 const mongooseLeanGetter = require('mongoose-lean-getters')
+/* const utils = require('./utils')
+const kafkaCommunication = require('@generics/kafka-communication')
+ */
 let sessionsSchema = new Schema({
 	title: String,
 	description: String,
@@ -74,6 +77,14 @@ let sessionsSchema = new Schema({
 		default: null,
 	},
 })
+/* sessionsSchema.post(['save', 'updateOne'], function () {
+	// ["method1", "method2", "method3"...]
+	utils.sessionDataToKafka
+}) */
+/* sessionsSchema.post('save', utils.sessionDataToKafka)
+sessionsSchema.post('findOneAndUpdate', function (doc) {
+	console.log('One document updated:', doc)
+}) */
 sessionsSchema.plugin(mongooseLeanGetter)
 const Sessions = db.model('sessions', sessionsSchema)
 module.exports = Sessions

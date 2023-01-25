@@ -67,6 +67,7 @@ module.exports = class SessionsHelper {
 			}
 
 			let data = await sessionData.createSession(bodyData)
+			console.log(data)
 			await this.setMentorPassword(data._id, data.userId.toString())
 			await this.setMenteePassword(data._id, data.createdAt)
 
@@ -78,6 +79,7 @@ module.exports = class SessionsHelper {
 				result: data,
 			})
 		} catch (error) {
+			console.log(error)
 			throw error
 		}
 	}
@@ -161,8 +163,10 @@ module.exports = class SessionsHelper {
 					_id: ObjectId(sessionId),
 				},
 				updateData
+				//{ new: true, upsert: false, rawResult: true }
 			)
-
+			let transformedSessionData = await sessionDTO.transformSessionData(sessionId, ObjectId(userId))
+			kafkaCommunication.pushSessionToKafka(transformedSessionData)
 			if (result === 'SESSION_ALREADY_UPDATED') {
 				return common.failureResponse({
 					message: 'SESSION_ALREADY_UPDATED',
@@ -291,6 +295,7 @@ module.exports = class SessionsHelper {
 				message: message,
 			})
 		} catch (error) {
+			console.log(error)
 			throw error
 		}
 	}

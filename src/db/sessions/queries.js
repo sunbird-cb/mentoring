@@ -20,7 +20,7 @@ module.exports = class SessionsData {
 
 	static async updateOneSession(filter, update, options = {}) {
 		try {
-			const updateResponse = await Sessions.updateOne(filter, update, options)
+			const updateResponse = await Sessions.updateOne(filter, update, options) //findOneAndUpdate
 			if (
 				(updateResponse.n === 1 && updateResponse.nModified === 1) ||
 				(updateResponse.matchedCount === 1 && updateResponse.modifiedCount === 1)
