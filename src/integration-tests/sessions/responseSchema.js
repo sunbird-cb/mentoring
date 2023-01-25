@@ -607,18 +607,59 @@ const enrollSchema = {
 			type: 'string',
 		},
 		result: {
-			type: 'array',
-			items: {},
-		},
-		meta: {
 			type: 'object',
 			properties: {
-				formsVersion: {
+				userId: {
+					type: 'string',
+				},
+				sessionId: {
+					type: 'string',
+				},
+				isSessionAttended: {
+					type: 'boolean',
+				},
+				deleted: {
+					type: 'boolean',
+				},
+				link: {
+					type: 'string',
+				},
+				skippedFeedback: {
+					type: 'boolean',
+				},
+				_id: {
+					type: 'string',
+				},
+				feedbacks: {
 					type: 'array',
 					items: {},
 				},
+				updatedAt: {
+					type: 'string',
+				},
+				createdAt: {
+					type: 'string',
+				},
+				__v: {
+					type: 'integer',
+				},
 			},
-			required: ['formsVersion'],
+			required: [
+				'userId',
+				'sessionId',
+				'isSessionAttended',
+				'deleted',
+				'link',
+				'skippedFeedback',
+				'_id',
+				'feedbacks',
+				'updatedAt',
+				'createdAt',
+				'__v',
+			],
+		},
+		meta: {
+			type: 'object',
 		},
 	},
 	required: ['responseCode', 'message', 'result', 'meta'],

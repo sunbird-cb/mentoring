@@ -15,6 +15,10 @@ let enviromentVariables = {
 		message: 'Required application base url',
 		optional: false,
 	},
+	APPLICATION_URL: {
+		message: 'Required application url',
+		optional: false,
+	},
 	MONGODB_URL: {
 		message: 'Required mongodb url',
 		optional: false,
