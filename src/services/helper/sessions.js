@@ -491,6 +491,7 @@ module.exports = class SessionsHelper {
 				sessionId,
 				timeZone,
 				link,
+				sendNotification,
 			}
 
 			let sessionAttendees = await sessionAttendesData.create(attendee)

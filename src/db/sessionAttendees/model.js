@@ -28,6 +28,10 @@ let sessionAttendeesSchema = new Schema({
 		type: Boolean,
 		default: false,
 	},
+	sendNotification: {
+		type: Boolean,
+		default: true,
+	},
 	timeZone: String,
 	joinedAt: Date,
 	leftAt: Date,
