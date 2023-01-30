@@ -67,7 +67,7 @@ module.exports = class SessionsHelper {
 			}
 
 			let data = await sessionData.createSession(bodyData)
-			console.log(data)
+
 			await this.setMentorPassword(data._id, data.userId.toString())
 			await this.setMenteePassword(data._id, data.createdAt)
 
@@ -162,8 +162,8 @@ module.exports = class SessionsHelper {
 				{
 					_id: ObjectId(sessionId),
 				},
-				updateData
-				//{ new: true, upsert: false, rawResult: true }
+				updateData,
+				{ new: true, rawResult: true }
 			)
 			let transformedSessionData = await sessionDTO.transformSessionData(sessionId, ObjectId(userId))
 			kafkaCommunication.pushSessionToKafka(transformedSessionData)

@@ -20,20 +20,18 @@ module.exports = class SessionsData {
 
 	static async updateOneSession(filter, update, options = {}) {
 		try {
-			const updateResponse = await Sessions.updateOne(filter, update, options) //findOneAndUpdate
-			if (
-				(updateResponse.n === 1 && updateResponse.nModified === 1) ||
-				(updateResponse.matchedCount === 1 && updateResponse.modifiedCount === 1)
-			) {
+			const updateResponse = await Sessions.findOneAndUpdate(filter, update, options)
+
+			if (updateResponse.lastErrorObject.updatedExisting === true) {
 				return 'SESSION_UPDATED'
-			} else if (
+			} /* else if (
 				(updateResponse.n === 1 && updateResponse.nModified === 0) ||
 				(updateResponse.matchedCount === 1 && updateResponse.modifiedCount === 0)
 			) {
-				return 'SESSION_ALREADY_UPDATED'
-			} else {
+				return 'SESSION_ALREADY_UPDATED' 
+			}  else {
 				return 'SESSION_NOT_FOUND'
-			}
+			}*/
 		} catch (error) {
 			return error
 		}
