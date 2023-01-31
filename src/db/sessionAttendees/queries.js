@@ -106,8 +106,9 @@ module.exports = class SessionsAttendees {
 
 	static async unEnrollFromSession(sessionId, userId) {
 		try {
-			const result = await SessionAttendees.deleteOne({ sessionId, userId }).lean()
-			if (result && result.deletedCount === 1) {
+			const updateResponse = await SessionAttendees.updateOne({ sessionId, userId },{ status:"unEnroll" })
+			if ((updateResponse.n === 1 && updateResponse.nModified === 0) ||
+			(updateResponse.matchedCount === 1 && updateResponse.modifiedCount === 0)) {
 				return 'USER_UNENROLLED'
 			} else {
 				return 'USER_NOT_ENROLLED'
