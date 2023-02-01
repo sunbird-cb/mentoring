@@ -1069,7 +1069,7 @@ module.exports = class SessionsHelper {
 			}
 
 			const attendeeLink = await bigBlueButton.joinMeetingAsAttendee(sessionId, name, session.menteePassword)
-			link = attendeeLink
+			let link = attendeeLink
 
 			return common.successResponse({
 				statusCode: httpStatusCode.moved_Permanently,

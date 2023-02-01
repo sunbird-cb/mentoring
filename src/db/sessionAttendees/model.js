@@ -47,6 +47,10 @@ let sessionAttendeesSchema = new Schema({
 		type: Boolean,
 		default: false,
 	},
+	status: {
+		type: String,
+		default: "enroll",
+	}
 })
 sessionAttendeesSchema.plugin(mongooseLeanGetter)
 const SessionAttendes = db.model('sessionAttendees', sessionAttendeesSchema, 'sessionAttendees')
