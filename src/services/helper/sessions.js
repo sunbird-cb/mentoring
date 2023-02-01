@@ -210,7 +210,7 @@ module.exports = class SessionsHelper {
 				}
 
 				sessionAttendees.forEach(async (attendee) => {
-					if (method == common.DELETE_METHOD) {
+					if (method == common.DELETE_METHOD && attendee.sendNotification) {
 						const payload = {
 							type: 'email',
 							email: {
@@ -224,7 +224,7 @@ module.exports = class SessionsHelper {
 						}
 
 						await kafkaCommunication.pushEmailToKafka(payload)
-					} else if (isSessionReschedule) {
+					} else if (isSessionReschedule && attendee.sendNotification) {
 						const payload = {
 							type: 'email',
 							email: {
