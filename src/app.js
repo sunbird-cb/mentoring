@@ -60,6 +60,9 @@ app.get(process.env.API_DOC_URL, function (req, res) {
 	res.sendFile(path.join(__dirname, './api-doc/index.html'))
 })
 
+app.set('views', path.join(__dirname, 'views'))
+app.set('view engine', 'ejs')
+
 app.all('*', (req, res, next) => {
 	logger.info('***Mentoring Service Request Log***', {
 		request: {
