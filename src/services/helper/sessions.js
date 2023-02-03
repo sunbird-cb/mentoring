@@ -295,7 +295,6 @@ module.exports = class SessionsHelper {
 				message: message,
 			})
 		} catch (error) {
-			console.log(error)
 			throw error
 		}
 	}
