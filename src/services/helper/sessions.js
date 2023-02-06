@@ -67,6 +67,7 @@ module.exports = class SessionsHelper {
 			}
 
 			let data = await sessionData.createSession(bodyData)
+
 			await this.setMentorPassword(data._id, data.userId.toString())
 			await this.setMenteePassword(data._id, data.createdAt)
 
@@ -161,9 +162,11 @@ module.exports = class SessionsHelper {
 				{
 					_id: ObjectId(sessionId),
 				},
-				updateData
+				updateData,
+				{ new: true, rawResult: true }
 			)
-
+			let transformedSessionData = await sessionDTO.transformSessionData(sessionId, ObjectId(userId))
+			kafkaCommunication.pushSessionToKafka(transformedSessionData)
 			if (result === 'SESSION_ALREADY_UPDATED') {
 				return common.failureResponse({
 					message: 'SESSION_ALREADY_UPDATED',
@@ -207,7 +210,7 @@ module.exports = class SessionsHelper {
 				}
 
 				sessionAttendees.forEach(async (attendee) => {
-					if (method == common.DELETE_METHOD) {
+					if (method == common.DELETE_METHOD && attendee.sendNotification) {
 						const payload = {
 							type: 'email',
 							email: {
@@ -221,7 +224,7 @@ module.exports = class SessionsHelper {
 						}
 
 						await kafkaCommunication.pushEmailToKafka(payload)
-					} else if (isSessionReschedule) {
+					} else if (isSessionReschedule && attendee.sendNotification) {
 						const payload = {
 							type: 'email',
 							email: {
