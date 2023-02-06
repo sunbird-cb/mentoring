@@ -99,7 +99,7 @@ module.exports = class Notifications {
 					data.map(async function (session) {
 						const sessionAttendees = await sessionAttendesData.findAllSessionAttendees({
 							sessionId: ObjectId(session._id),
-							status:"enroll"
+							isEnrolled: true,
 						})
 						if (sessionAttendees && sessionAttendees.length > 0) {
 							sessionAttendees.forEach((attendee) => {
