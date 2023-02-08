@@ -621,10 +621,16 @@ const enrollSchema = {
 				deleted: {
 					type: 'boolean',
 				},
+				sendNotification: {
+					type: 'boolean',
+				},
 				link: {
 					type: 'string',
 				},
 				skippedFeedback: {
+					type: 'boolean',
+				},
+				isEnrolled: {
 					type: 'boolean',
 				},
 				_id: {
@@ -649,8 +655,10 @@ const enrollSchema = {
 				'sessionId',
 				'isSessionAttended',
 				'deleted',
+				'sendNotification',
 				'link',
 				'skippedFeedback',
+				'isEnrolled',
 				'_id',
 				'feedbacks',
 				'updatedAt',

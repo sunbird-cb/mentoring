@@ -106,10 +106,13 @@ module.exports = class SessionsAttendees {
 
 	static async unEnrollFromSession(sessionId, userId) {
 		try {
-			const updateResponse = await SessionAttendees.updateOne({ sessionId, userId }, { isEnrolled: false })
+			const updateResponse = await SessionAttendees.updateOne(
+				{ sessionId, userId, isEnrolled: true },
+				{ isEnrolled: false }
+			)
 			if (
 				(updateResponse.n === 1 && updateResponse.nModified === 0) ||
-				(updateResponse.matchedCount === 1 && updateResponse.modifiedCount === 0)
+				(updateResponse.matchedCount === 1 && updateResponse.modifiedCount === 1)
 			) {
 				return 'USER_UNENROLLED'
 			} else {
@@ -224,7 +227,12 @@ module.exports = class SessionsAttendees {
 
 	static async findOneSessionAttendee(sessionId, userId) {
 		try {
-			const session = await SessionAttendees.findOne({ sessionId, userId, deleted: false }).lean()
+			const session = await SessionAttendees.findOne({
+				sessionId,
+				userId,
+				deleted: false,
+				isEnrolled: true,
+			}).lean()
 			return session
 		} catch (error) {
 			return error
