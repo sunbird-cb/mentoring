@@ -7,6 +7,7 @@
 const ObjectId = require('mongoose').Types.ObjectId
 const sessionData = require('@db/sessions/queries')
 const userProfile = require('../services/helper/userProfile')
+const utils = require('@generics/utils')
 
 const transformSessionData = async (sessionId, userId) => {
 	try {
@@ -53,6 +54,16 @@ const transformSessionData = async (sessionId, userId) => {
 
 		sessionDetails.mentor = filteredMentorDetails
 		sessionDetails.organization = filteredOrganizationDetails
+
+		if (sessionDetails.image && sessionDetails.image.length > 0) {
+			sessionDetails.image = sessionDetails.image.map(async (imgPath) => {
+				if (imgPath && imgPath != '') {
+					return await utils.getDownloadableUrl(imgPath)
+				}
+			})
+			sessionDetails.image = await Promise.all(sessionDetails.image)
+		}
+
 		return sessionDetails
 	} catch (error) {
 		throw error
