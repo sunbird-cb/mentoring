@@ -341,6 +341,19 @@ module.exports = class SessionsHelper {
 				}
 			}
 
+			let noOfMenteeEnrolled = await sessionAttendesData.countAllSessionAttendees({
+				sessionId: id,
+				isEnrolled: true,
+			})
+			sessionDetails.noOfMenteeEnrolled = noOfMenteeEnrolled
+			if (sessionDetails.status === 'completed') {
+				let noOfMenteeJoined = await sessionAttendesData.countAllSessionAttendees({
+					sessionId: id,
+					isEnrolled: true,
+					isSessionAttended: true,
+				})
+				sessionDetails.noOfMenteeJoined = noOfMenteeJoined
+			}
 			if (sessionDetails.image && sessionDetails.image.some(Boolean)) {
 				sessionDetails.image = sessionDetails.image.map(async (imgPath) => {
 					if (imgPath != '') {
