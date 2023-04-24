@@ -254,4 +254,13 @@ module.exports = class Sessions {
 			return error
 		}
 	}
+
+	async autoComplete(req) {
+		try {
+			const sessionsCompleted = await sessionsHelper.autoComplete()
+			return sessionsCompleted
+		} catch (error) {
+			return error
+		}
+	}
 }

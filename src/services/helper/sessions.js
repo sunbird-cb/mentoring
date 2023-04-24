@@ -411,19 +411,6 @@ module.exports = class SessionsHelper {
 
 	static async list(loggedInUserId, page, limit, search, status) {
 		try {
-			// update sessions which having status as published and  exceeds the current date and time
-			await sessionData.updateSession(
-				{
-					status: common.PUBLISHED_STATUS,
-					endDateUtc: {
-						$lt: moment().utc().format(),
-					},
-				},
-				{
-					status: common.COMPLETED_STATUS,
-				}
-			)
-
 			let arrayOfStatus = []
 			if (status && status != '') {
 				arrayOfStatus = status.split(',')
@@ -1037,6 +1024,32 @@ module.exports = class SessionsHelper {
 					sessionName: (startDateResponse || endDateResponse).title,
 				}
 			}
+
+			return true
+		} catch (error) {
+			return error
+		}
+	}
+	/**
+	 * Set expired session status to completed
+	 * @method
+	 * @name autoComplete
+	 */
+
+	static async autoComplete() {
+		try {
+			// update sessions which having status as published and  exceeds the current date and time
+			await sessionData.updateSession(
+				{
+					status: common.PUBLISHED_STATUS,
+					endDateUtc: {
+						$lt: moment().utc().format(),
+					},
+				},
+				{
+					status: common.COMPLETED_STATUS,
+				}
+			)
 
 			return true
 		} catch (error) {

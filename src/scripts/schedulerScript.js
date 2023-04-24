@@ -68,6 +68,24 @@ const emailCronJobBeforeOneHourData = {
 // calling function that make http request
 addSchedulerJob(emailCronJobBeforeOneHourData)
 
+// API THREE
+// Request body for sessionAutoComplete
+const sessionAutoComplete = {
+	name: 'sessionAutoComplete',
+	email: email,
+	request: {
+		url: mentoringBaseurl + '/mentoring/v1/sessions/autoComplete',
+		method: 'get',
+		header: { internal_access_token: internalAcsessToken },
+	},
+	schedule: {
+		scheduleType: 'every',
+		interval: '1 minute',
+	},
+}
+// calling function that make http request
+addSchedulerJob(sessionAutoComplete)
+
 // call scheduler service using request
 async function addSchedulerJob(bodyData) {
 	try {
