@@ -179,6 +179,14 @@ let enviromentVariables = {
 		message: 'Required disable log level',
 		optional: false,
 	},
+	DEFAULT_MEETING_SERVICE: {
+		message: 'Required default meeting service',
+		optional: false,
+	},
+	SESSION_EDIT_WINDOW_MINUTES: {
+		message: 'Required session edit window timeout',
+		optional: false,
+	},
 }
 
 let success = true
