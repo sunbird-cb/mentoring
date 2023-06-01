@@ -198,6 +198,7 @@ const deleteSchema = {
 	required: ['responseCode', 'message', 'result', 'meta'],
 }
 const updateSchema = {
+	$schema: 'http://json-schema.org/draft-04/schema#',
 	type: 'object',
 	properties: {
 		responseCode: {
@@ -207,8 +208,73 @@ const updateSchema = {
 			type: 'string',
 		},
 		result: {
-			type: 'array',
-			items: {},
+			type: 'object',
+			properties: {
+				meetingInfo: {
+					type: 'object',
+					properties: {
+						platform: {
+							type: 'string',
+						},
+						value: {
+							type: 'string',
+						},
+					},
+					required: ['platform', 'value'],
+				},
+				_id: {
+					type: 'string',
+				},
+				title: {
+					type: 'string',
+				},
+				description: {
+					type: 'string',
+				},
+				image: {
+					type: 'array',
+					items: [
+						{
+							type: 'string',
+						},
+					],
+				},
+				userId: {
+					type: 'string',
+				},
+				status: {
+					type: 'string',
+				},
+				startDate: {
+					type: 'string',
+				},
+				endDate: {
+					type: 'string',
+				},
+				startDateUtc: {
+					type: 'string',
+				},
+				endDateUtc: {
+					type: 'string',
+				},
+				createdAt: {
+					type: 'string',
+				},
+			},
+			required: [
+				'meetingInfo',
+				'_id',
+				'title',
+				'description',
+				'image',
+				'userId',
+				'status',
+				'startDate',
+				'endDate',
+				'startDateUtc',
+				'endDateUtc',
+				'createdAt',
+			],
 		},
 		meta: {
 			type: 'object',
@@ -217,8 +283,14 @@ const updateSchema = {
 					type: 'array',
 					items: {},
 				},
+				correlation: {
+					type: 'string',
+				},
+				meetingPlatform: {
+					type: 'string',
+				},
 			},
-			required: ['formsVersion'],
+			required: ['formsVersion', 'correlation', 'meetingPlatform'],
 		},
 	},
 	required: ['responseCode', 'message', 'result', 'meta'],

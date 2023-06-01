@@ -21,22 +21,41 @@ module.exports = class SessionsData {
 
 	static async updateOneSession(filter, update, options = {}) {
 		try {
-			const updateResponse = await Sessions.updateOne(filter, update, options)
-			if (
-				(updateResponse.n === 1 && updateResponse.nModified === 1) ||
-				(updateResponse.matchedCount === 1 && updateResponse.modifiedCount === 1)
-			) {
-				return 'SESSION_UPDATED'
-			} else if (
-				(updateResponse.n === 1 && updateResponse.nModified === 0) ||
-				(updateResponse.matchedCount === 1 && updateResponse.modifiedCount === 0)
-			) {
-				return 'SESSION_ALREADY_UPDATED'
+			const projection = {
+				_id: 1,
+				title: 1,
+				mentorName: 1,
+				description: 1,
+				startDate: 1,
+				endDate: 1,
+				status: 1,
+				image: 1,
+				endDateUtc: 1,
+				userId: 1,
+				startDateUtc: 1,
+				createdAt: 1,
+				'meetingInfo.platform': 1,
+				'meetingInfo.value': 1,
+			}
+
+			const updatedSession = await Sessions.findOneAndUpdate(filter, update, { projection, ...options })
+
+			if (updatedSession) {
+				return {
+					status: 'SESSION_UPDATED',
+					session: updatedSession,
+				}
 			} else {
-				return 'SESSION_NOT_FOUND'
+				return {
+					status: 'SESSION_NOT_FOUND',
+					session: null,
+				}
 			}
 		} catch (error) {
-			return error
+			return {
+				status: 'ERROR',
+				error: error,
+			}
 		}
 	}
 

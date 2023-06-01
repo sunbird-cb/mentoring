@@ -218,12 +218,15 @@ module.exports = class SessionsHelper {
 				{
 					_id: ObjectId(sessionId),
 				},
-				updateData
+				updateData,
+				{
+					new: true,
+				}
 			)
 
-			if (result === 'SESSION_ALREADY_UPDATED') {
+			if (result.status === 'SESSION_NOT_FOUND') {
 				return common.failureResponse({
-					message: 'SESSION_ALREADY_UPDATED',
+					message: 'SESSION_NOT_FOUND',
 					statusCode: httpStatusCode.bad_request,
 					responseCode: 'CLIENT_ERROR',
 				})
@@ -351,6 +354,7 @@ module.exports = class SessionsHelper {
 			return common.successResponse({
 				statusCode: httpStatusCode.accepted,
 				message: message,
+				result: result.session,
 			})
 		} catch (error) {
 			throw error
@@ -940,7 +944,7 @@ module.exports = class SessionsHelper {
 				}
 			)
 
-			return result
+			return result.status
 		} catch (error) {
 			return error
 		}
@@ -967,7 +971,7 @@ module.exports = class SessionsHelper {
 				}
 			)
 
-			return result
+			return result.status
 		} catch (error) {
 			return error
 		}
@@ -998,7 +1002,7 @@ module.exports = class SessionsHelper {
 
 			return common.successResponse({
 				statusCode: httpStatusCode.ok,
-				result: result,
+				result: result.status,
 			})
 		} catch (error) {
 			return error
