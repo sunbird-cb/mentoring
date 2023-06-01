@@ -198,7 +198,6 @@ const deleteSchema = {
 	required: ['responseCode', 'message', 'result', 'meta'],
 }
 const updateSchema = {
-	$schema: 'http://json-schema.org/draft-04/schema#',
 	type: 'object',
 	properties: {
 		responseCode: {
@@ -635,7 +634,6 @@ const shareSchema = {
 	required: ['responseCode', 'message', 'result', 'meta'],
 }
 const updateRecordingUrlSchema = {
-	$schema: 'http://json-schema.org/draft-04/schema#',
 	type: 'object',
 	properties: {
 		responseCode: {

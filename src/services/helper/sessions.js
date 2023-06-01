@@ -191,6 +191,7 @@ module.exports = class SessionsHelper {
 
 			let message
 			let updateData
+			let result
 			if (method == common.DELETE_METHOD) {
 				let statTime = moment.unix(sessionDetail.startDate).utc().format(common.UTC_DATE_TIME_FORMAT)
 				let current = moment.utc().format(common.UTC_DATE_TIME_FORMAT)
@@ -214,7 +215,7 @@ module.exports = class SessionsHelper {
 			}
 
 			updateData.updatedAt = new Date().getTime()
-			const result = await sessionData.updateOneSession(
+			result = await sessionData.updateOneSession(
 				{
 					_id: ObjectId(sessionId),
 				},
@@ -223,7 +224,9 @@ module.exports = class SessionsHelper {
 					new: true,
 				}
 			)
-
+			if (updateData.deleted) {
+				result = []
+			}
 			if (result.status === 'SESSION_NOT_FOUND') {
 				return common.failureResponse({
 					message: 'SESSION_NOT_FOUND',
@@ -354,7 +357,7 @@ module.exports = class SessionsHelper {
 			return common.successResponse({
 				statusCode: httpStatusCode.accepted,
 				message: message,
-				result: result.session,
+				result: result?.session || [],
 			})
 		} catch (error) {
 			throw error
@@ -1061,7 +1064,7 @@ module.exports = class SessionsHelper {
 				}
 			)
 
-			if (updateStatus === 'SESSION_NOT_FOUND') {
+			if (updateStatus.status === 'SESSION_NOT_FOUND') {
 				return common.failureResponse({
 					message: 'SESSION_NOT_FOUND',
 					statusCode: httpStatusCode.bad_request,

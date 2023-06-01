@@ -54,7 +54,7 @@ describe('mentor flow - mentoring/v1/sessions', function () {
 		expect(res.body).toMatchSchema(schema.deleteSchema)
 	})
 	it('/update', async () => {
-		let sessionId = await sessionsData.insertSession()
+		let sessionId = await sessionsData.insertSession(null, null, true)
 		let res = await request
 			.post('/mentoring/v1/sessions/update/' + sessionId)
 			.send({ startDate: Math.floor(Date.now()) + 6000, endDate: Math.floor(Date.now()) + 8000 })
@@ -101,7 +101,7 @@ describe('mentor flow - mentoring/v1/sessions', function () {
 			})
 		//console.log(res.body)
 		expect(res.statusCode).toBe(200)
-		expect(res.body).toMatchSchema(schema.updateSchema)
+		expect(res.body).toMatchSchema(schema.updateRecordingUrlSchema)
 	})
 })
 
