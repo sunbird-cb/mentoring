@@ -258,7 +258,7 @@ module.exports = class SessionsData {
 		try {
 			const foundDocuments = await Sessions.find({
 				$and: [
-					{ userId: userId },
+					{ userId: ObjectId(userId) },
 					{ deleted: false },
 					{
 						$or: [{ startDate: { $gt: currentEpochTime } }, { status: common.PUBLISHED_STATUS }],
