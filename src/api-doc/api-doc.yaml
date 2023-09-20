@@ -1117,7 +1117,7 @@ paths:
           description: Please append a valid sessionId to the Request URL.
           schema:
             type: string
-          example: 62832531a05cbd57b273aebb
+          example: 1
       responses:
         '201':
           description: Created
@@ -1156,7 +1156,7 @@ paths:
           description: Please append a valid sessionId to the Request URL..
           schema:
             type: string
-          example: 62832531a05cbd57b273aebb
+          example: 1
       responses:
         '200':
           description: Accepted
@@ -1195,7 +1195,7 @@ paths:
           description: Please append a valid sessionId to the Request URL..
           schema:
             type: string
-          example: 62832531a05cbd57b273aebb
+          example: 1
       responses:
         '200':
           description: Accepted
@@ -1234,7 +1234,7 @@ paths:
           description: Please append a valid sessionId to the Request URL.
           schema:
             type: string
-          example: 62832531a05cbd57b273aebb
+          example: 1
       responses:
         '200':
           description: Accepted
@@ -1273,7 +1273,7 @@ paths:
           description: Please append a valid session id to the Request URL.
           schema:
             type: string
-          example: 62832531a05cbd57b273aebb
+          example: 1
       responses:
         '200':
           description: Accepted
@@ -1355,7 +1355,7 @@ paths:
           description: Please append a valid sessionId to the Request URL.
           schema:
             type: string
-          example: 62832531a05cbd57b273aebb
+          example: 1
       responses:
         '202':
           description: Accepted
@@ -1427,12 +1427,12 @@ paths:
           schema:
             type: string
         - in: path
-          name: 'sessionId '
+          name: 'sessionId'
           required: true
           description: Please append a valid sessionId to the Request URL.
           schema:
             type: string
-          example: 62832531a05cbd57b273aebb
+          example: 1
       responses:
         '200':
           description: OK
@@ -1466,12 +1466,12 @@ paths:
           schema:
             type: string
         - in: path
-          name: 'sessionId '
+          name: 'sessionId'
           required: true
           description: Please append a valid sessionId to the Request URL.
           schema:
             type: string
-          example: 62832531a05cbd57b273aebb
+          example: 1
       responses:
         '200':
           description: OK
@@ -1499,12 +1499,12 @@ paths:
           schema:
             type: string
         - in: path
-          name: 'internalSessionId '
+          name: 'internalSessionId'
           required: true
           description: Please append a valid internalSessionId To the Request URL
           schema:
             type: string
-          example: 62832531a05cbd57b273aebb
+          example: 1
       responses:
         '200':
           description: Accepted
@@ -2558,7 +2558,7 @@ paths:
           description: Please append a valid session id in url
           schema:
             type: string
-          example: 629978caf0cf0901d7d74d12
+          example: 1
       responses:
         '200':
           description: Ok
@@ -2597,7 +2597,7 @@ paths:
           description: Please append a valid session id in url
           schema:
             type: string
-          example: 629978caf0cf0901d7d74d12
+          example: 1
       requestBody:
         content:
           application.json:
@@ -4195,46 +4195,51 @@ components:
           result:
             type: object
             properties:
-              data:
+              count:
+                type: integer
+              rows:
                 type: array
                 items:
                   type: object
                   properties:
-                    _id:
-                      type: string
-                      example: 628dae0fce0ce9359aeb8b23
+                    id:
+                      type: integer
+                      example: 1
                     title:
                       type: string
-                      example: Leadership5
+                      example: 'Leadership session by Adam'
+                    mentor_id:
+                      type: integer
+                      example: 21
                     description:
                       type: string
-                      example: Training in leadership
+                      example: Leadership session desc
+                    status:
+                      type: string
+                      example: PUBLISHED
+                    start_date:
+                      type: string
+                      example: 1695210731
+                    end_date:
+                      type: string
+                      example: 1695214329
                     image:
                       type: array
                       items:
-                        type: string
-                        example: '["users/1232s2133sdd1-12e2dasd3123.png"]'
-                    mentorName:
+                        example: 'https://aws-bucket-storage-name.s3.ap-south-1.amazonaws.com/users/1232s2133sdd1-12e2dasd3123.png'
+                    created_at:
                       type: string
-                      example: Ankit
-                    status:
+                      example: 2023-09-20T11:56:42.257Z,
+                    meeting_info.value:
                       type: string
-                      example: published
-                    startDate:
+                      example: BBB
+                    meeting_info.platform:
                       type: string
-                      example: '2022-01-04 18:00:00'
-                    endDate:
+                      example: BigBlueButton (Default)
+                    mentor_name:
                       type: string
-                      example: '2022-01-04 18:30:00'
-                    endDateUtc:
-                      type: string
-                      example: Invalid date
-              count:
-                type: number
-                example: 1
-            meta:
-              type: object
-              example: {}
+                      example: Newell
+
       getSessionList400Response:
         type: object
         description: Session not found.
@@ -4261,88 +4266,98 @@ components:
           result:
             type: object
             properties:
-              _id:
-                type: string
-                example: 628dae0fce0ce9359aeb8b23
+              id:
+                type: integer
+                example: 1
               title:
                 type: string
-                example: Leadership5
+                example: 'Leadership session by Adam'
+              mentor_id:
+                type: integer
+                example: 21
               description:
                 type: string
-                example: Training in leadership
-              recommendedFor:
-                type: array
-                items:
-                  type: string
-                  example: '[{"label":"HM", "value": 1}]'
-              categories:
-                type: array
-                items:
-                  type: string
-                  example: '[{"label": "label", "value": "value"}]'
-              medium:
-                type: array
-                items:
-                  type: string
-                  example: '[{"label":"Hindi", "value": 2 }]'
+                example: Leadership session desc
+              status:
+                type: string
+                example: PUBLISHED
+              start_date:
+                type: string
+                example: 1695210731
+              end_date:
+                type: string
+                example: 1695214329
               image:
                 type: array
                 items:
-                  type: string
-                  example: '["users/1232s2133sdd1-12e2dasd3123.png"]'
-              userId:
+                  example: 'https://aws-bucket-storage-name.s3.ap-south-1.amazonaws.com/users/1232s2133sdd1-12e2dasd3123.png'
+              created_at:
                 type: string
-                example: 62832531a05cbd57b273aebb
-              mentorName:
-                type: string
-                example: jhon
-              status:
-                type: string
-                example: published
-              deleted:
-                type: boolean
-                example: false
-              startDate:
-                type: string
-                example: '2022-01-04 18:00:00'
-              endDate:
-                type: string
-                example: '2022-01-04 18:30:00'
-              startDateUtc:
-                type: string
-                example: Invalid date
-              endDateUtc:
-                type: string
-                example: Invalid date
-              skippedFeedback:
-                type: boolean
-                example: false
-              menteeFeedbackForm:
-                type: string
-                example: menteeQS1
-              mentorFeedbackForm:
-                type: string
-                example: mentorQS2
-              recordingUrl:
-                type: string
-                example: null
-              internalMeetingId:
-                type: string
-                example: null
-              feedbacks: []
-              updatedAt:
-                type: string
-                example: '2022-05-25T04:18:23.942Z'
-              createdAt:
-                type: string
-                example: '2022-05-25T04:18:23.942Z'
-              __v:
-                type: number
+                example: 2023-09-20T11:56:42.257Z,
+              session_reschedule:
+                type: integer
                 example: 0
-              isEnrolled:
+              time_zone:
+                type: string
+                example: Asia/Calcutta
+              started_at:
+                type: string
+                format: nullable
+              completed_at:
+                type: string
+                format: nullable
+              is_feedback_skipped:
                 type: boolean
                 example: false
-          meta: {}
+              mentee_feedback_question_set:
+                type: string
+                example: MENTEE_QS1
+              mentor_feedback_question_set:
+                type: string
+                example: MENTOR_QS2
+              meeting_info:
+                type: object
+                properties:
+                  value:
+                    type: string
+                    example: BBB
+                  platform:
+                    type: string
+                    example: BigBlueButton (Default)
+              meta:
+                type: string
+                format: nullable
+              visibility:
+                type: string
+                format: nullable
+              organization_ids:
+                type: string
+                format: nullable
+              mentor_org_id:
+                type: integer
+                example: 1
+              seats_remaining:
+                type: integer
+                example: 25
+              seats_limit:
+                type: integer
+                example: 25
+              updated_at:
+                type: string
+                example: 2023-09-20T11:56:42.412Z
+              deleted_at:
+                type: string
+                format: nullable
+              is_enrolled:
+                type: boolean
+                example: false
+              mentor_name:
+                type: string
+                example: Newell
+
+          meta:
+            type: object
+            example: {}
       getSessionDetails400Response:
         type: object
         description: Session not found.
@@ -4355,6 +4370,7 @@ components:
             example: Session not found.
           error:
             type: array
+            items:
             example: []
       shareSession200Response:
         description: share session details
@@ -4492,9 +4508,9 @@ components:
         required:
           - title
           - description
-          - startDate
-          - endDate
-          - recommendedFor
+          - start_date
+          - end_date
+          - recommended_for
           - categories
           - medium
         properties:
@@ -4504,45 +4520,24 @@ components:
           description:
             type: string
             example: Training in leadership
-          startDate:
+          start_date:
             type: string
-            example: '2022-01-04 18:00:00'
-          endDate:
+            example: '1695210731'
+          end_date:
             type: string
-            example: '2022-01-04 18:30:00'
-          recommendedFor:
+            example: '1695214329'
+          recommended_for:
             type: array
             items:
-              type: object
-              properties:
-                label:
-                  type: string
-                  example: HM
-                value:
-                  type: number
-                  example: 1
+            example: [hm]
           categories:
             type: array
             items:
-              type: object
-              properties:
-                label:
-                  type: string
-                  example: label
-                value:
-                  type: number
-                  example: value
+            example: ['Educational leadership']
           medium:
             type: array
             items:
-              type: object
-              properties:
-                label:
-                  type: string
-                  example: Hindi
-                value:
-                  type: number
-                  example: 2
+            example: [1]
           image:
             type: array
             items:
@@ -4563,90 +4558,63 @@ components:
             properties:
               title:
                 type: string
-                example: testing
+                example: 'Leadership session by Adam'
               description:
                 type: string
                 example: Training in leadership
-              startDate:
+              start_date:
                 type: string
-                example: '2022-01-04 18:00:00'
-              endDate:
+                example: 1695210731
+              end_date:
                 type: string
-                example: '2022-01-04 18:30:00'
-              recommendedFor:
+                example: 1695214329
+              recommended_for:
                 type: array
                 items:
-                  type: object
-                  properties:
-                    label: HM
-                    value: 1
+                example: [hm]
               categories:
                 type: array
                 items:
-                  type: object
-                  properties:
-                    label: label
-                    value: value
+                example: ['Educational leadership']
               medium:
                 type: array
                 items:
-                  type: object
-                  properties:
-                    label: Hindi
-                    value: 2
+                example: [1]
               image:
                 type: array
                 items:
                   type: string
                   example: users/1232s2133sdd1-12e2dasd3123.png
-              userId:
-                type: string
-                example: 62832531a05cbd57b273aebb
-              mentorName:
+              mentor_id:
+                type: integer
+                example: 21
+              mentor_name:
                 type: string
                 example: John
               status:
                 type: string
-                example: published
-              deleted:
+                example: PUBLISHED
+              deleted_at:
+                type: string
+                format: nullable
+              is_feedback_skipped:
                 type: boolean
                 example: false
-              startDateUtc:
+              mentee_feedback_question_set:
                 type: string
-                example: Invalid date
-              endDateUtc:
+                example: MENTEE_QS1
+              mentor_feedback_question_set:
                 type: string
-                example: Invalid date
-              skippedFeedback:
-                type: boolean
-                example: false
-              menteeFeedbackForm:
+                example: MENTOR_QS2
+              id:
                 type: string
-                example: menteeQS1
-              mentorFeedbackForm:
+                example: 1
+              created_at:
                 type: string
-                example: mentorQS2
-              recordingUrl:
+                example: 2023-09-20T11:56:42.257Z,
+              updated_at:
                 type: string
-                example: null
-              internalMeetingId:
-                type: string
-                example: null
-              _id:
-                type: string
-                example: 628ee25e4b9243687f68431d
-              feedbacks:
-                type: array
-                example: []
-              updatedAt:
-                type: string
-                example: '2022-05-26T02:13:50.472Z'
-              createdAt:
-                type: string
-                example: '2022-05-26T02:13:50.472Z'
-              __v:
-                type: number
-                example: 0
+                example: 2023-09-20T11:56:42.412Z
       createSession400Response:
         description: Create Session Error.
         type: object
@@ -4697,55 +4665,34 @@ components:
         properties:
           title:
             type: string
-            example: testing
+            example: 'Leadership session by Adam'
           description:
             type: string
-            example: Training in leadership
-          startDate:
+            example: Leadership session desc
+          start_date:
             type: string
-            example: '2022-01-04 18:00:00'
-          endDate:
+            example: 1695210731
+          end_date:
             type: string
-            example: '2022-01-04 18:30:00'
-          menteeFeedbackForm:
+            example: 1695214329
+          mentee_feedback_question_set:
             type: string
-            example: feedback
-          mentorFeedbackForm:
+            example: MENTEE_QS1
+          mentor_feedback_question_set:
             type: string
-            example: feedback
-          recommendedFor:
+            example: MENTOR_QS2
+          recommended_for:
             type: array
             items:
-              type: object
-              properties:
-                label:
-                  type: string
-                  example: HM
-                value:
-                  type: number
-                  example: 1
+            example: [hm]
           categories:
             type: array
             items:
-              type: object
-              properties:
-                label:
-                  type: string
-                  example: label
-                value:
-                  type: number
-                  example: value
+            example: ['Educational leadership']
           medium:
             type: array
             items:
-              type: object
-              properties:
-                label:
-                  type: string
-                  example: Hindi
-                value:
-                  type: number
-                  example: 2
+            example: [1]
           image:
             type: array
             items:
@@ -5823,57 +5770,58 @@ components:
                 items:
                   type: object
                   properties:
-                    _id:
+                    id:
+                      type: integer
+                      example: 1
+                    name:
                       type: string
-                      example: 6296e6522fdc1f037cbf4525
+                      example: mentor_engagement_in_session
                     options:
-                      type: array
-                      items:
-                        - type: string
-                          example: '1'
-                        - type: string
-                          example: '2'
-                    deleted:
-                      type: boolean
-                      example: false
-                    validators:
-                      type: object
-                      properties:
-                        required:
-                          type: boolean
-                          example: false
-                    value:
                       type: string
-                      example: ''
-                    hint:
+                      example: null
+                    type:
                       type: string
-                      example: ''
-                    disable:
-                      type: boolean
-                      example: false
-                    visible:
-                      type: boolean
-                      example: true
+                      example: rating
+                    no_of_stars:
+                      type: integer
+                      example: 5
                     status:
                       type: string
-                      example: published
-                    updatedAt:
+                      example: PUBLISHED
+                    category:
                       type: string
-                      example: '2022-06-01T04:08:50.155Z'
-                    createdAt:
+                      example: null
+                    rendering_data:
+                      type: object
+                      properties:
+                        validators:
+                          type: object
+                          properties:
+                            required:
+                              type: boolean
+                        disable:
+                          type: boolean
+                        visible:
+                          type: boolean
+                        class:
+                          type: string
+                          example: ion-margin
+                    meta:
                       type: string
-                      example: '2022-06-01T04:08:50.155Z'
-                    __v:
-                      type: number
-                      example: 1
-                    questionsSetId:
+                      format: nullable
+                    created_at:
                       type: string
-                      example: 629978caf0cf0901d7d74d12
+                      example: 2023-09-20T11:48:34.679Z
+                    updated_at:
+                      type: string
+                      example: 2023-09-20T11:48:34.679Z
+                    deleted_at:
+                      type: string
+                      format: nullable
                     label:
                       type: string
-                      example: >-
-                        How would you rate the audio and video quality of the
-                        session
+                      example: How would you rate the engagement in the session?
+
           meta:
             type: object
             example: {}
@@ -5900,13 +5848,13 @@ components:
             items:
               type: object
               required:
-                - questionId
+                - question_id
                 - value
                 - question
               properties:
-                questionId:
+                question_id:
                   type: string
-                  example: 6296e65c2fdc1f037cbf4527
+                  example: 1
                 value:
                   type: string
                   example: '1'
@@ -5915,7 +5863,7 @@ components:
                   example: >-
                     How would you rate the audio and video quality of the
                     session
-          feedbackAs:
+          feedback_as:
             type: string
             example: mentee
       submitFeedbackResponse200:
