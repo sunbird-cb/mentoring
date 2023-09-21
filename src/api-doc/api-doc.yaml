@@ -20,6 +20,7 @@ servers:
 paths:
   /mentoring/v1/form/create:
     post:
+      operationId: formCreate
       summary: Create form
       tags:
         - Form APIs
@@ -284,6 +285,7 @@ paths:
                 $ref: '#/components/schemas/form/createForm400Response'
   /mentoring/v1/form/update/{formId}:
     patch:
+      operationId: formUpdate
       summary: Update form
       tags:
         - Form APIs
@@ -456,8 +458,9 @@ paths:
             application.json:
               schema:
                 $ref: '#/components/schemas/form/updateForm400Response'
-  /mentoring/v1/form/read/{formID}:
+  /mentoring/v1/form/read/{formId}:
     get:
+      operationId: formRead
       summary: Get form data
       tags:
         - Form APIs
@@ -1112,7 +1115,7 @@ paths:
           schema:
             type: string
         - in: path
-          name: 'sessionId '
+          name: 'sessionId'
           required: true
           description: Please append a valid sessionId to the Request URL.
           schema:
@@ -1151,7 +1154,7 @@ paths:
           schema:
             type: string
         - in: path
-          name: 'sessionId '
+          name: 'sessionId'
           required: true
           description: Please append a valid sessionId to the Request URL..
           schema:
@@ -1190,7 +1193,7 @@ paths:
           schema:
             type: string
         - in: path
-          name: 'sessionId '
+          name: 'sessionId'
           required: true
           description: Please append a valid sessionId to the Request URL..
           schema:
@@ -1229,7 +1232,7 @@ paths:
           schema:
             type: string
         - in: path
-          name: 'sessionId '
+          name: 'sessionId'
           required: true
           description: Please append a valid sessionId to the Request URL.
           schema:
@@ -1268,7 +1271,7 @@ paths:
           schema:
             type: string
         - in: path
-          name: 'sessionId '
+          name: 'sessionId'
           required: true
           description: Please append a valid session id to the Request URL.
           schema:
@@ -1350,7 +1353,7 @@ paths:
           schema:
             type: string
         - in: path
-          name: 'sessionId '
+          name: 'sessionId'
           required: true
           description: Please append a valid sessionId to the Request URL.
           schema:
@@ -1407,7 +1410,7 @@ paths:
             application.json:
               schema:
                 $ref: '#/components/schemas/sessions/updateSession400Response'
-  mentoring/v1/sessions/getRecording/{sessionId}:
+  /mentoring/v1/sessions/getRecording/{sessionId}:
     get:
       summary: Get session recording
       tags:
@@ -1427,7 +1430,7 @@ paths:
           schema:
             type: string
         - in: path
-          name: 'sessionId '
+          name: 'sessionId'
           required: true
           description: Please append a valid sessionId to the Request URL.
           schema:
@@ -1588,7 +1591,7 @@ paths:
           schema:
             type: string
         - in: path
-          name: 'sessionId '
+          name: 'sessionId'
           required: true
           description: Please append a valid sessionId to the Request URL.
           schema:
@@ -2553,7 +2556,7 @@ paths:
           schema:
             type: string
         - in: path
-          name: SessionId
+          name: 'SessionId'
           required: true
           description: Please append a valid session id in url
           schema:
@@ -2592,7 +2595,7 @@ paths:
           schema:
             type: string
         - in: path
-          name: SessionId
+          name: 'SessionId'
           required: true
           description: Please append a valid session id in url
           schema:
@@ -2803,7 +2806,7 @@ paths:
             application.json:
               schema:
                 $ref: '#/components/schemas/users/userList200Response'
-  mentoring/v1/mentors/share/{mentorId}:
+  /mentoring/v1/mentors/share/{mentorId}:
     get:
       summary: Share mentor profile
       tags:
@@ -2823,12 +2826,12 @@ paths:
           schema:
             type: string
         - in: path
-          name: 'mentorId '
+          name: 'mentorId'
           required: true
           description: Please append a valid mentorId
           schema:
             type: string
-            example: 21
+          example: 21
       responses:
         '200':
           description: ok
@@ -2985,9 +2988,9 @@ paths:
       tags:
         - Config APIs
       parameters: []
-      requestBody: {}
       responses:
         '200':
+          description: ok
           content:
             application/json:
               schema:
@@ -3856,6 +3859,8 @@ components:
             example: Form already exists
           error:
             type: array
+            items:
+              type: string
             example: []
       updateFormRequest:
         type: object
@@ -3940,6 +3945,8 @@ components:
             example: Form already exists
           error:
             type: array
+            items:
+              type: string
             example: []
       readFormRequest:
         type: object
@@ -4043,6 +4050,8 @@ components:
             example: Form not found
           error:
             type: array
+            items:
+              type: string
             example: []
     entity:
       createUserEntityRequest:
@@ -4086,6 +4095,8 @@ components:
             example: User entity already exists
           error:
             type: array
+            items:
+              type: string
             example: []
       updateUserEntityRequest:
         type: object
@@ -4133,6 +4144,8 @@ components:
             example: User entity not found
           error:
             type: array
+            items:
+              type: string
             example: []
       readUserEntity200Response:
         description: User Entity fetched
@@ -4180,6 +4193,8 @@ components:
             example: User entity already deleted
           error:
             type: array
+            items:
+              type: string
             example: []
     sessions:
       getSessionList200Response:
@@ -4252,6 +4267,8 @@ components:
             example: Session not found.
           error:
             type: array
+            items:
+              type: string
             example: []
       getSessionDetails200Response:
         description: Details of session
@@ -4428,6 +4445,8 @@ components:
             example: User is already enrolled for this session.
           error:
             type: array
+            items:
+              type: string
             example: []
       unenrollSession200Response:
         type: object
@@ -4454,6 +4473,8 @@ components:
             example: User is not enrolled for this session.
           error:
             type: array
+            items:
+              type: string
             example: []
       startSession200Response:
         description: Share session details
@@ -4490,6 +4511,8 @@ components:
               - You can start the session 10 minutes before the scheduled time.
           error:
             type: array
+            items:
+              type: string
             example: []
       startSession500Response:
         description: Could not create meeting.
@@ -4503,6 +4526,8 @@ components:
             example: Unable to create the meeting.
           error:
             type: array
+            items:
+              type: string
             example: []
       createSessionRequest:
         type: object
@@ -4530,14 +4555,17 @@ components:
           recommended_for:
             type: array
             items:
+              type: string
             example: [hm]
           categories:
             type: array
             items:
+              type: string
             example: ['Educational leadership']
           medium:
             type: array
             items:
+              type: string
             example: [1]
           image:
             type: array
@@ -4572,14 +4600,17 @@ components:
               recommended_for:
                 type: array
                 items:
+                  type: string
                 example: [hm]
               categories:
                 type: array
                 items:
+                  type: string
                 example: ['Educational leadership']
               medium:
                 type: array
                 items:
+                  type: string
                 example: [1]
               image:
                 type: array
@@ -4685,14 +4716,17 @@ components:
           recommended_for:
             type: array
             items:
+              type: string
             example: [hm]
           categories:
             type: array
             items:
+              type: string
             example: ['Educational leadership']
           medium:
             type: array
             items:
+              type: string
             example: [1]
           image:
             type: array
@@ -4724,6 +4758,8 @@ components:
             example: Session not found.
           error:
             type: array
+            items:
+              type: string
             example: []
       sessionRecording200Response:
         type: object
@@ -4828,6 +4864,8 @@ components:
             example: Session not found.
           error:
             type: array
+            items:
+              type: string
             example: []
       sessionCompleted200Response:
         type: object
@@ -4922,6 +4960,8 @@ components:
             example: Session not found.
           error:
             type: array
+            items:
+              type: string
             example: []
       menteeJoinSession200Response:
         description: Share session details
@@ -4958,6 +4998,8 @@ components:
               - User has not enrolled for the session.
           error:
             type: array
+            items:
+              type: string
             example: []
       menteeSessionReport200Response:
         type: object
@@ -5127,7 +5169,7 @@ components:
                 type: number
                 example: 0
               lastLoggedInAt:
-                type: datetime
+                type: string
                 example: '2022-05-18T05:24:52.431Z'
               about:
                 type: string
@@ -5153,6 +5195,8 @@ components:
             example: Could not found mentor.
           error:
             type: array
+            items:
+              type: string
             example: []
       upcomingSession200Response:
         type: object
@@ -5346,6 +5390,8 @@ components:
             example: Could not found mentor.
           error:
             type: array
+            items:
+              type: string
             example: []
       shareMentorProfile200Response:
         type: object
@@ -5374,6 +5420,8 @@ components:
             example: User doesn't exist.
           error:
             type: array
+            items:
+              type: string
             example: []
     questions:
       createQuestionRequest:
@@ -5510,6 +5558,8 @@ components:
             example: Question not found
           error:
             type: array
+            items:
+              type: string
             example: []
       readQuestionResponse200:
         type: object
@@ -5585,6 +5635,8 @@ components:
             example: Question not found
           error:
             type: array
+            items:
+              type: string
             example: []
     questionset:
       createQuestionSetRequest:
@@ -5655,6 +5707,8 @@ components:
             example: Questions are already in use in the question set
           error:
             type: array
+            items:
+              type: string
             example: []
       updateQuestionSetRequest:
         type: object
@@ -5680,6 +5734,8 @@ components:
             example: Questions set updated successfully
           result:
             type: array
+            items:
+              type: string
             example: []
           meta:
             type: object
@@ -5695,6 +5751,8 @@ components:
             example: Questions are already in use in the question set
           error:
             type: array
+            items:
+              type: string
             example: []
       readQuestionSetResponse200:
         type: object
@@ -5750,6 +5808,8 @@ components:
             example: Question not found
           error:
             type: array
+            items:
+              type: string
             example: []
     feedback:
       getFeedbackFromResponse200:
@@ -5837,6 +5897,8 @@ components:
             example: Session not found.
           error:
             type: array
+            items:
+              type: string
             example: []
       submitFeedbackRequest:
         type: object
@@ -5878,6 +5940,8 @@ components:
             example: Feedback submitted successfully.
           result:
             type: array
+            items:
+              type: string
             example: []
           meta:
             type: object
@@ -5893,6 +5957,8 @@ components:
             example: Feedback form has already been submitted.
           error:
             type: array
+            items:
+              type: string
             example: []
       submitFeedbackResponse422:
         type: object
@@ -5905,6 +5971,8 @@ components:
             example: Feedback key failed for the mentor
           error:
             type: array
+            items:
+              type: string
             example: []
     cloudServices:
       cloudServicesResponse200:
@@ -6036,7 +6104,6 @@ components:
             type: string
             description: Type of channel such as Email
             example: email
-            required: true
           email:
             type: object
             required:
@@ -6050,7 +6117,6 @@ components:
                   Email ID of the recipient. To specify multiple email IDs,
                   separate the IDs using `,`
                 example: example@mail.com
-                required: true
               cc:
                 type: string
                 description: >-
@@ -6061,7 +6127,6 @@ components:
                 type: string
                 description: Subject of the Email Message
                 example: Email Notification
-                required: true
               body:
                 type: string
                 description: >-
@@ -6102,6 +6167,8 @@ components:
             example: 400
           error:
             type: array
+            items:
+              type: string
             example: []
     issues:
       createRequest:
@@ -6134,6 +6201,8 @@ components:
             example: Validation failed, Entered data is incorrect!.
           error:
             type: array
+            items:
+              type: string
             example: []
     config:
       $schema: http://json-schema.org/draft-04/schema#
@@ -6178,15 +6247,15 @@ tags:
   - name: Config APIs
     description: You can use this API to get config related to the service
     externalDocs:
-      description: ''
+      description: 'Config APIs'
       url: ''
   - name: Mentee APIs
-    description: ''
+    description: 'mentee APIs'
     externalDocs:
       description: ''
       url: ''
   - name: Mentor APIs
-    description: ''
+    description: 'Mentor APIs'
     externalDocs:
       description: ''
       url: ''
