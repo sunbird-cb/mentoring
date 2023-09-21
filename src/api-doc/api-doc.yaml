@@ -1069,11 +1069,11 @@ paths:
           name: status
           description: >-
             Please append a status. For example, for published user append the
-            value `published` and for completed user, append the value
-            `completed`.
+            value `PUBLISHED` and for completed user, append the value
+            `COMPLETED`.
           schema:
             type: string
-          example: published, completed
+          example: PUBLISHED, COMPLETED
         - in: path
           name: search
           description: >-
@@ -3110,7 +3110,8 @@ paths:
                       created_at:
                         type: string
                       deleted_at:
-                        type: 'null'
+                        type: string
+                        example: null
                   meta:
                     type: object
                     properties:
@@ -3466,7 +3467,8 @@ paths:
                       updated_at:
                         type: string
                       deleted_at:
-                        type: 'null'
+                        type: string
+                        example: null
                   meta:
                     type: object
                     properties:
@@ -4364,7 +4366,7 @@ components:
                 example: 2023-09-20T11:56:42.412Z
               deleted_at:
                 type: string
-                format: nullable
+                example: null
               is_enrolled:
                 type: boolean
                 example: false
@@ -4628,7 +4630,7 @@ components:
                 example: PUBLISHED
               deleted_at:
                 type: string
-                format: nullable
+                example: null
               is_feedback_skipped:
                 type: boolean
                 example: false
@@ -5878,7 +5880,7 @@ components:
                       example: 2023-09-20T11:48:34.679Z
                     deleted_at:
                       type: string
-                      format: nullable
+                      example: null
                     label:
                       type: string
                       example: How would you rate the engagement in the session?
