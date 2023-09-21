@@ -208,7 +208,7 @@ paths:
                       createdAt:
                         type: string
                       deletedAt:
-                        type: 'null'
+                        type: string
                   meta:
                     type: object
                     properties:
@@ -1427,7 +1427,7 @@ paths:
           schema:
             type: string
         - in: path
-          name: 'sessionId'
+          name: 'sessionId '
           required: true
           description: Please append a valid sessionId to the Request URL.
           schema:
@@ -2828,7 +2828,7 @@ paths:
           description: Please append a valid mentorId
           schema:
             type: string
-            example: 62a820225ff93f30cfe5f990
+            example: 21
       responses:
         '200':
           description: ok
@@ -4371,6 +4371,7 @@ components:
           error:
             type: array
             items:
+              type: string
             example: []
       shareSession200Response:
         description: share session details
@@ -4906,9 +4907,9 @@ components:
               count:
                 type: number
                 example: 1
-            meta:
-              type: object
-              example: {}
+          meta:
+            type: object
+            example: {}
       menteeSession400Response:
         type: object
         description: Session not found.
@@ -5027,9 +5028,9 @@ components:
                     endDateUtc:
                       type: string
                       example: Invalid date
-            meta:
-              type: object
-              example: {}
+          meta:
+            type: object
+            example: {}
       menteeProfile200Response:
         type: object
         properties:
@@ -5117,10 +5118,10 @@ components:
                 type: string
                 example: B.A.
               updatedAt:
-                type: datetime
+                type: string
                 example: '2022-05-18T05:24:52.431Z'
               createdAt:
-                type: datetime
+                type: string
                 example: '2022-05-18T05:24:52.431Z'
               __v:
                 type: number
@@ -5202,9 +5203,9 @@ components:
               count:
                 type: number
                 example: 1
-            meta:
-              type: object
-              example: {}
+          meta:
+            type: object
+            example: {}
       mentorSessionReport200Response:
         type: object
         properties:
@@ -5311,16 +5312,16 @@ components:
                 type: string
                 example: B.A.
               updatedAt:
-                type: datetime
+                type: string
                 example: '2022-05-18T05:24:52.431Z'
               createdAt:
-                type: datetime
+                type: string
                 example: '2022-05-18T05:24:52.431Z'
               __v:
                 type: number
                 example: 0
               lastLoggedInAt:
-                type: datetime
+                type: string
                 example: '2022-05-18T05:24:52.431Z'
               about:
                 type: string

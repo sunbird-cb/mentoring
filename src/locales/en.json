@@ -92,5 +92,6 @@
 	"ENTITY_TYPE_DELETED_SUCCESSFULLY": "Entity type deleted successfully",
 	"ENTITY_TYPE_FETCHED_SUCCESSFULLY": "Entity type fetched successfully",
 	"SESSION_CREATION_FAILED": "Failed to create session.",
-	"SESSION_UPDATION_FAILED": "Failed to update session."
+	"SESSION_UPDATION_FAILED": "Failed to update session.",
+	"INVALID_SECRET_CODE": "Incorrect code. Please try again."
 }
