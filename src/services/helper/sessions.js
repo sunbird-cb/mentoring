@@ -77,6 +77,16 @@ module.exports = class SessionsHelper {
 					responseCode: 'CLIENT_ERROR',
 				})
 			}
+			bodyData.meetingInfo = {
+				platform: process.env.DEFAULT_MEETING_SERVICE,
+				value: process.env.DEFAULT_MEETING_SERVICE,
+			}
+			if (process.env.DEFAULT_MEETING_SERVICE === common.BBB_VALUE) {
+				bodyData.meetingInfo = {
+					platform: common.BBB_PLATFORM,
+					value: common.BBB_VALUE,
+				}
+			}
 
 			let data = await sessionData.createSession(bodyData)
 
@@ -426,6 +436,32 @@ module.exports = class SessionsHelper {
 
 	static async list(loggedInUserId, page, limit, search, status) {
 		try {
+			// update sessions which having status as published/live and  exceeds the current date and time
+			await sessionData.updateSession(
+				{
+					$or: [
+						{
+							status: common.PUBLISHED_STATUS,
+							endDateUtc: {
+								$lt: moment().utc().format(),
+							},
+						},
+						{
+							status: common.LIVE_STATUS,
+							'meetingInfo.value': {
+								$ne: common.BBB_VALUE,
+							},
+							endDateUtc: {
+								$lt: moment().utc().format(),
+							},
+						},
+					],
+				},
+				{
+					status: common.COMPLETED_STATUS,
+				}
+			)
+
 			let arrayOfStatus = []
 			if (status && status != '') {
 				arrayOfStatus = status.split(',')
@@ -518,8 +554,15 @@ module.exports = class SessionsHelper {
 				timeZone,
 			}
 
-			await sessionAttendesData.create(attendee)
+			const res = await sessionAttendesData.create(attendee)
 
+			if (res == 'SESSION_SEAT_FULL') {
+				return common.failureResponse({
+					message: 'SESSION_SEAT_FULL',
+					statusCode: httpStatusCode.bad_request,
+					responseCode: 'CLIENT_ERROR',
+				})
+			}
 			const templateData = await notificationTemplateData.findOneEmailTemplate(
 				process.env.MENTEE_SESSION_ENROLLMENT_EMAIL_TEMPLATE
 			)
@@ -551,12 +594,13 @@ module.exports = class SessionsHelper {
 
 				await kafkaCommunication.pushEmailToKafka(payload)
 			}
-
+			await sessionData.updateEnrollmentCount(sessionId, false)
 			return common.successResponse({
 				statusCode: httpStatusCode.created,
 				message: 'USER_ENROLLED_SUCCESSFULLY',
 			})
 		} catch (error) {
+			console.log(error)
 			throw error
 		}
 	}
@@ -622,6 +666,8 @@ module.exports = class SessionsHelper {
 
 				await kafkaCommunication.pushEmailToKafka(payload)
 			}
+
+			await sessionData.updateEnrollmentCount(sessionId)
 
 			return common.successResponse({
 				statusCode: httpStatusCode.accepted,
@@ -795,7 +841,7 @@ module.exports = class SessionsHelper {
 				})
 			}
 			let meetingInfo
-			if (session?.meetingInfo?.platform !== common.BBB_CODE && !session.isStarted) {
+			if (session?.meetingInfo?.value !== common.BBB_VALUE && !session.isStarted) {
 				await sessionData.updateOneSession(
 					{
 						_id: session._id,
@@ -843,7 +889,8 @@ module.exports = class SessionsHelper {
 					session.mentorPassword
 				)
 				meetingInfo = {
-					platform: common.BBB_CODE,
+					platform: common.BBB_PLATFORM,
+					value: common.BBB_VALUE,
 					link: moderatorMeetingLink,
 					meta: {
 						meetingId: meetingDetails.data.response.internalMeetingID,
