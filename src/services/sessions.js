@@ -92,7 +92,7 @@ module.exports = class SessionsHelper {
 
 			let entityTypes = await entityTypeQueries.findUserEntityTypesAndEntities({
 				status: 'ACTIVE',
-				org_id: {
+				organization_id: {
 					[Op.in]: [orgId, defaultOrgId],
 				},
 			})
@@ -123,7 +123,7 @@ module.exports = class SessionsHelper {
 				}
 			}
 
-			bodyData['mentor_org_id'] = orgId
+			bodyData['mentor_organization_id'] = orgId
 			// SAAS changes; Include visibility and visible organisations
 			// Call user service to fetch organisation details --SAAS related changes
 			let userOrgDetails = await userRequests.fetchDefaultOrgDetails(orgId)
@@ -272,7 +272,7 @@ module.exports = class SessionsHelper {
 
 			let entityTypes = await entityTypeQueries.findUserEntityTypesAndEntities({
 				status: 'ACTIVE',
-				org_id: {
+				organization_id: {
 					[Op.in]: [orgId, defaultOrgId],
 				},
 			})
@@ -635,13 +635,13 @@ module.exports = class SessionsHelper {
 
 			let entityTypes = await entityTypeQueries.findUserEntityTypesAndEntities({
 				status: 'ACTIVE',
-				org_id: {
-					[Op.in]: [sessionDetails.mentor_org_id, defaultOrgId],
+				organization_id: {
+					[Op.in]: [sessionDetails.mentor_organization_id, defaultOrgId],
 				},
 			})
 
 			//validationData = utils.removeParentEntityTypes(JSON.parse(JSON.stringify(validationData)))
-			const validationData = removeDefaultOrgEntityTypes(entityTypes, sessionDetails.mentor_org_id)
+			const validationData = removeDefaultOrgEntityTypes(entityTypes, sessionDetails.mentor_organization_id)
 
 			const processDbResponse = utils.processDbResponse(sessionDetails, validationData)
 
@@ -670,7 +670,6 @@ module.exports = class SessionsHelper {
 			const userPolicyDetails = isAMentor
 				? await mentorExtensionQueries.getMentorExtension(userId, ['external_session_visibility', 'organization_id'])
 				: await menteeExtensionQueries.getMenteeExtension(userId, ['external_session_visibility', 'organization_id'])
-
 			// Throw error if mentor/mentee extension not found
 			if (Object.keys(userPolicyDetails).length === 0) {
 				return common.failureResponse({
@@ -819,7 +818,7 @@ module.exports = class SessionsHelper {
 
 			const templateData = await notificationQueries.findOneEmailTemplate(
 				process.env.MENTEE_SESSION_ENROLLMENT_EMAIL_TEMPLATE,
-				session.mentor_org_id
+				session.mentor_organization_id
 			)
 
 			if (templateData) {
@@ -895,7 +894,7 @@ module.exports = class SessionsHelper {
 
 			const templateData = await notificationQueries.findOneEmailTemplate(
 				process.env.MENTEE_SESSION_CANCELLATION_EMAIL_TEMPLATE,
-				session.mentor_org_id
+				session.mentor_organization_id
 			)
 
 			if (templateData) {
