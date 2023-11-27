@@ -109,7 +109,7 @@ exports.getSessionByUserIdAndTime = async (userId, startDate, endDate, sessionId
 		let startDateResponse, endDateResponse
 		const query = {
 			mentor_id: userId,
-			status: { [Op.ne]: common.COMPLETED_STATUS },
+			status: { [Op.notIn]: [common.COMPLETED_STATUS, common.INACTIVE_STATUS] },
 		}
 
 		if (startDate) {
@@ -288,7 +288,7 @@ exports.getAllUpcomingSessions = async (paranoid) => {
 					[Op.gt]: currentEpochTime,
 				},
 				status: {
-					[Op.not]: common.INACTIVE_STATUS,
+					[Op.ne]: common.INACTIVE_STATUS,
 				},
 			},
 			raw: true,
