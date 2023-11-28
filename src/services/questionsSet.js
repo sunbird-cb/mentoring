@@ -87,6 +87,7 @@ module.exports = class questionsSetHelper {
 			}
 			const filter = {
 				id: questionSetId,
+				organization_id: decodedToken.organization_id,
 			}
 			let questionSet = await questionsSetQueries.findOneQuestionsSet(bodyData)
 			if (questionSet) {
@@ -124,10 +125,11 @@ module.exports = class questionsSetHelper {
 	 * @returns {JSON} - Read question set.
 	 */
 
-	static async read(questionsSetId) {
+	static async read(questionsSetId, decodedToken) {
 		try {
 			const filter = {
 				id: questionsSetId,
+				organization_id: decodedToken,
 			}
 			const questionSet = await questionsSetQueries.findOneQuestionsSet(filter)
 			if (!questionSet) {
@@ -143,6 +145,7 @@ module.exports = class questionsSetHelper {
 				result: questionSet,
 			})
 		} catch (error) {
+			console.log(error)
 			throw error
 		}
 	}

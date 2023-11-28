@@ -57,7 +57,7 @@ module.exports = class QuestionsSet {
 
 	async read(req) {
 		try {
-			const questionsSetData = await questionsService.read(req.params.id)
+			const questionsSetData = await questionsService.read(req.params.id, req.decodedToken)
 			return questionsSetData
 		} catch (error) {
 			return error

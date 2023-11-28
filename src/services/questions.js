@@ -20,6 +20,7 @@ module.exports = class questionsHelper {
 				})
 			}
 			bodyData['organization_id'] = decodedToken.organization_id
+			console.log('BODY DATA: ', bodyData)
 			let question = await questionQueries.createQuestion(bodyData)
 			return common.successResponse({
 				statusCode: httpStatusCode.created,
