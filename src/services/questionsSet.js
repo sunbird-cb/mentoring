@@ -3,6 +3,7 @@ const httpStatusCode = require('@generics/http-status')
 const common = require('@constants/common')
 const questionsSetQueries = require('../database/queries/questionSet')
 const questionQueries = require('../database/queries/questions')
+const { Op } = require('sequelize')
 
 module.exports = class questionsSetHelper {
 	/**
@@ -13,8 +14,15 @@ module.exports = class questionsSetHelper {
 	 * @returns {JSON} - Create question set
 	 */
 
-	static async create(bodyData) {
+	static async create(bodyData, decodedToken) {
 		try {
+			if (!decodedToken.roles.some((role) => role.title === common.ORG_ADMIN_ROLE)) {
+				return common.failureResponse({
+					message: 'UNAUTHORIZED_REQUEST',
+					statusCode: httpStatusCode.unauthorized,
+					responseCode: 'UNAUTHORIZED',
+				})
+			}
 			let questions = await questionQueries.find({ id: bodyData.questions })
 			if (questions.length != bodyData.questions.length) {
 				return common.failureResponse({
@@ -23,8 +31,11 @@ module.exports = class questionsSetHelper {
 					responseCode: 'CLIENT_ERROR',
 				})
 			}
-
-			let questionSet = await questionsSetQueries.findOneQuestionsSet(bodyData)
+			const questionSetData = {
+				code: bodyData.code,
+				organization_id: decodedToken.organization_id,
+			}
+			let questionSet = await questionsSetQueries.findOneQuestionsSet(questionSetData)
 			if (questionSet) {
 				return common.failureResponse({
 					message: 'QUESTIONS_SET_ALREADY_EXISTS',
@@ -32,14 +43,16 @@ module.exports = class questionsSetHelper {
 					responseCode: 'CLIENT_ERROR',
 				})
 			}
-			questionSet = await questionsSetQueries.createQuestionsSet(bodyData)
-
+			questionSetData['questions'] = bodyData.questions
+			console.log('QUESTIONSET DATA: ', questionSetData)
+			questionSet = await questionsSetQueries.createQuestionsSet(questionSetData)
 			return common.successResponse({
 				statusCode: httpStatusCode.created,
 				message: 'QUESTIONS_SET_CREATED_SUCCESSFULLY',
 				result: questionSet,
 			})
 		} catch (error) {
+			console.log(error)
 			throw error
 		}
 	}
@@ -53,8 +66,15 @@ module.exports = class questionsSetHelper {
 	 * @returns {JSON} - Update question set.
 	 */
 
-	static async update(questionSetId, bodyData) {
+	static async update(questionSetId, bodyData, decodedToken) {
 		try {
+			if (!decodedToken.roles.some((role) => role.title === common.ORG_ADMIN_ROLE)) {
+				return common.failureResponse({
+					message: 'UNAUTHORIZED_REQUEST',
+					statusCode: httpStatusCode.unauthorized,
+					responseCode: 'UNAUTHORIZED',
+				})
+			}
 			if (bodyData.questions) {
 				let questionInfo = await questionQueries.find({ id: bodyData.questions })
 				if (questionInfo.length != bodyData.questions.length) {
@@ -91,6 +111,7 @@ module.exports = class questionsSetHelper {
 				message: 'QUESTIONS_SET_UPDATED_SUCCESSFULLY',
 			})
 		} catch (error) {
+			console.log(error)
 			throw error
 		}
 	}

@@ -19,7 +19,8 @@ module.exports = class QuestionsSet {
 
 	async create(req) {
 		try {
-			const createQuestionsSet = await questionsService.create(req.body)
+			console.log('DECODED TOKEN: ', req.decodedToken)
+			const createQuestionsSet = await questionsService.create(req.body, req.decodedToken)
 			return createQuestionsSet
 		} catch (error) {
 			return error
@@ -37,7 +38,8 @@ module.exports = class QuestionsSet {
 
 	async update(req) {
 		try {
-			const updateQuestionsSet = await questionsService.update(req.params.id, req.body)
+			console.log('DECODED TOKEN: ', req.decodedToken)
+			const updateQuestionsSet = await questionsService.update(req.params.id, req.body, req.decodedToken)
 			return updateQuestionsSet
 		} catch (error) {
 			return error
