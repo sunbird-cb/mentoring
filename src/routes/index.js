@@ -62,7 +62,13 @@ module.exports = (app) => {
 			/* If error obtained then global error handler gets executed */
 			return next(controllerResponse)
 		}
-		if (controllerResponse) {
+
+		if (controllerResponse.isResponseAStream == true) {
+			// Check if file specified by the filePath exists
+			res.setHeader('Content-disposition', 'attachment; filename=' + controllerResponse.fileName)
+			res.set('Content-Type', 'application/octet-stream')
+			res.status(controllerResponse.statusCode).send(controllerResponse.stream)
+		} else if (controllerResponse) {
 			res.status(controllerResponse.statusCode).json({
 				responseCode: controllerResponse.responseCode,
 				message: req.t(controllerResponse.message),
@@ -86,6 +92,7 @@ module.exports = (app) => {
 
 	// Global error handling middleware, should be present in last in the stack of a middleware's
 	app.use((error, req, res, next) => {
+		console.error(error)
 		const status = error.statusCode || 500
 		const responseCode = error.responseCode || 'SERVER_ERROR'
 		const message = error.message || ''
