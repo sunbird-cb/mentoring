@@ -684,7 +684,6 @@ module.exports = class MentorsHelper {
 			}
 
 			const query = utils.processQueryParametersWithExclusions(queryParams)
-
 			let validationData = await entityTypeQueries.findAllEntityTypesAndEntities({
 				status: 'ACTIVE',
 				allow_filtering: true,
@@ -795,6 +794,7 @@ module.exports = class MentorsHelper {
 				result: userDetails.data.result,
 			})
 		} catch (error) {
+			console.log(error)
 			throw error
 		}
 	}
