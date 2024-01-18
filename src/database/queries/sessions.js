@@ -27,7 +27,8 @@ exports.create = async (data) => {
 	try {
 		return await Session.create(data)
 	} catch (error) {
-		return error
+		console.log(error)
+		throw error
 	}
 }
 
@@ -179,21 +180,21 @@ exports.removeAndReturnMentorSessions = async (userId) => {
 		const currentDateTime = moment().format('YYYY-MM-DD HH:mm:ssZ')
 
 		/* const foundSessionOwnerships = await SessionOwnerships.findAll({
-			attributes: ['session_id'],
-			where: {
-				mentor_id: userId,
-			},
-			include: [
-				{
-					model: Session,
-					where: {
-						deleted: false,
-						[Op.or]: [{ startDate: { [Op.gt]: currentEpochTime } }, { status: common.PUBLISHED_STATUS }],
-					},
-					attributes: ['id', 'title'],
-				},
-			],
-		}) */
+            attributes: ['session_id'],
+            where: {
+                mentor_id: userId,
+            },
+            include: [
+                {
+                    model: Session,
+                    where: {
+                        deleted: false,
+                        [Op.or]: [{ startDate: { [Op.gt]: currentEpochTime } }, { status: common.PUBLISHED_STATUS }],
+                    },
+                    attributes: ['id', 'title'],
+                },
+            ],
+        }) */
 		const foundSessionOwnerships = await SessionOwnership.findAll({
 			attributes: ['session_id'],
 			where: {
@@ -399,35 +400,35 @@ exports.getHostedSessionsCountInDateRange = async (mentorId, startDate, endDate)
 }
 
 /* exports.getMentorsUpcomingSessions = async (mentorId) => {
-	try {
-		const foundSessionOwnerships = await SessionOwnership.findAll({
-			attributes: ['session_id'],
-			where: {
-				mentor_id: mentorId,
-			},
-			raw: true,
-		})
+    try {
+        const foundSessionOwnerships = await SessionOwnership.findAll({
+            attributes: ['session_id'],
+            where: {
+                mentor_id: mentorId,
+            },
+            raw: true,
+        })
 
-		const sessionIds = foundSessionOwnerships.map((ownership) => ownership.session_id)
-		const currentEpochTime = moment().unix()
-		console.log(sessionIds)
-		console.log(currentEpochTime)
-		return await Session.findAll({
-			where: {
-				id: { [Op.in]: sessionIds },
-				status: 'PUBLISHED',
-				start_date: {
-					[Op.gt]: currentEpochTime,
-				},
-				started_at: {
-					[Op.eq]: null,
-				},
-			},
-			raw: true,
-		})
-	} catch (error) {
-		throw error
-	}
+        const sessionIds = foundSessionOwnerships.map((ownership) => ownership.session_id)
+        const currentEpochTime = moment().unix()
+        console.log(sessionIds)
+        console.log(currentEpochTime)
+        return await Session.findAll({
+            where: {
+                id: { [Op.in]: sessionIds },
+                status: 'PUBLISHED',
+                start_date: {
+                    [Op.gt]: currentEpochTime,
+                },
+                started_at: {
+                    [Op.eq]: null,
+                },
+            },
+            raw: true,
+        })
+    } catch (error) {
+        throw error
+    }
 } */
 
 exports.getMentorsUpcomingSessions = async (page, limit, search, mentorId) => {
@@ -479,7 +480,7 @@ exports.getMentorsUpcomingSessions = async (page, limit, search, mentorId) => {
 				'mentor_id',
 				'meeting_info',
 				/* 				[(sequelize.json('meeting_info.platform'), 'meeting_info.platform')],
-				[sequelize.json('meeting_info.value'), 'meeting_info.value'], */
+                [sequelize.json('meeting_info.value'), 'meeting_info.value'], */
 			],
 			offset: limit * (page - 1),
 			limit: limit,
@@ -524,7 +525,7 @@ exports.getUpcomingSessions = async (page, limit, search, userId) => {
 				'visibility',
 				'mentor_organization_id',
 				/* ['meetingInfo.platform', 'meetingInfo.platform'],
-				['meetingInfo.value', 'meetingInfo.value'], */
+                ['meetingInfo.value', 'meetingInfo.value'], */
 			],
 			offset: limit * (page - 1),
 			limit: limit,
