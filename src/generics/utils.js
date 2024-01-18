@@ -177,15 +177,8 @@ function isNumeric(value) {
 
 function validateInput(input, validationData, modelName) {
 	const errors = []
-	console.log('INPUTTTTTTTTTTT: ', input)
-	console.log('VALIDATION DATA: ', validationData)
-	console.log('MODEL NAME: ', modelName)
-	console.log('ENTITIES: ')
 	for (const field of validationData) {
 		const fieldValue = input[field.value]
-		console.log('FIELD VALUE: ', fieldValue)
-		console.log('FIELD: ', field)
-
 		if (modelName && !field.model_names.includes(modelName) && input[field.value]) {
 			errors.push({
 				param: field.value,
@@ -207,7 +200,6 @@ function validateInput(input, validationData, modelName) {
 				case 'ARRAY[STRING]':
 					if (Array.isArray(fieldValue)) {
 						fieldValue.forEach((element) => {
-							console.log('ELEMENT: ', element)
 							if (typeof element !== 'string') {
 								addError(field, element, dataType, 'It should be a string')
 							} else if (!field.allow_custom_entities && /[^A-Za-z0-9_]/.test(element)) {
