@@ -1,3 +1,6 @@
+'use strict'
+
+/** @type {import('sequelize-cli').Migration} */
 module.exports = {
 	up: async (queryInterface, Sequelize) => {
 		const defaultOrgId = queryInterface.sequelize.options.defaultOrgId
@@ -85,7 +88,6 @@ module.exports = {
 				})
 			}
 		})
-
 		await queryInterface.bulkInsert('entities', entitiesFinalArray, {})
 	},
 
