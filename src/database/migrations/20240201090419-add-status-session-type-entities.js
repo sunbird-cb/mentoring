@@ -1,49 +1,49 @@
 'use strict'
-
 /** @type {import('sequelize-cli').Migration} */
+const entitiesArray = {
+	type: [
+		{
+			label: 'Public',
+			value: 'PUBLIC',
+		},
+		{
+			label: 'Private',
+			value: 'PRIVATE',
+		},
+	],
+	status: [
+		{
+			value: 'COMPLETED',
+			label: 'Completed',
+		},
+		{
+			value: 'UNFULFILLED',
+			label: 'Unfulfilled',
+		},
+		{
+			value: 'PUBLISHED',
+			label: 'Published',
+		},
+		{
+			value: 'LIVE',
+			label: 'Live',
+		},
+		{
+			value: 'ACTIVE',
+			label: 'Active',
+		},
+		{
+			value: 'INACTIVE',
+			label: 'Inactive',
+		},
+	],
+}
+
 module.exports = {
 	up: async (queryInterface, Sequelize) => {
 		const defaultOrgId = queryInterface.sequelize.options.defaultOrgId
 		if (!defaultOrgId) {
 			throw new Error('Default org ID is undefined. Please make sure it is set in sequelize options.')
-		}
-		const entitiesArray = {
-			type: [
-				{
-					label: 'Public',
-					value: 'PUBLIC',
-				},
-				{
-					label: 'Private',
-					value: 'PRIVATE',
-				},
-			],
-			status: [
-				{
-					value: 'COMPLETED',
-					label: 'Completed',
-				},
-				{
-					value: 'UNFULFILLED',
-					label: 'Unfulfilled',
-				},
-				{
-					value: 'PUBLISHED',
-					label: 'Published',
-				},
-				{
-					value: 'LIVE',
-					label: 'Live',
-				},
-				{
-					value: 'ACTIVE',
-					label: 'Active',
-				},
-				{
-					value: 'INACTIVE',
-					label: 'Inactive',
-				},
-			],
 		}
 
 		const entityTypeFinalArray = Object.keys(entitiesArray).map((key) => {
@@ -66,6 +66,7 @@ module.exports = {
 			return entityTypeRow
 		})
 
+		// Add entity_types based on the input
 		await queryInterface.bulkInsert('entity_types', entityTypeFinalArray, {})
 
 		const entityTypes = await queryInterface.sequelize.query('SELECT * FROM entity_types', {
@@ -92,8 +93,27 @@ module.exports = {
 	},
 
 	down: async (queryInterface, Sequelize) => {
-		await queryInterface.bulkDelete('entity_types', null, {})
-		await queryInterface.bulkDelete('entities', null, {})
+		const defaultOrgId = queryInterface.sequelize.options.defaultOrgId
+		if (!defaultOrgId) {
+			throw new Error('Default org ID is undefined. Please make sure it is set in sequelize options.')
+		}
+
+		const deletedEntityTypes = await queryInterface.sequelize.query(
+			'DELETE FROM entity_types WHERE value IN (:value) AND organization_id = :organization_id RETURNING id',
+			{
+				replacements: { value: Object.keys(entitiesArray), organization_id: defaultOrgId },
+				type: Sequelize.QueryTypes.DELETE,
+			}
+		)
+
+		if (deletedEntityTypes && deletedEntityTypes.length > 0) {
+			const deletedEntityTypeIds = deletedEntityTypes.map((entityType) => entityType.id)
+
+			await queryInterface.sequelize.query('DELETE FROM entities WHERE entity_type_id IN (:entityTypeIds)', {
+				replacements: { entityTypeIds: deletedEntityTypeIds },
+				type: Sequelize.QueryTypes.DELETE,
+			})
+		}
 	},
 }
 
