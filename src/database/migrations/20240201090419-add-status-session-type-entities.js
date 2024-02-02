@@ -46,6 +46,26 @@ module.exports = {
 			throw new Error('Default org ID is undefined. Please make sure it is set in sequelize options.')
 		}
 
+		// if this data which is already added by seeder remove that first and then try to migrate as new entries
+		// Step 1 : Delete entity_type data and retrieve id of deleted rows
+		const deletedEntityTypes = await queryInterface.sequelize.query(
+			'DELETE FROM entity_types WHERE value IN (:value) AND organization_id = :organization_id RETURNING id',
+			{
+				replacements: { value: Object.keys(entitiesArray), organization_id: defaultOrgId },
+				type: Sequelize.QueryTypes.DELETE,
+			}
+		)
+
+		// step 2 : if any entity_type iis found and removed. remove entities associated with that
+		if (deletedEntityTypes && deletedEntityTypes.length > 0) {
+			const deletedEntityTypeIds = deletedEntityTypes.map((entityType) => entityType.id)
+
+			await queryInterface.sequelize.query('DELETE FROM entities WHERE entity_type_id IN (:entityTypeIds)', {
+				replacements: { entityTypeIds: deletedEntityTypeIds },
+				type: Sequelize.QueryTypes.DELETE,
+			})
+		}
+
 		const entityTypeFinalArray = Object.keys(entitiesArray).map((key) => {
 			const entityTypeRow = {
 				value: key,
