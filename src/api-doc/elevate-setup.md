@@ -7,6 +7,406 @@
 -   **PostgreSQL:** 16
 -   **Citus:** 12.1
 
+## Setup with Docker File
+
+1. Clone the repositories
+    ```bash
+    cd /opt/
+    sudo mkdir backend
+    cd backend/
+    git clone -b develop-2.5 --single-branch "https://github.com/ELEVATE-Project/mentoring.git"
+    git clone -b develop-2.5 --single-branch "https://github.com/ELEVATE-Project/user.git"
+    git clone -b develop-2.5 --single-branch "https://github.com/ELEVATE-Project/notification.git"
+    git clone -b develop --single-branch "https://github.com/ELEVATE-Project/scheduler.git"
+    git clone -b develop --single-branch "https://github.com/ELEVATE-Project/interface-service.git"
+    ```
+2. Create .env file for mentoring service
+
+    ```bash
+    $ cd /opt/backend/mentoring/src
+    $ sudo nano .env
+    ```
+
+    Copy paste the env variables .env file
+
+    ```bash
+    # Mentoring Service Config
+
+    # Port on which service runs
+    APPLICATION_PORT=3000
+
+    # Service environment
+    APPLICATION_ENV=development
+
+    # Route after the base URL
+    APPLICATION_BASE_URL=/mentoring/
+    APPLICATION_URL=https://dev.mentoring.shikshalokam.org
+
+    # Token secret to verify the access token
+    ACCESS_TOKEN_SECRET='asadsd8as7df9as8df987asdf'
+
+    # Internal access token for communication between services via network call
+    INTERNAL_ACCESS_TOKEN='internal_access_token'
+
+    # Kafka hosted server URL
+    KAFKA_URL=kafka:9092
+
+    # Kafka group to which consumer belongs
+    KAFKA_GROUP_ID="mentoring"
+
+    # Kafka topic to push notification data
+    NOTIFICATION_KAFKA_TOPIC='develop.notifications'
+
+    # Kafka topic name to consume from mentoring topic
+    KAFKA_MENTORING_TOPIC="mentoringtopic"
+    SESSION_KAFKA_TOPIC='session'
+
+    # Kafka topic to push recording data
+    KAFKA_RECORDING_TOPIC="recordingtopic"
+
+    # Any one of three features available for cloud storage
+    CLOUD_STORAGE='AWS'
+    MENTOR_SESSION_RESCHEDULE_EMAIL_TEMPLATE=mentor_session_reschedule
+
+    # GCP json config file path
+    GCP_PATH='gcp.json'
+
+    # GCP bucket name which stores files
+    DEFAULT_GCP_BUCKET_NAME='gcp-bucket-storage-name'
+
+    # GCP project id
+    GCP_PROJECT_ID='project-id'
+
+    # AWS access key id
+    AWS_ACCESS_KEY_ID='aws-access-key-id'
+
+    # AWS secret access key
+    AWS_SECRET_ACCESS_KEY='aws-secret-access-key'
+
+    # AWS region where the bucket will be located
+    AWS_BUCKET_REGION='ap-south-1'
+
+    # AWS endpoint
+    AWS_BUCKET_ENDPOINT='s3.ap-south-1.amazonaws.com'
+
+    # AWS bucket name which stores files
+    DEFAULT_AWS_BUCKET_NAME='aws-bucket-storage-name'
+
+    # Azure storage account name
+    AZURE_ACCOUNT_NAME='account-name'
+
+    # Azure storage account key
+    AZURE_ACCOUNT_KEY='azure-account-key'
+
+    # Azure storage container which stores files
+    DEFAULT_AZURE_CONTAINER_NAME='azure-container-storage-name'
+
+    # User service host
+    USER_SERVICE_HOST='http://user:3001'
+
+    # User service base URL
+    USER_SERVICE_BASE_URL='/user/'
+
+    # Big blue button URL
+    BIG_BLUE_BUTTON_URL=https://dev.some.temp.org
+
+    # Big blue button base URL
+    BIB_BLUE_BUTTON_BASE_URL=/bigbluebutton/
+
+    # Meeting end callback events endpoint
+    MEETING_END_CALLBACK_EVENTS=https%3A%2F%2Fdev.some-apis.temp.org%2Fmentoring%2Fv1%2Fsessions%2Fcompleted
+
+    # Big blue button secret key
+    BIG_BLUE_BUTTON_SECRET_KEY=sa9d0f8asdg7a9s8d7f
+
+    # Big blue button recording ready callback URL
+    RECORDING_READY_CALLBACK_URL=http%3A%2F%2Flocalhost%3A3000%2F%3FmeetingID%3Dmeet123
+    BIG_BLUE_BUTTON_SECRET_KEY="s90df8g09sd8fg098sdfg"
+
+    # Enable logging of network requests
+    ENABLE_LOG=true
+
+    # API doc URL
+    API_DOC_URL='/api-doc'
+
+    # Internal cache expiry time
+    INTERNAL_CACHE_EXP_TIME=86400
+
+    # Kafka rating topic
+    RATING_KAFKA_TOPIC='dev.rate'
+
+    # Redis Host connectivity URL
+    REDIS_HOST='redis://redis:6379'
+
+    # Kafka internal communication
+    CLEAR_INTERNAL_CACHE='mentoringInternal'
+
+    # Enable email for reported issues
+    ENABLE_EMAIL_FOR_REPORT_ISSUE=true
+
+    # Email ID of the support team
+    SUPPORT_EMAIL_ID='support@xyz.com,team@xyz.com'
+
+    # Email template code for reported issues
+    REPORT_ISSUE_EMAIL_TEMPLATE_CODE='user_issue_reported'
+
+    BIG_BLUE_BUTTON_SESSION_END_URL='https%3A%2F%2Fdev.some-mentoring.temp.org%2F'
+
+    SCHEDULER_SERVICE_ERROR_REPORTING_EMAIL_ID="rakesh.k@some.com"
+    SCHEDULER_SERVICE_URL="http://scheduler:4000/jobs/scheduleJob"
+    ERROR_LOG_LEVEL='silly'
+    DISABLE_LOG=false
+    DEFAULT_MEETING_SERVICE="BBB"
+    # BIG_BLUE_BUTTON_LAST_USER_TIMEOUT_MINUTES=15
+    SESSION_EDIT_WINDOW_MINUTES=0
+    SESSION_MENTEE_LIMIT=5
+    DEV_DATABASE_URL=postgres://shikshalokam:slpassword@localhost:5432/elevate_mentoring
+    MENTOR_SESSION_DELETE_EMAIL_TEMPLATE='mentor_session_delete'
+
+    SCHEDULER_SERVICE_HOST="http://scheduler:4000"
+    SCHEDULER_SERVICE_BASE_URL= '/scheduler/'
+    DEFAULT_ORGANISATION_CODE="default_code"
+
+    REFRESH_VIEW_INTERVAL=30000
+    MENTEE_SESSION_ENROLLMENT_EMAIL_TEMPLATE=mentee_session_enrollment
+    DEFAULT_ORG_ID=1
+    ```
+
+3. Create env file for user
+
+    ```bash
+    $ cd ../../user/src
+    $ sudo nano .env
+    ```
+
+    Copy-paste the following env variables to the .env file:
+
+    ```bash
+    ACCESS_TOKEN_EXPIRY=1
+    ACCESS_TOKEN_SECRET=asadsd8as7df9as8df987asdf
+    API_DOC_URL=/user/api-doc
+    APP_NAME=MentorED
+    APPLICATION_ENV=development
+    APPLICATION_PORT=3001
+    AWS_ACCESS_KEY_ID="adsfg98a7sdfg"
+    AWS_BUCKET_ENDPOINT="s3.ap-south-1.amazonaws.com"
+    AWS_BUCKET_REGION="ap-south-1"
+    AWS_SECRET_ACCESS_KEY="asd9786fg9a8sd/asdfg9a8sd7fg"
+    AZURE_ACCOUNT_KEY=asd897gfa09sd87f09as8d
+    AZURE_ACCOUNT_NAME=mentoring
+    CLEAR_INTERNAL_CACHE=userinternal
+    CLOUD_STORAGE=AWS
+    DEFAULT_AWS_BUCKET_NAME=mentoring-dev-storage
+    DEFAULT_AZURE_CONTAINER_NAME=mentoring-images
+    DEFAULT_GCP_BUCKET_NAME=mentoring-dev-storage
+
+    ENABLE_EMAIL_OTP_VERIFICATION=false
+    ENABLE_LOG=true
+    GCP_PATH=gcp.json
+    GCP_PROJECT_ID=sl-dev-project
+    INTERNAL_ACCESS_TOKEN=internal_access_token
+    INTERNAL_CACHE_EXP_TIME=86400
+    IV=09sdf8g098sdf/Q==
+    KAFKA_GROUP_ID=mentoring
+    KAFKA_TOPIC=
+    KAFKA_URL=kafka:9092
+    KEY=fasd98fg9a8sydg98a7usd89fg
+    NOTIFICATION_KAFKA_TOPIC=dev.notifications
+    OTP_EMAIL_TEMPLATE_CODE=emailotp
+    OTP_EXP_TIME=86400
+
+    REDIS_HOST=redis://redis:6379
+    REFRESH_TOKEN_EXPIRY=183
+    REFRESH_TOKEN_SECRET=as9d87fa9s87df98as7d9f87a9sd87f98as7dg987asf
+    REGISTRATION_EMAIL_TEMPLATE_CODE=registration
+    REGISTRATION_OTP_EMAIL_TEMPLATE_CODE=registrationotp
+
+    DEFAULT_OCI_BUCKET_NAME=dev-mentoring
+    OCI_ACCESS_KEY_ID=asdgf6a0s98d76g9a8sasdasd7df987as98df
+    OCI_BUCKET_ENDPOINT=https://as98d7asdasdf.compat.objectstorage.ap-hyderabad-1.oraclecloud.com
+    OCI_BUCKET_REGION=ap-hyderabad-1
+    OCI_SECRET_ACCESS_KEY=as09d7f8/as0d7f09as7d8f=
+
+    ERROR_LOG_LEVEL=silly
+    DISABLE_LOG=false
+    DEFAULT_ORGANISATION_CODE=default_code
+
+    DEV_DATABASE_URL=postgres://shikshalokam:slpassword@localhost:5432/elevate_user
+    ADMIN_SECRET_CODE=a98sd76fasdfasd
+    MENTORING_SERVICE_URL=test
+    DEFAULT_QUEUE="test"
+
+    INVITEE_EMAIL_TEMPLATE_CODE='test'
+    ADMIN_INVITEE_UPLOAD_EMAIL_TEMPLATE_CODE='test'
+    MENTOR_INVITATION_EMAIL_TEMPLATE_CODE="test"
+    MENTEE_INVITATION_EMAIL_TEMPLATE_CODE="test"
+    # Default role
+    DEFAULT_ROLE="mentee"
+
+    # Sample file upload path
+    SAMPLE_CSV_FILE_PATH=sample/bulk_user_creation.csv
+
+    # Email template for org admin invitation
+    ORG_ADMIN_INVITATION_EMAIL_TEMPLATE_CODE=invite_org_admin
+    DEFAULT_ORG_ID=1
+    MENTORING_SERVICE_URL=http://mentoring:3000
+    # Email template for mentor role request accepted
+    MENTOR_REQUEST_ACCEPTED_EMAIL_TEMPLATE_CODE=mentor_request_accepted
+
+    # Email template for mentor role request rejected
+    MENTOR_REQUEST_REJECTED_EMAIL_TEMPLATE_CODE=mentor_request_rejected
+    DEFAULT_ROLE=mentee
+    PORTAL_URL='https://mentored.some.org/auth/login'
+    SCHEDULER_SERVICE_ERROR_REPORTING_EMAIL_ID="rakesh.k@some.com"
+    SCHEDULER_SERVICE_URL="http://scheduler:4000/jobs/scheduleJob"
+    SCHEDULER_SERVICE_HOST="http://scheduler:4000"
+    SCHEDULER_SERVICE_BASE_URL= '/scheduler/'
+    REFRESH_VIEW_INTERVAL=540000
+    ```
+
+4. Create env file for Notification
+
+    ```bash
+    $ cd ../../notification/src
+    $ sudo nano .env
+    ```
+
+    Copy-paste the following env variables to the .env file:
+
+    ```bash
+    # Notification Service Config
+
+    # Port on which service runs
+    APPLICATION_PORT=3002
+
+    # Application environment
+    APPLICATION_ENV=development
+
+    # Route after the base URL
+    APPLICATION_BASE_URL=/notification/
+
+    # Kafka endpoint
+    KAFKA_HOST="kafka:9092"
+
+    # Kafka topic name
+    KAFKA_TOPIC="develop.notifications"
+
+    # Kafka consumer group id
+    KAFKA_GROUP_ID="notification"
+
+    # Sendgrid API key
+    # SENDGRID_API_KEY="SG.asd89f7a9s8d7f.as9d8f7a9s8d7f-asd98f76as987df"
+    SENDGRID_API_KEY="SG.asd9f87a9s8d7f."
+
+    # Sendgrid sender email address
+    SENDGRID_FROM_MAIL="no-reply@some.org"
+
+    # Api doc URL
+    API_DOC_URL='/api-doc'
+
+    INTERNAL_ACCESS_TOKEN="internal_access_token"
+    ENABLE_LOG=true
+    ERROR_LOG_LEVEL='silly'
+    DISABLE_LOG=false
+    DEV_DATABASE_URL=postgres://shikshalokam:slpassword@localhost:5432/elevate_notification
+    ```
+
+5. Create env file for Scheduler
+
+    ```bash
+    $ cd ../../scheduler/src
+    $ sudo nano .env
+    ```
+
+    Copy-paste the following env variables to the .env file:
+
+    ```bash
+    # Scheduler Service Config
+
+    # Application Base URL
+    APPLICATION_BASE_URL=/scheduler/
+
+    # Kafka hosted server URL
+    KAFKA_URL=kafka:9092
+
+    # Kafka topic to push notification data
+    NOTIFICATION_KAFKA_TOPIC='develop.notifications'
+
+    # App running port
+    APPLICATION_PORT=4000
+
+    # Api doc URL
+    API_DOC_URL='/api-doc'
+
+    APPLICATION_ENV=development
+
+    ENABLE_LOG='true'
+
+    ERROR_LOG_LEVEL='silly'
+    DISABLE_LOG=false
+
+    DEFAULT_QUEUE='email'
+
+    REDIS_HOST='redis'
+    REDIS_PORT=6379
+    ```
+
+6. Create env file for Interface
+    ```bash
+    $ cd ../../interface-service/src
+    $ sudo nano .env
+    ```
+    Copy-paste the following env variables to the .env file:
+    ```bash
+    APPLICATION_PORT=3569
+    APPLICATION_ENV='development'
+    REQUIRED_PACKAGES="elevate-user@1.1.30 elevate-mentoring@1.1.23 elevate-scheduler@1.0.4"
+    SUPPORTED_HTTP_TYPES="GET POST PUT PATCH DELETE"
+    USER_SERVICE_BASE_URL='http://user:3001'
+    MENTORING_SERVICE_BASE_URL='http://mentoring:3000'
+    NOTIFICATION_SERVICE_BASE_URL='http://notification:3002'
+    SCHEDULER_SERVICE_BASE_URL='http://scheduler:4000'
+    ```
+7. Replace the latest image for all service (Optional)
+   Check the latest imge in shikshalokam [Docker hub](https://hub.docker.com/r/shikshalokamqa/elevate-user/tags)
+   master branch have the latest published image
+8. Run the docker compose file
+
+    ```bash
+    notification_env="/Users/rakeshkumar/Public/rocky/my/shikshalokam/notification/src/.env" \
+    scheduler_env="/Users/rakeshkumar/Public/rocky/my/shikshalokam/scheduler/src/.env" \
+    mentoring_env="/Users/rakeshkumar/Public/rocky/my/shikshalokam/mentoring/src/.env" \
+    users_env="/Users/rakeshkumar/Public/rocky/my/shikshalokam/user/src/.env" \
+    interface_env="/Users/rakeshkumar/Public/rocky/my/shikshalokam/user/src/.env" \
+    docker-compose -f docker-compose-mentoring.yml up
+    ```
+
+    The database will create when runs the docker as well as the migration and seeder files and the script to create the default organisation too
+
+9. To enable the citus extension & create the views for mentoring
+    ```bash
+    cd mentoring/src
+    ./setup.sh postgres://postgres:postgres@localhost:5432/elevate-user
+    ```
+    please pass the database url in the argument. Copy the database url from the env
+10. Stop the docker
+    ```bash
+    notification_env="/Users/rakeshkumar/Public/rocky/my/shikshalokam/notification/src/.env" \
+    scheduler_env="/Users/rakeshkumar/Public/rocky/my/shikshalokam/scheduler/src/.env" \
+    mentoring_env="/Users/rakeshkumar/Public/rocky/my/shikshalokam/mentoring/src/.env" \
+    users_env="/Users/rakeshkumar/Public/rocky/my/shikshalokam/user/src/.env" \
+    interface_env="/Users/rakeshkumar/Public/rocky/my/shikshalokam/user/src/.env" \
+    docker-compose -f docker-compose-mentoring.yml down
+    ```
+11. To view the running containers
+    ```bash
+    docker container ls
+    ```
+12. Login to the container
+    ```bash
+    docker exec -it ${container_id} bash
+    ```
+
 ## Install Node.js
 
 Refer to the [NodeSource distributions installation scripts](https://github.com/nodesource/distributions#installation-scripts) for Node.js installation.
