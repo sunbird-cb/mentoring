@@ -48,11 +48,11 @@ services:
         tag: 'redis-logs'
   mentoring:
     # update image url with latest one:
-    image: shikshalokamqa/elevate-mentoring:2.5
+    image: shikshalokamqa/elevate-mentoring:2.5.1
     ports:
-      - '5000:5000'
+      - '3000:3000'
     command: >
-      bash -c "npm run db:init && npm run db:seed:all && nodemon app.js"
+      bash -c "npm run db:init && npm run db:seed:all && (cd scripts && echo 'Running script' && node viewsScript.js) && nodemon app.js"
     environment:
       - KAFKA_URL=kafka:9092
       - USER_SERIVCE_HOST=http://user:3001
@@ -70,11 +70,11 @@ services:
 
   user:
     # Update with latest image
-    image: shikshalokamqa/elevate-user:2.5
+    image: shikshalokamqa/elevate-user:2.5.1
     ports:
-      - '5001:5001'
+      - '3001:3001'
     command: >
-      bash -c "npm run db:init && npm run db:seed:all && (cd scripts && echo 'Running script' && node insertDefaultOrg.js) && nodemon app.js"
+      bash -c "npm run db:init && npm run db:seed:all && (cd scripts && echo 'Running script' && node insertDefaultOrg.js && viewsScript.js && node -r module-alias/register uploadSampleCSV.js) && nodemon app.js"
     environment:
       - DEV_DATABASE_URL=postgres://postgres:postgres@citus_master:5432/elevate-user
       - KAFKA_URL=kafka:9092
@@ -92,7 +92,7 @@ services:
     # Update with latest image
     image: shikshalokamqa/elevate-notification:2.5
     ports:
-      - '5002:5002'
+      - '3002:3002'
     command: >
       bash -c "npm run db:init && nodemon app.js"
     environment:
@@ -109,7 +109,7 @@ services:
     # Update with latest image
     image: shikshalokamqa/elevate-scheduler:2.5
     ports:
-      - '5003:5003'
+      - '3003:3003'
     command: ['nodemon', 'app.js']
     environment:
       - KAFKA_URL=kafka:9092

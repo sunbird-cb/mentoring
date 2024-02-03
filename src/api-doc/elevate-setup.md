@@ -1,24 +1,20 @@
 # ShikshaLokam Elevate Project Documentation
 
-## System Requirements
-
--   **Operating System:** Ubuntu 22
--   **Node.js:** v20
--   **PostgreSQL:** 16
--   **Citus:** 12.1
-
 ## Setup with Docker File
+
+#### System Requirements
+
+It is necessary to install docker and docker-compose on the system.
+
+Please refer to the documentation at https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-compose-on-ubuntu-20-04 for instructions on installing Docker and Docker-Compose.
 
 1. Clone the repositories
     ```bash
     cd /opt/
     sudo mkdir backend
     cd backend/
-    git clone -b develop-2.5 --single-branch "https://github.com/ELEVATE-Project/mentoring.git"
-    git clone -b develop-2.5 --single-branch "https://github.com/ELEVATE-Project/user.git"
-    git clone -b develop-2.5 --single-branch "https://github.com/ELEVATE-Project/notification.git"
-    git clone -b develop --single-branch "https://github.com/ELEVATE-Project/scheduler.git"
-    git clone -b develop --single-branch "https://github.com/ELEVATE-Project/interface-service.git"
+    git clone -b master --single-branch "https://github.com/ELEVATE-Project/mentoring.git"
+    git clone -b master --single-branch "https://github.com/ELEVATE-Project/user.git"
     ```
 2. Create .env file for mentoring service
 
@@ -265,9 +261,19 @@
     ```
 
 4. Create env file for Notification
+   For notification service, there's no need to pull the github code. The repository link, https://github.com/ELEVATE-Project/notification.git, has been added for reference.
+   If the repository has already been cloned, use the commands following.
 
     ```bash
     $ cd ../../notification/src
+    $ sudo nano .env
+    ```
+
+    If the repository isn't cloned, make a notification folder and a.env file.
+
+    ```bash
+    $ cd ../../
+    $ mkdir notification
     $ sudo nano .env
     ```
 
@@ -313,8 +319,18 @@
 
 5. Create env file for Scheduler
 
+    It is not necessary to download the scheduling service's github code. For reference, add the following repository link: https://github.com/ELEVATE-Project/scheduler.git. If you have already cloned the repository, use the commands below.
+
     ```bash
     $ cd ../../scheduler/src
+    $ sudo nano .env
+    ```
+
+    If the repository isn't cloned, make a scheduler folder and a.env file.
+
+    ```bash
+    $ cd ../../
+    $ mkdir scheduler
     $ sudo nano .env
     ```
 
@@ -352,11 +368,23 @@
     ```
 
 6. Create env file for Interface
+   The github code for the interface service does not need to be downloaded. As a guide, add the repository link: https://github.com/ELEVATE-Project/interface-service.git. If you have already cloned the repository, follow the commands below.
+
     ```bash
     $ cd ../../interface-service/src
     $ sudo nano .env
     ```
+
+    If the repository isn't cloned, make a interface-service folder and a.env file.
+
+    ```bash
+    $ cd ../../
+    $ mkdir interface-service
+    $ sudo nano .env
+    ```
+
     Copy-paste the following env variables to the .env file:
+
     ```bash
     APPLICATION_PORT=3569
     APPLICATION_ENV='development'
@@ -367,6 +395,7 @@
     NOTIFICATION_SERVICE_BASE_URL='http://notification:3002'
     SCHEDULER_SERVICE_BASE_URL='http://scheduler:4000'
     ```
+
 7. Replace the latest image for all service (Optional)
    Check the latest imge in shikshalokam [Docker hub](https://hub.docker.com/r/shikshalokamqa/elevate-user/tags)
    master branch have the latest published image
@@ -381,9 +410,9 @@
     docker-compose -f docker-compose-mentoring.yml up
     ```
 
-    The database will create when runs the docker as well as the migration and seeder files and the script to create the default organisation too
+    During Docker runs, the database, migration seeder files, and the script to establish the default organization will also execute.
 
-9. To enable the citus extension & create the views for mentoring
+9. To enable the citus extension for mentoring
     ```bash
     cd mentoring/src
     ./setup.sh postgres://postgres:postgres@localhost:5432/elevate-user
@@ -406,6 +435,15 @@
     ```bash
     docker exec -it ${container_id} bash
     ```
+
+# Manual Setup
+
+## System Requirements
+
+-   **Operating System:** Ubuntu 22
+-   **Node.js:** v20
+-   **PostgreSQL:** 16
+-   **Citus:** 12.1
 
 ## Install Node.js
 

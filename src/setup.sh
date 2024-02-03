@@ -1,8 +1,5 @@
 # #!/bin/bash
 
-#Run the sample csv file upload
-node 'scripts/viewsScript.js'
-
 # Exit on error
 set -e
 
