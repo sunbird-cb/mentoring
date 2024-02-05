@@ -6,21 +6,22 @@
 
 It is necessary to install docker and docker-compose on the system.
 
-Please refer to the documentation at https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-compose-on-ubuntu-20-04 for instructions on installing Docker and Docker-Compose.
+Please refer to the below documentation to install Docker and docker-compose on the Ubuntu server. https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-compose-on-ubuntu-20-04
 
-1. Clone the repositories
+1. Download docker and setup file from elevate repositories
+   From [elevate-mentoring]("https://github.com/ELEVATE-Project/mentoring.git") master branch, download the docker-compose-mentoring.yml and src/setup.sh file. Using the command below, copy and paste the setup.sh and docker-compose-mentoring.yml files; change the source and destination paths.
     ```bash
-    cd /opt/
+    cd /elevate/
     sudo mkdir backend
     cd backend/
-    git clone -b master --single-branch "https://github.com/ELEVATE-Project/mentoring.git"
-    git clone -b master --single-branch "https://github.com/ELEVATE-Project/user.git"
+    cp ${source path} ${destination path}
     ```
 2. Create .env file for mentoring service
+   The [link](https://github.com/ELEVATE-Project/mentoring.git) to the mentoring repository has been provided for your reference:
 
     ```bash
-    $ cd /opt/backend/mentoring/src
-    $ sudo nano .env
+    $ cd /elevate/backend
+    $ sudo nano mentoring_env
     ```
 
     Copy paste the env variables .env file
@@ -169,10 +170,11 @@ Please refer to the documentation at https://www.digitalocean.com/community/tuto
     ```
 
 3. Create env file for user
+   The [link](https://github.com/ELEVATE-Project/user.git) to the user repository has been provided for your reference:
 
     ```bash
-    $ cd ../../user/src
-    $ sudo nano .env
+    $ cd .cd /elevate/backend
+    $ sudo nano user_env
     ```
 
     Copy-paste the following env variables to the .env file:
@@ -261,23 +263,14 @@ Please refer to the documentation at https://www.digitalocean.com/community/tuto
     ```
 
 4. Create env file for Notification
-   For notification service, there's no need to pull the github code. The repository link, https://github.com/ELEVATE-Project/notification.git, has been added for reference.
-   If the repository has already been cloned, use the commands following.
+   The [link](https://github.com/ELEVATE-Project/notification.git) to the notification repository has been provided for your reference:
 
     ```bash
-    $ cd ../../notification/src
-    $ sudo nano .env
+    $ cd /elevate/backend
+    $ sudo nano notification_env
     ```
 
-    If the repository isn't cloned, make a notification folder and a.env file.
-
-    ```bash
-    $ cd ../../
-    $ mkdir notification
-    $ sudo nano .env
-    ```
-
-    Copy-paste the following env variables to the .env file:
+    Copy-paste the following env variables to the notification_env file:
 
     ```bash
     # Notification Service Config
@@ -319,19 +312,11 @@ Please refer to the documentation at https://www.digitalocean.com/community/tuto
 
 5. Create env file for Scheduler
 
-    It is not necessary to download the scheduling service's github code. For reference, add the following repository link: https://github.com/ELEVATE-Project/scheduler.git. If you have already cloned the repository, use the commands below.
+    The [link](https://github.com/ELEVATE-Project/scheduler.git) to the scheduler repository has been provided for your reference:
 
     ```bash
-    $ cd ../../scheduler/src
-    $ sudo nano .env
-    ```
-
-    If the repository isn't cloned, make a scheduler folder and a.env file.
-
-    ```bash
-    $ cd ../../
-    $ mkdir scheduler
-    $ sudo nano .env
+    $ cd elevate/backend
+    $ sudo nano scheduler_env
     ```
 
     Copy-paste the following env variables to the .env file:
@@ -368,19 +353,11 @@ Please refer to the documentation at https://www.digitalocean.com/community/tuto
     ```
 
 6. Create env file for Interface
-   The github code for the interface service does not need to be downloaded. As a guide, add the repository link: https://github.com/ELEVATE-Project/interface-service.git. If you have already cloned the repository, follow the commands below.
+   The [link](https://github.com/ELEVATE-Project/interface-service.git) to the interface-service repository has been provided for your reference:
 
     ```bash
-    $ cd ../../interface-service/src
-    $ sudo nano .env
-    ```
-
-    If the repository isn't cloned, make a interface-service folder and a.env file.
-
-    ```bash
-    $ cd ../../
-    $ mkdir interface-service
-    $ sudo nano .env
+    $ cd /elevate/backend
+    $ sudo nano interface_env
     ```
 
     Copy-paste the following env variables to the .env file:
@@ -402,11 +379,11 @@ Please refer to the documentation at https://www.digitalocean.com/community/tuto
 8. Run the docker compose file
 
     ```bash
-    notification_env="/Users/rakeshkumar/Public/rocky/my/shikshalokam/notification/src/.env" \
-    scheduler_env="/Users/rakeshkumar/Public/rocky/my/shikshalokam/scheduler/src/.env" \
-    mentoring_env="/Users/rakeshkumar/Public/rocky/my/shikshalokam/mentoring/src/.env" \
-    users_env="/Users/rakeshkumar/Public/rocky/my/shikshalokam/user/src/.env" \
-    interface_env="/Users/rakeshkumar/Public/rocky/my/shikshalokam/user/src/.env" \
+    notification_env="/user/elevate/backend/notification_env" \
+    scheduler_env="/user/elevate/backend/scheduler_env" \
+    mentoring_env="/user/elevate/backend/mentoring_env" \
+    users_env="/user/elevate/backend/user_env" \
+    interface_env="/user/elevate/backend/interface_env \
     docker-compose -f docker-compose-mentoring.yml up
     ```
 
@@ -414,17 +391,17 @@ Please refer to the documentation at https://www.digitalocean.com/community/tuto
 
 9. To enable the citus extension for mentoring
     ```bash
-    cd mentoring/src
+    cd /elevate/backend
     ./setup.sh postgres://postgres:postgres@localhost:5432/elevate-user
     ```
     please pass the database url in the argument. Copy the database url from the env
 10. Stop the docker
     ```bash
-    notification_env="/Users/rakeshkumar/Public/rocky/my/shikshalokam/notification/src/.env" \
-    scheduler_env="/Users/rakeshkumar/Public/rocky/my/shikshalokam/scheduler/src/.env" \
-    mentoring_env="/Users/rakeshkumar/Public/rocky/my/shikshalokam/mentoring/src/.env" \
-    users_env="/Users/rakeshkumar/Public/rocky/my/shikshalokam/user/src/.env" \
-    interface_env="/Users/rakeshkumar/Public/rocky/my/shikshalokam/user/src/.env" \
+    notification_env="/user/elevate/backend/notification_env" \
+    scheduler_env="/user/elevate/backend/scheduler_env" \
+    mentoring_env="/user/elevate/backend/mentoring_env" \
+    users_env="/user/elevate/backend/user_env" \
+    interface_env="/user/elevate/backend/interface_env \
     docker-compose -f docker-compose-mentoring.yml down
     ```
 11. To view the running containers
@@ -435,6 +412,20 @@ Please refer to the documentation at https://www.digitalocean.com/community/tuto
     ```bash
     docker exec -it ${container_id} bash
     ```
+13. To persist the database data while down the docker
+    As per our docker-compose file, the data will lose when down the docker. To prevent that please add these additional things in the docker-compsoe file
+    Define the volume for each service respectively. Adjust the /path/to/postgres/data to your desired host machine path where you want to store the data. For example
+    ```bash
+    volumes:
+      - user_postgres_data:/path/to/postgres/data
+    ```
+    And below list each volumn. For example
+    ```bash
+    volumes:
+      user_postgres_data:
+      notification_postgres_data:
+    ```
+    With this setup, when you run docker-compose down, the data will be stored in the volumes, and it will persist even if you bring the containers down and then back up again using docker-compose up.
 
 # Manual Setup
 
