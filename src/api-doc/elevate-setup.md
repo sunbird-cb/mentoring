@@ -9,13 +9,25 @@ It is necessary to install docker and docker-compose on the system.
 Please refer to the below documentation to install Docker and docker-compose on the Ubuntu server. https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-compose-on-ubuntu-20-04
 
 1. Download docker and setup file from elevate repositories
-   From [elevate-mentoring]("https://github.com/ELEVATE-Project/mentoring.git") master branch, download the docker-compose-mentoring.yml and src/setup.sh file. Using the command below, copy and paste the setup.sh and docker-compose-mentoring.yml files; change the source and destination paths.
-    ```bash
+    - Create folder 'elevate'
+        ```bash
+        sudo mkdir elevate
+        ```
+    - Download the [docker-compose-mentoring.yml](https://github.com/ELEVATE-Project/mentoring/blob/temp_setup/docker-compose-mentoring.yml) file from the elevate-mentoring repository.
+    - Since the setup file for both the user and the mentoring service has the same name, download the [mentoring setup](https://github.com/ELEVATE-Project/mentoring/blob/temp_setup/src/setup.sh) first, then rename it to mentoring_setup.sh.
+    - Apply the same for user service also, download the [user setup](https://github.com/ELEVATE-Project/user/blob/temp_setup/src/setup.sh) file and rename to user_setup.sh
+    - Move mentoring, user setup file and docker-compose-mentoring.yml files; change the source and destination paths.
+      `bash
     cd /elevate/
     sudo mkdir backend
     cd backend/
     cp ${source path} ${destination path}
-    ```
+    `
+      For example,
+      `bash
+    cp /user/Downloads/docker-compose-mentoring.yml /elevate/backend/docker-compose-mentoring.yml
+    `
+      Please check the files
 2. Create .env file for mentoring service
    The [link](https://github.com/ELEVATE-Project/mentoring.git) to the mentoring repository has been provided for your reference:
 
