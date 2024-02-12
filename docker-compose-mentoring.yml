@@ -39,8 +39,8 @@ services:
       - '6379:6379'
     networks:
       - elevate_net
-    # depends_on:
-    #   - graylog
+    depends_on:
+      - graylog
     logging:
       driver: gelf
       options:
@@ -48,7 +48,7 @@ services:
         tag: 'redis-logs'
   mentoring:
     # update image url with latest one:
-    image: shikshalokamqa/elevate-mentoring:2.5.1
+    image: shikshalokamqa/elevate-mentoring:2.5.2
     ports:
       - '3000:3000'
     command: >
@@ -70,11 +70,11 @@ services:
 
   user:
     # Update with latest image
-    image: shikshalokamqa/elevate-user:2.5.1
+    image: shikshalokamqa/elevate-user:2.5.3
     ports:
       - '3001:3001'
     command: >
-      bash -c "npm run db:init && npm run db:seed:all && (cd scripts && echo 'Running script' && node insertDefaultOrg.js && viewsScript.js && node -r module-alias/register uploadSampleCSV.js) && nodemon app.js"
+      bash -c "npm run db:init && npm run db:seed:all && (cd scripts && echo 'Running script' && node insertDefaultOrg.js && node viewsScript.js && node -r module-alias/register uploadSampleCSV.js) && nodemon app.js"
     environment:
       - DEV_DATABASE_URL=postgres://postgres:postgres@citus_master:5432/elevate-user
       - KAFKA_URL=kafka:9092
@@ -107,9 +107,9 @@ services:
       - ${notification_env}
   scheduler:
     # Update with latest image
-    image: shikshalokamqa/elevate-scheduler:2.5
+    image: shikshalokamqa/elevate-scheduler:2.5.1
     ports:
-      - '3003:3003'
+      - '4000:4000'
     command: ['nodemon', 'app.js']
     environment:
       - KAFKA_URL=kafka:9092

@@ -9,31 +9,23 @@ It is necessary to install docker and docker-compose on the system.
 Please refer to the below documentation to install Docker and docker-compose on the Ubuntu server. https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-compose-on-ubuntu-20-04
 
 1. Download docker and setup file from elevate repositories
-    - Create folder 'elevate'
+
+    - Create folder 'elevate/backend'
         ```bash
-        sudo mkdir elevate
+        mkdir elevate
+        cd /elevate/
+        mkdir backend
         ```
-    - Download the [docker-compose-mentoring.yml](https://github.com/ELEVATE-Project/mentoring/blob/temp_setup/docker-compose-mentoring.yml) file from the elevate-mentoring repository.
-    - Since the setup file for both the user and the mentoring service has the same name, download the [mentoring setup](https://github.com/ELEVATE-Project/mentoring/blob/temp_setup/src/setup.sh) first, then rename it to mentoring_setup.sh.
-    - Apply the same for user service also, download the [user setup](https://github.com/ELEVATE-Project/user/blob/temp_setup/src/setup.sh) file and rename to user_setup.sh
-    - Move mentoring, user setup file and docker-compose-mentoring.yml files; change the source and destination paths.
-      `bash
-    cd /elevate/
-    sudo mkdir backend
-    cd backend/
-    cp ${source path} ${destination path}
-    `
-      For example,
-      `bash
-    cp /user/Downloads/docker-compose-mentoring.yml /elevate/backend/docker-compose-mentoring.yml
-    `
-      Please check the files
+    - Download the [docker-compose-mentoring.yml](https://github.com/ELEVATE-Project/mentoring/blob/temp_setup/docker-compose-mentoring.yml) file from the elevate-mentoring repository and paste that to the backend folder
+    - Since the setup file and distributionColumn file for both the user and the mentoring service has the same name, download the mentoring [setup](https://github.com/ELEVATE-Project/mentoring/blob/temp_setup/src/setup.sh) and mentoring[ distributionColumn.sql](https://github.com/ELEVATE-Project/mentoring/blob/temp_setup/src/distributionColumns.psql). Create a folder named "mentoring" and move the setup file and distributionColumn.sql to mentoring folder
+    - Apply the same for user service also, download the user[ setup](https://github.com/ELEVATE-Project/user/blob/temp_setup/src/setup.sh) file and user[ distributionColumn.sql](https://github.com/ELEVATE-Project/user/blob/temp_setup/src/distributionColumns.psql). Create a folder named "user" and move the setup file and distributionColumn.sql to user folder
+
 2. Create .env file for mentoring service
    The [link](https://github.com/ELEVATE-Project/mentoring.git) to the mentoring repository has been provided for your reference:
 
     ```bash
     $ cd /elevate/backend
-    $ sudo nano mentoring_env
+    $ nano mentoring_env
     ```
 
     Copy paste the env variables .env file
@@ -43,7 +35,7 @@ Please refer to the below documentation to install Docker and docker-compose on 
 
     # Port on which service runs
     APPLICATION_PORT=3000
-
+    APPLICATION_HOST=mentoring
     # Service environment
     APPLICATION_ENV=development
 
@@ -169,7 +161,7 @@ Please refer to the below documentation to install Docker and docker-compose on 
     # BIG_BLUE_BUTTON_LAST_USER_TIMEOUT_MINUTES=15
     SESSION_EDIT_WINDOW_MINUTES=0
     SESSION_MENTEE_LIMIT=5
-    DEV_DATABASE_URL=postgres://shikshalokam:slpassword@localhost:5432/elevate_mentoring
+    DEV_DATABASE_URL=postgres://postgres:postgres@localhost:5432/elevate_mentoring
     MENTOR_SESSION_DELETE_EMAIL_TEMPLATE='mentor_session_delete'
 
     SCHEDULER_SERVICE_HOST="http://scheduler:4000"
@@ -185,8 +177,7 @@ Please refer to the below documentation to install Docker and docker-compose on 
    The [link](https://github.com/ELEVATE-Project/user.git) to the user repository has been provided for your reference:
 
     ```bash
-    $ cd .cd /elevate/backend
-    $ sudo nano user_env
+    $ nano user_env
     ```
 
     Copy-paste the following env variables to the .env file:
@@ -198,6 +189,7 @@ Please refer to the below documentation to install Docker and docker-compose on 
     APP_NAME=MentorED
     APPLICATION_ENV=development
     APPLICATION_PORT=3001
+    APPLICATION_HOST=user
     AWS_ACCESS_KEY_ID="adsfg98a7sdfg"
     AWS_BUCKET_ENDPOINT="s3.ap-south-1.amazonaws.com"
     AWS_BUCKET_REGION="ap-south-1"
@@ -241,7 +233,7 @@ Please refer to the below documentation to install Docker and docker-compose on 
     DISABLE_LOG=false
     DEFAULT_ORGANISATION_CODE=default_code
 
-    DEV_DATABASE_URL=postgres://shikshalokam:slpassword@localhost:5432/elevate_user
+    DEV_DATABASE_URL=postgres://postgres:postgres@localhost:5432/elevate_user
     ADMIN_SECRET_CODE=a98sd76fasdfasd
     MENTORING_SERVICE_URL=test
     DEFAULT_QUEUE="test"
@@ -278,7 +270,6 @@ Please refer to the below documentation to install Docker and docker-compose on 
    The [link](https://github.com/ELEVATE-Project/notification.git) to the notification repository has been provided for your reference:
 
     ```bash
-    $ cd /elevate/backend
     $ sudo nano notification_env
     ```
 
@@ -319,7 +310,7 @@ Please refer to the below documentation to install Docker and docker-compose on 
     ENABLE_LOG=true
     ERROR_LOG_LEVEL='silly'
     DISABLE_LOG=false
-    DEV_DATABASE_URL=postgres://shikshalokam:slpassword@localhost:5432/elevate_notification
+    DEV_DATABASE_URL=postgres://postgres:postgres@localhost:5432/elevate_notification
     ```
 
 5. Create env file for Scheduler
@@ -327,7 +318,6 @@ Please refer to the below documentation to install Docker and docker-compose on 
     The [link](https://github.com/ELEVATE-Project/scheduler.git) to the scheduler repository has been provided for your reference:
 
     ```bash
-    $ cd elevate/backend
     $ sudo nano scheduler_env
     ```
 
@@ -368,7 +358,6 @@ Please refer to the below documentation to install Docker and docker-compose on 
    The [link](https://github.com/ELEVATE-Project/interface-service.git) to the interface-service repository has been provided for your reference:
 
     ```bash
-    $ cd /elevate/backend
     $ sudo nano interface_env
     ```
 
