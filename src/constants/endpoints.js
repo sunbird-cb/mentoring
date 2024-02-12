@@ -11,6 +11,7 @@ module.exports = {
 	ORGANIZATION_READ: 'v1/organization/read',
 	SEARCH_USERS: 'v1/account/search',
 	USERS_ROLE_LIST: 'v1/user-role/default',
+	LIST_USER_ROLE_PERMISSION: 'v1/role-permission-mapping/internalList',
 	// Endpoints of the scheduler service
 	CREATE_SCHEDULER_JOB: 'jobs/create', // Create scheduler job endpoint
 	UPDATE_DELAY: 'jobs/updateDelay', // Update delay of scheduled job endpoint

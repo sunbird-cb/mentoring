@@ -590,26 +590,39 @@ module.exports = class MentorsHelper {
 
 			const titles = mentorProfile.user_roles.map((role) => role.title)
 			const filter = { role_title: titles }
-			const permissionAndModules = await rolePermissionMappingQueries.findAll(filter)
-			const permissionsByModule = {}
+			const attributes = ['module', 'request_type']
+			const [mentorPermissionAndModules, userPermissionAndModules] = await Promise.all([
+				rolePermissionMappingQueries.findAll(filter, attributes),
+				userRequests.getListOfRolePermissions(titles),
+			])
+			const mentorPermissionByModules = mentorPermissionAndModules.reduce(
+				(mentorPermissionByModules, { module, request_type }) => {
+					if (mentorPermissionByModules[module]) {
+						mentorPermissionByModules[module].request_type = [
+							...new Set([...mentorPermissionByModules[module].request_type, ...request_type]),
+						]
+					} else {
+						mentorPermissionByModules[module] = { module, request_type: [...request_type] }
+					}
+					return mentorPermissionByModules
+				},
+				{}
+			)
 
-			permissionAndModules.forEach((rolePermission) => {
-				const module = rolePermission.module
-				const request_type = rolePermission.request_type
-
-				if (permissionsByModule[module]) {
-					const existingRequestTypes = permissionsByModule[module].request_type
-					const uniqueRequestTypes = new Set([...existingRequestTypes, ...request_type])
-					permissionsByModule[module].request_type = Array.from(uniqueRequestTypes)
-				} else {
-					permissionsByModule[module] = { module, request_type: [...request_type] }
-				}
-			})
-
-			const permissions = Object.entries(permissionsByModule).map(([key, value]) => ({
-				module: value.module,
-				request_type: value.request_type,
-			}))
+			const allPermissions = [
+				...new Set(
+					[
+						...Object.values(mentorPermissionByModules).map(({ module, request_type }) => ({
+							module,
+							request_types: request_type,
+							service: common.MENTORING_SERVICE,
+						})),
+						...userPermissionAndModules.data.result.permissions.map(
+							({ module, request_type, service }) => ({ module, request_types: request_type, service })
+						),
+					].map(JSON.stringify)
+				),
+			].map(JSON.parse)
 
 			return responses.successResponse({
 				statusCode: httpStatusCode.ok,
@@ -618,7 +631,7 @@ module.exports = class MentorsHelper {
 					sessions_attended: totalSession,
 					sessions_hosted: totalSessionHosted,
 					...mentorProfile,
-					permissions: permissions,
+					permissions: allPermissions,
 					...processDbResponse,
 				},
 			})
