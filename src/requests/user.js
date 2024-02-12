@@ -110,26 +110,6 @@ const getListOfUserDetails = function (userIds) {
 }
 
 /**
- * Get Permissions for roles.
- * @method
- * @name getListOfRolePermissions
- * @param {Array} roleTitles
- * @returns
- */
-
-const getListOfRolePermissions = function (roleTitles) {
-	return new Promise(async (resolve, reject) => {
-		try {
-			const apiUrl = userBaseUrl + endpoints.LIST_USER_ROLE_PERMISSION + '?role_title=' + roleTitles
-			const userRoleList = await requests.post(apiUrl, {}, '', true)
-			return resolve(userRoleList)
-		} catch (error) {
-			return reject(error)
-		}
-	})
-}
-
-/**
  * Share a mentor Profile.
  * @method
  * @name share
@@ -363,5 +343,4 @@ module.exports = {
 	search,
 	getListOfUserRoles,
 	listOrganization,
-	getListOfRolePermissions,
 }

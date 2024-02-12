@@ -20,7 +20,7 @@ const moment = require('moment')
 const menteesService = require('@services/mentees')
 const entityTypeService = require('@services/entity-type')
 const responses = require('@helpers/responses')
-
+const permissions = require('@helpers/getPermissions')
 module.exports = class MentorsHelper {
 	/**
 	 * upcomingSessions.
@@ -583,46 +583,12 @@ module.exports = class MentorsHelper {
 			// validationData = utils.removeParentEntityTypes(JSON.parse(JSON.stringify(validationData)))
 			const validationData = removeDefaultOrgEntityTypes(entityTypes, orgId)
 			const processDbResponse = utils.processDbResponse(mentorExtension, validationData)
-
 			const totalSessionHosted = await sessionQueries.countHostedSessions(id)
 
 			const totalSession = await sessionAttendeesQueries.countEnrolledSessions(id)
 
-			const titles = mentorProfile.user_roles.map((role) => role.title)
-			const filter = { role_title: titles }
-			const attributes = ['module', 'request_type']
-			const [mentorPermissionAndModules, userPermissionAndModules] = await Promise.all([
-				rolePermissionMappingQueries.findAll(filter, attributes),
-				userRequests.getListOfRolePermissions(titles),
-			])
-			const mentorPermissionByModules = mentorPermissionAndModules.reduce(
-				(mentorPermissionByModules, { module, request_type }) => {
-					if (mentorPermissionByModules[module]) {
-						mentorPermissionByModules[module].request_type = [
-							...new Set([...mentorPermissionByModules[module].request_type, ...request_type]),
-						]
-					} else {
-						mentorPermissionByModules[module] = { module, request_type: [...request_type] }
-					}
-					return mentorPermissionByModules
-				},
-				{}
-			)
-
-			const allPermissions = [
-				...new Set(
-					[
-						...Object.values(mentorPermissionByModules).map(({ module, request_type }) => ({
-							module,
-							request_types: request_type,
-							service: common.MENTORING_SERVICE,
-						})),
-						...userPermissionAndModules.data.result.permissions.map(
-							({ module, request_type, service }) => ({ module, request_types: request_type, service })
-						),
-					].map(JSON.stringify)
-				),
-			].map(JSON.parse)
+			const mentorPermissions = await permissions.getPermissions(mentorProfile.user_roles)
+			mentorProfile.permissions.push(...mentorPermissions)
 
 			return responses.successResponse({
 				statusCode: httpStatusCode.ok,
@@ -631,7 +597,6 @@ module.exports = class MentorsHelper {
 					sessions_attended: totalSession,
 					sessions_hosted: totalSessionHosted,
 					...mentorProfile,
-					permissions: allPermissions,
 					...processDbResponse,
 				},
 			})

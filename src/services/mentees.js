@@ -24,6 +24,7 @@ const entityTypeService = require('@services/entity-type')
 const entityType = require('@database/models/entityType')
 const { getEnrolledMentees } = require('@helpers/getEnrolledMentees')
 const responses = require('@helpers/responses')
+const permissions = require('@helpers/getPermissions')
 
 module.exports = class MenteesHelper {
 	/**
@@ -62,43 +63,8 @@ module.exports = class MenteesHelper {
 
 		const totalSession = await sessionAttendeesQueries.countEnrolledSessions(id)
 
-		const titles = mentorProfile.user_roles.map((role) => role.title)
-		const filter = { role_title: titles }
-		const attributes = ['module', 'request_type']
-		const [mentorPermissionAndModules, userPermissionAndModules] = await Promise.all([
-			rolePermissionMappingQueries.findAll(filter, attributes),
-			userRequests.getListOfRolePermissions(titles),
-		])
-		const mentorPermissionByModules = mentorPermissionAndModules.reduce(
-			(mentorPermissionByModules, { module, request_type }) => {
-				if (mentorPermissionByModules[module]) {
-					mentorPermissionByModules[module].request_type = [
-						...new Set([...mentorPermissionByModules[module].request_type, ...request_type]),
-					]
-				} else {
-					mentorPermissionByModules[module] = { module, request_type: [...request_type] }
-				}
-				return mentorPermissionByModules
-			},
-			{}
-		)
-
-		const allPermissions = [
-			...new Set(
-				[
-					...Object.values(mentorPermissionByModules).map(({ module, request_type }) => ({
-						module,
-						request_types: request_type,
-						service: common.MENTORING_SERVICE,
-					})),
-					...userPermissionAndModules.data.result.permissions.map(({ module, request_type, service }) => ({
-						module,
-						request_types: request_type,
-						service,
-					})),
-				].map(JSON.stringify)
-			),
-		].map(JSON.parse)
+		const menteePermissions = await permissions.getPermissions(menteeDetails.data.result.user_roles)
+		menteeDetails.data.result.permissions.push(...menteePermissions)
 
 		return responses.successResponse({
 			statusCode: httpStatusCode.ok,
@@ -106,7 +72,6 @@ module.exports = class MenteesHelper {
 			result: {
 				sessions_attended: totalSession,
 				...menteeDetails.data.result,
-				permissions: allPermissions,
 				...processDbResponse,
 			},
 		})
