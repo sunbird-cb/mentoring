@@ -52,6 +52,14 @@ module.exports = class SessionsHelper {
 
 	static async create(bodyData, loggedInUserId, orgId, isAMentor, notifyUser) {
 		try {
+			// check if session mentor is added in the mentee list
+			if (bodyData?.mentees?.includes(bodyData?.mentor_id)) {
+				return responses.failureResponse({
+					message: 'SESSION_MENTOR_ADDED_TO_MENTEE_LIST',
+					statusCode: httpStatusCode.bad_request,
+					responseCode: 'CLIENT_ERROR',
+				})
+			}
 			// If type is passed store it in upper case
 			bodyData.type && (bodyData.type = bodyData.type.toUpperCase())
 			// If session type is private and mentorId is not passed in request body return an error
@@ -327,6 +335,15 @@ module.exports = class SessionsHelper {
 			if (!sessionDetail) {
 				return responses.failureResponse({
 					message: 'SESSION_NOT_FOUND',
+					statusCode: httpStatusCode.bad_request,
+					responseCode: 'CLIENT_ERROR',
+				})
+			}
+
+			// check if session mentor is added in the mentee list
+			if (bodyData?.mentees?.includes(bodyData?.mentor_id)) {
+				return responses.failureResponse({
+					message: 'SESSION_MENTOR_ADDED_TO_MENTEE_LIST',
 					statusCode: httpStatusCode.bad_request,
 					responseCode: 'CLIENT_ERROR',
 				})
