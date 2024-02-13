@@ -330,8 +330,8 @@ exports.countHostedSessions = async (id) => {
 			raw: true,
 		})
 
-		const sessionIds = foundSessionOwnerships.map((ownership) => ownership.session_id)
-
+		const sessionIdsSet = new Set(foundSessionOwnerships.map((ownership) => ownership.session_id))
+		const sessionIds = [...sessionIdsSet]
 		const count = await Session.count({
 			where: {
 				id: { [Op.in]: sessionIds },
@@ -358,7 +358,8 @@ exports.getCreatedSessionsCountInDateRange = async (mentorId, startDate, endDate
 			raw: true,
 		})
 
-		const sessionIds = foundSessionOwnerships.map((ownership) => ownership.session_id)
+		const sessionIdsSet = new Set(foundSessionOwnerships.map((ownership) => ownership.session_id))
+		const sessionIds = [...sessionIdsSet]
 
 		const count = await Session.count({
 			where: {
@@ -385,7 +386,9 @@ exports.getHostedSessionsCountInDateRange = async (mentorId, startDate, endDate)
 			raw: true,
 		})
 
-		const sessionIds = foundSessionOwnerships.map((ownership) => ownership.session_id)
+		const sessionIdsSet = new Set(foundSessionOwnerships.map((ownership) => ownership.session_id))
+		const sessionIds = [...sessionIdsSet]
+
 		const count = await Session.count({
 			where: {
 				id: { [Op.in]: sessionIds },
