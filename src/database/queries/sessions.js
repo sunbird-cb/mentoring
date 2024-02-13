@@ -197,11 +197,14 @@ exports.removeAndReturnMentorSessions = async (userId) => {
 		const foundSessionOwnerships = await SessionOwnership.findAll({
 			attributes: ['session_id'],
 			where: {
-				mentor_id: userId,
+				user_id: userId,
 			},
 			raw: true,
 		})
-		const sessionIds = foundSessionOwnerships.map((ownership) => ownership.session_id)
+
+		// optain unique session_ids
+		const sessionIdsSet = new Set(foundSessionOwnerships.map((ownership) => ownership.session_id))
+		const sessionIds = [...sessionIdsSet]
 
 		const foundSessions = await Session.findAll({
 			where: {
@@ -321,7 +324,8 @@ exports.countHostedSessions = async (id) => {
 		const foundSessionOwnerships = await SessionOwnership.findAll({
 			attributes: ['session_id'],
 			where: {
-				mentor_id: id,
+				user_id: id,
+				type: common.SESSION_OWNERSHIP_TYPE.MENTOR,
 			},
 			raw: true,
 		})
@@ -348,7 +352,8 @@ exports.getCreatedSessionsCountInDateRange = async (mentorId, startDate, endDate
 		const foundSessionOwnerships = await SessionOwnership.findAll({
 			attributes: ['session_id'],
 			where: {
-				mentor_id: mentorId,
+				user_id: mentorId,
+				type: common.SESSION_OWNERSHIP_TYPE.CREATOR,
 			},
 			raw: true,
 		})
@@ -374,7 +379,8 @@ exports.getHostedSessionsCountInDateRange = async (mentorId, startDate, endDate)
 		const foundSessionOwnerships = await SessionOwnership.findAll({
 			attributes: ['session_id'],
 			where: {
-				mentor_id: mentorId,
+				user_id: mentorId,
+				type: common.SESSION_OWNERSHIP_TYPE.MENTOR,
 			},
 			raw: true,
 		})
@@ -435,12 +441,13 @@ exports.getMentorsUpcomingSessions = async (page, limit, search, mentorId) => {
 		const foundSessionOwnerships = await SessionOwnership.findAll({
 			attributes: ['session_id'],
 			where: {
-				mentor_id: mentorId,
+				user_id: mentorId,
 			},
 			raw: true,
 		})
 
-		const sessionIds = foundSessionOwnerships.map((ownership) => ownership.session_id)
+		const sessionIdsSet = new Set(foundSessionOwnerships.map((ownership) => ownership.session_id))
+		const sessionIds = [...sessionIdsSet]
 		const currentEpochTime = moment().unix()
 
 		const sessionAttendeesData = await Session.findAndCountAll({
@@ -748,11 +755,12 @@ exports.deactivateAndReturnMentorSessions = async (userId) => {
 		const foundSessionOwnerships = await SessionOwnership.findAll({
 			attributes: ['session_id'],
 			where: {
-				mentor_id: userId,
+				user_id: userId,
 			},
 			raw: true,
 		})
-		const sessionIds = foundSessionOwnerships.map((ownership) => ownership.session_id)
+		const sessionIdsSet = new Set(foundSessionOwnerships.map((ownership) => ownership.session_id))
+		const sessionIds = [...sessionIdsSet]
 		const foundSessions = await Session.findAll({
 			where: {
 				id: { [Op.in]: sessionIds },

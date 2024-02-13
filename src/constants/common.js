@@ -124,4 +124,8 @@ module.exports = {
 		PUBLIC: 'PUBLIC',
 		PRIVATE: 'PRIVATE',
 	},
+	SESSION_OWNERSHIP_TYPE: {
+		CREATOR: 'CREATOR',
+		MENTOR: 'MENTOR',
+	},
 }
