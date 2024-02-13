@@ -1042,9 +1042,6 @@ module.exports = class MenteesHelper {
 				if (queryParams.hasOwnProperty(key) & (key === 'organization_ids')) {
 					organization_ids = queryParams[key].split(',')
 				}
-				if (queryParams.hasOwnProperty(key) & (key === 'designation')) {
-					designation = queryParams[key].split(',')
-				}
 			}
 
 			const query = utils.processQueryParametersWithExclusions(queryParams)
@@ -1061,10 +1058,6 @@ module.exports = class MenteesHelper {
 				JSON.parse(JSON.stringify(validationData)),
 				userExtensionModelName
 			)
-
-			if (designation.length > 0) {
-				filteredQuery.designation = designation
-			}
 
 			const userType = [common.MENTEE_ROLE, common.MENTOR_ROLE]
 

@@ -734,9 +734,6 @@ module.exports = class MentorsHelper {
 				if (queryParams.hasOwnProperty(key) & (key === 'organization_ids')) {
 					organization_ids = queryParams[key].split(',')
 				}
-				if (queryParams.hasOwnProperty(key) & (key === 'designation')) {
-					designation = queryParams[key].split(',')
-				}
 
 				if (
 					queryParams.hasOwnProperty(key) &
@@ -758,10 +755,6 @@ module.exports = class MentorsHelper {
 
 			const filteredQuery = utils.validateFilters(query, validationData, mentorExtensionsModelName)
 			const userType = common.MENTOR_ROLE
-
-			if (designation.length > 0) {
-				filteredQuery.designation = designation
-			}
 
 			const saasFilter = await this.filterMentorListBasedOnSaasPolicy(userId, isAMentor)
 
