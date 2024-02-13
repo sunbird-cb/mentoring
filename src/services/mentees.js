@@ -24,6 +24,7 @@ const entityTypeService = require('@services/entity-type')
 const entityType = require('@database/models/entityType')
 const { getEnrolledMentees } = require('@helpers/getEnrolledMentees')
 const responses = require('@helpers/responses')
+const permissions = require('@helpers/getPermissions')
 
 module.exports = class MenteesHelper {
 	/**
@@ -62,28 +63,8 @@ module.exports = class MenteesHelper {
 
 		const totalSession = await sessionAttendeesQueries.countEnrolledSessions(id)
 
-		const titles = menteeDetails.data.result.user_roles.map((role) => role.title)
-		const filter = { role_title: titles }
-		const permissionAndModules = await rolePermissionMappingQueries.findAll(filter)
-		const permissionsByModule = {}
-
-		permissionAndModules.forEach((rolePermission) => {
-			const module = rolePermission.module
-			const request_type = rolePermission.request_type
-
-			if (permissionsByModule[module]) {
-				const existingRequestTypes = permissionsByModule[module].request_type
-				const uniqueRequestTypes = new Set([...existingRequestTypes, ...request_type])
-				permissionsByModule[module].request_type = Array.from(uniqueRequestTypes)
-			} else {
-				permissionsByModule[module] = { module, request_type: [...request_type] }
-			}
-		})
-
-		const permissions = Object.entries(permissionsByModule).map(([key, value]) => ({
-			module: value.module,
-			request_type: value.request_type,
-		}))
+		const menteePermissions = await permissions.getPermissions(menteeDetails.data.result.user_roles)
+		menteeDetails.data.result.permissions.push(...menteePermissions)
 
 		return responses.successResponse({
 			statusCode: httpStatusCode.ok,
@@ -91,7 +72,6 @@ module.exports = class MenteesHelper {
 			result: {
 				sessions_attended: totalSession,
 				...menteeDetails.data.result,
-				permissions: permissions,
 				...processDbResponse,
 			},
 		})
