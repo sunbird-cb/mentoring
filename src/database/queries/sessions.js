@@ -6,6 +6,7 @@ const sequelize = require('sequelize')
 const moment = require('moment')
 const SessionOwnership = require('../models/index').SessionOwnership
 const Sequelize = require('@database/models/index').sequelize
+const sessionOwnership = require('@database/queries/sessionOwnership')
 
 exports.getColumns = async () => {
 	try {
@@ -194,17 +195,15 @@ exports.removeAndReturnMentorSessions = async (userId) => {
 				},
 			],
 		}) */
-		const foundSessionOwnerships = await SessionOwnership.findAll({
-			attributes: ['session_id'],
-			where: {
-				user_id: userId,
-			},
-			raw: true,
-		})
 
-		// optain unique session_ids
-		const sessionIdsSet = new Set(foundSessionOwnerships.map((ownership) => ownership.session_id))
-		const sessionIds = [...sessionIdsSet]
+		const filter = {
+			user_id: userId,
+		}
+
+		const option = {
+			attributes: ['session_id'],
+		}
+		const sessionIds = await sessionOwnership.findAll(filter, option, true)
 
 		const foundSessions = await Session.findAll({
 			where: {
@@ -321,17 +320,16 @@ exports.updateEnrollmentCount = async (sessionId, increment = true) => {
 }
 exports.countHostedSessions = async (id) => {
 	try {
-		const foundSessionOwnerships = await SessionOwnership.findAll({
-			attributes: ['session_id'],
-			where: {
-				user_id: id,
-				type: common.SESSION_OWNERSHIP_TYPE.MENTOR,
-			},
-			raw: true,
-		})
+		const filter = {
+			user_id: id,
+			type: common.SESSION_OWNERSHIP_TYPE.MENTOR,
+		}
 
-		const sessionIdsSet = new Set(foundSessionOwnerships.map((ownership) => ownership.session_id))
-		const sessionIds = [...sessionIdsSet]
+		const option = {
+			attributes: ['session_id'],
+		}
+		const sessionIds = await sessionOwnership.findAll(filter, option, true)
+
 		const count = await Session.count({
 			where: {
 				id: { [Op.in]: sessionIds },
@@ -349,17 +347,15 @@ exports.countHostedSessions = async (id) => {
 
 exports.getCreatedSessionsCountInDateRange = async (mentorId, startDate, endDate) => {
 	try {
-		const foundSessionOwnerships = await SessionOwnership.findAll({
-			attributes: ['session_id'],
-			where: {
-				user_id: mentorId,
-				type: common.SESSION_OWNERSHIP_TYPE.CREATOR,
-			},
-			raw: true,
-		})
+		const filter = {
+			user_id: mentorId,
+			type: common.SESSION_OWNERSHIP_TYPE.CREATOR,
+		}
 
-		const sessionIdsSet = new Set(foundSessionOwnerships.map((ownership) => ownership.session_id))
-		const sessionIds = [...sessionIdsSet]
+		const option = {
+			attributes: ['session_id'],
+		}
+		const sessionIds = await sessionOwnership.findAll(filter, option, true)
 
 		const count = await Session.count({
 			where: {
@@ -377,17 +373,15 @@ exports.getCreatedSessionsCountInDateRange = async (mentorId, startDate, endDate
 
 exports.getHostedSessionsCountInDateRange = async (mentorId, startDate, endDate) => {
 	try {
-		const foundSessionOwnerships = await SessionOwnership.findAll({
-			attributes: ['session_id'],
-			where: {
-				user_id: mentorId,
-				type: common.SESSION_OWNERSHIP_TYPE.MENTOR,
-			},
-			raw: true,
-		})
+		const filter = {
+			user_id: mentorId,
+			type: common.SESSION_OWNERSHIP_TYPE.MENTOR,
+		}
 
-		const sessionIdsSet = new Set(foundSessionOwnerships.map((ownership) => ownership.session_id))
-		const sessionIds = [...sessionIdsSet]
+		const option = {
+			attributes: ['session_id'],
+		}
+		const sessionIds = await sessionOwnership.findAll(filter, option, true)
 
 		const count = await Session.count({
 			where: {
@@ -441,16 +435,15 @@ exports.getHostedSessionsCountInDateRange = async (mentorId, startDate, endDate)
 
 exports.getMentorsUpcomingSessions = async (page, limit, search, mentorId) => {
 	try {
-		const foundSessionOwnerships = await SessionOwnership.findAll({
-			attributes: ['session_id'],
-			where: {
-				user_id: mentorId,
-			},
-			raw: true,
-		})
+		const filter = {
+			user_id: mentorId,
+		}
 
-		const sessionIdsSet = new Set(foundSessionOwnerships.map((ownership) => ownership.session_id))
-		const sessionIds = [...sessionIdsSet]
+		const option = {
+			attributes: ['session_id'],
+		}
+		const sessionIds = await sessionOwnership.findAll(filter, option, true)
+
 		const currentEpochTime = moment().unix()
 
 		const sessionAttendeesData = await Session.findAndCountAll({
@@ -755,15 +748,14 @@ exports.deactivateAndReturnMentorSessions = async (userId) => {
 		const currentEpochTime = moment().unix()
 		const currentDateTime = moment().format('YYYY-MM-DD HH:mm:ssZ')
 
-		const foundSessionOwnerships = await SessionOwnership.findAll({
+		const filter = {
+			user_id: userId,
+		}
+
+		const option = {
 			attributes: ['session_id'],
-			where: {
-				user_id: userId,
-			},
-			raw: true,
-		})
-		const sessionIdsSet = new Set(foundSessionOwnerships.map((ownership) => ownership.session_id))
-		const sessionIds = [...sessionIdsSet]
+		}
+		const sessionIds = await sessionOwnership.findAll(filter, option, true)
 		const foundSessions = await Session.findAll({
 			where: {
 				id: { [Op.in]: sessionIds },

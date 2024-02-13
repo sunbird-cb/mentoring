@@ -218,7 +218,7 @@ module.exports = class SessionsHelper {
 			})
 
 			// create session ownership entry for the session mentor
-			let check = await sessionOwnershipQueries.create({
+			await sessionOwnershipQueries.create({
 				user_id: data.mentor_id,
 				session_id: data.id,
 				type: common.SESSION_OWNERSHIP_TYPE.MENTOR,
