@@ -712,9 +712,6 @@ module.exports = class MentorsHelper {
 				if (queryParams.hasOwnProperty(key) & (key === 'organization_ids')) {
 					organization_ids = queryParams[key].split(',')
 				}
-				if (queryParams.hasOwnProperty(key) & (key === 'designation')) {
-					designation = queryParams[key].split(',')
-				}
 
 				if (
 					queryParams.hasOwnProperty(key) &
@@ -736,10 +733,6 @@ module.exports = class MentorsHelper {
 
 			const filteredQuery = utils.validateFilters(query, validationData, mentorExtensionsModelName)
 			const userType = common.MENTOR_ROLE
-
-			if (designation.length > 0) {
-				filteredQuery.designation = designation
-			}
 
 			const saasFilter = await this.filterMentorListBasedOnSaasPolicy(userId, isAMentor)
 
@@ -931,9 +924,9 @@ module.exports = class MentorsHelper {
 					 * OR if mentor visibility is ALL that mentor is also accessible
 					 */
 					if (relatedOrganizations.length == 0) {
-						filter = `AND (${userPolicyDetails.organization_id} = ANY("visible_to_organizations") AND "visibility" != 'CURRENT' ) OR "visibility" = 'ALL' OR "organization_id" = ${userPolicyDetails.organization_id}`
+						filter = `AND ((${userPolicyDetails.organization_id} = ANY("visible_to_organizations") AND "visibility" != 'CURRENT' ) OR "visibility" = 'ALL' OR "organization_id" = ${userPolicyDetails.organization_id})`
 					} else {
-						filter = `AND (${userPolicyDetails.organization_id} = ANY("visible_to_organizations") AND "visibility" != 'CURRENT' ) OR "visibility" = 'ALL' OR  "organization_id" in ( ${relatedOrganizations})`
+						filter = `AND ((${userPolicyDetails.organization_id} = ANY("visible_to_organizations") AND "visibility" != 'CURRENT' ) OR "visibility" = 'ALL' OR  "organization_id" in ( ${relatedOrganizations}))`
 					}
 				}
 			}
