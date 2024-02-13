@@ -153,5 +153,6 @@
 	"SESSION_ATTENDEES": "Mentee list fetched successfully",
 	"FETCHED_ROLE_PERMISSION_SUCCESSFULLY": "permissions list fetched successfully",
 	"ORG_EXTENSION_CREATED_SUCCESSFULLY": "Organization Extension Created Successfully",
+	"SESSION_MENTOR_ADDED_TO_MENTEE_LIST": "You have added the Session Mentor in the Mentee list. Please go back and select another mentee.",
 	"INVALID_DATA_PASSED": "Invalid data passed for creation"
 }
