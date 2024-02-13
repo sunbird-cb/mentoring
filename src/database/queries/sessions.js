@@ -26,7 +26,21 @@ exports.getModelName = async () => {
 
 exports.create = async (data) => {
 	try {
-		return await Session.create(data)
+		const session = await Session.create(data)
+		// create session ownership entry for the session creator
+		await sessionOwnership.create({
+			user_id: session.created_by,
+			session_id: session.id,
+			type: common.SESSION_OWNERSHIP_TYPE.CREATOR,
+		})
+
+		// create session ownership entry for the session mentor
+		await sessionOwnership.create({
+			user_id: session.mentor_id,
+			session_id: session.id,
+			type: common.SESSION_OWNERSHIP_TYPE.MENTOR,
+		})
+		return session
 	} catch (error) {
 		return error
 	}
