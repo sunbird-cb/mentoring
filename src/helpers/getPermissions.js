@@ -31,7 +31,7 @@ module.exports = class UserHelper {
 
 			const allPermissions = Object.values(PermissionByModules).map(({ module, request_type }) => ({
 				module,
-				request_types: request_type,
+				request_type,
 				service: common.MENTORING_SERVICE,
 			}))
 

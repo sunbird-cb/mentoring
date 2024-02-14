@@ -64,6 +64,9 @@ module.exports = class MenteesHelper {
 		const totalSession = await sessionAttendeesQueries.countEnrolledSessions(id)
 
 		const menteePermissions = await permissions.getPermissions(menteeDetails.data.result.user_roles)
+		if (!Array.isArray(menteeDetails.data.result.permissions)) {
+			menteeDetails.data.result.permissions = []
+		}
 		menteeDetails.data.result.permissions.push(...menteePermissions)
 
 		return responses.successResponse({

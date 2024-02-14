@@ -588,6 +588,9 @@ module.exports = class MentorsHelper {
 			const totalSession = await sessionAttendeesQueries.countEnrolledSessions(id)
 
 			const mentorPermissions = await permissions.getPermissions(mentorProfile.user_roles)
+			if (!Array.isArray(mentorProfile.permissions)) {
+				mentorProfile.permissions = []
+			}
 			mentorProfile.permissions.push(...mentorPermissions)
 
 			return responses.successResponse({
