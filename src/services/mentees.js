@@ -24,6 +24,7 @@ const entityTypeService = require('@services/entity-type')
 const entityType = require('@database/models/entityType')
 const { getEnrolledMentees } = require('@helpers/getEnrolledMentees')
 const responses = require('@helpers/responses')
+const permissions = require('@helpers/getPermissions')
 
 module.exports = class MenteesHelper {
 	/**
@@ -62,28 +63,11 @@ module.exports = class MenteesHelper {
 
 		const totalSession = await sessionAttendeesQueries.countEnrolledSessions(id)
 
-		const titles = menteeDetails.data.result.user_roles.map((role) => role.title)
-		const filter = { role_title: titles }
-		const permissionAndModules = await rolePermissionMappingQueries.findAll(filter)
-		const permissionsByModule = {}
-
-		permissionAndModules.forEach((rolePermission) => {
-			const module = rolePermission.module
-			const request_type = rolePermission.request_type
-
-			if (permissionsByModule[module]) {
-				const existingRequestTypes = permissionsByModule[module].request_type
-				const uniqueRequestTypes = new Set([...existingRequestTypes, ...request_type])
-				permissionsByModule[module].request_type = Array.from(uniqueRequestTypes)
-			} else {
-				permissionsByModule[module] = { module, request_type: [...request_type] }
-			}
-		})
-
-		const permissions = Object.entries(permissionsByModule).map(([key, value]) => ({
-			module: value.module,
-			request_type: value.request_type,
-		}))
+		const menteePermissions = await permissions.getPermissions(menteeDetails.data.result.user_roles)
+		if (!Array.isArray(menteeDetails.data.result.permissions)) {
+			menteeDetails.data.result.permissions = []
+		}
+		menteeDetails.data.result.permissions.push(...menteePermissions)
 
 		return responses.successResponse({
 			statusCode: httpStatusCode.ok,
@@ -91,7 +75,6 @@ module.exports = class MenteesHelper {
 			result: {
 				sessions_attended: totalSession,
 				...menteeDetails.data.result,
-				permissions: permissions,
 				...processDbResponse,
 			},
 		})
@@ -1042,9 +1025,6 @@ module.exports = class MenteesHelper {
 				if (queryParams.hasOwnProperty(key) & (key === 'organization_ids')) {
 					organization_ids = queryParams[key].split(',')
 				}
-				if (queryParams.hasOwnProperty(key) & (key === 'designation')) {
-					designation = queryParams[key].split(',')
-				}
 			}
 
 			const query = utils.processQueryParametersWithExclusions(queryParams)
@@ -1061,10 +1041,6 @@ module.exports = class MenteesHelper {
 				JSON.parse(JSON.stringify(validationData)),
 				userExtensionModelName
 			)
-
-			if (designation.length > 0) {
-				filteredQuery.designation = designation
-			}
 
 			const userType = [common.MENTEE_ROLE, common.MENTOR_ROLE]
 
@@ -1267,9 +1243,9 @@ module.exports = class MenteesHelper {
 					 * OR if mentor visibility is ALL that mentor is also accessible
 					 */
 					if (relatedOrganizations.length == 0) {
-						filter = `AND (${userPolicyDetails.organization_id} = ANY("visible_to_organizations") AND "visibility" != 'CURRENT' ) OR "visibility" = 'ALL' OR "organization_id" = ${userPolicyDetails.organization_id}`
+						filter = `AND ((${userPolicyDetails.organization_id} = ANY("visible_to_organizations") AND "visibility" != 'CURRENT' ) OR "visibility" = 'ALL' OR "organization_id" = ${userPolicyDetails.organization_id})`
 					} else {
-						filter = `AND (${userPolicyDetails.organization_id} = ANY("visible_to_organizations") AND "visibility" != 'CURRENT' ) OR "visibility" = 'ALL' OR  "organization_id" in ( ${relatedOrganizations})`
+						filter = `AND ((${userPolicyDetails.organization_id} = ANY("visible_to_organizations") AND "visibility" != 'CURRENT' ) OR "visibility" = 'ALL' OR  "organization_id" in ( ${relatedOrganizations}))`
 					}
 				}
 			}

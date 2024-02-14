@@ -59,6 +59,7 @@ module.exports = {
 	MENTEE_ROLE: 'mentee',
 	USER_ROLE: 'user',
 	PUBLIC_ROLE: 'public',
+	MENTORING_SERVICE: 'mentoring',
 	SESSION_MANAGER_ROLE: 'session_manager',
 	MANAGE_SESSION_CODE: 'manage_session',
 	MEDIUM: 'medium',
@@ -123,5 +124,9 @@ module.exports = {
 	SESSION_TYPE: {
 		PUBLIC: 'PUBLIC',
 		PRIVATE: 'PRIVATE',
+	},
+	SESSION_OWNERSHIP_TYPE: {
+		CREATOR: 'CREATOR',
+		MENTOR: 'MENTOR',
 	},
 }

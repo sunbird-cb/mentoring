@@ -20,7 +20,7 @@ const moment = require('moment')
 const menteesService = require('@services/mentees')
 const entityTypeService = require('@services/entity-type')
 const responses = require('@helpers/responses')
-
+const permissions = require('@helpers/getPermissions')
 module.exports = class MentorsHelper {
 	/**
 	 * upcomingSessions.
@@ -583,33 +583,15 @@ module.exports = class MentorsHelper {
 			// validationData = utils.removeParentEntityTypes(JSON.parse(JSON.stringify(validationData)))
 			const validationData = removeDefaultOrgEntityTypes(entityTypes, orgId)
 			const processDbResponse = utils.processDbResponse(mentorExtension, validationData)
-
 			const totalSessionHosted = await sessionQueries.countHostedSessions(id)
 
 			const totalSession = await sessionAttendeesQueries.countEnrolledSessions(id)
 
-			const titles = mentorProfile.user_roles.map((role) => role.title)
-			const filter = { role_title: titles }
-			const permissionAndModules = await rolePermissionMappingQueries.findAll(filter)
-			const permissionsByModule = {}
-
-			permissionAndModules.forEach((rolePermission) => {
-				const module = rolePermission.module
-				const request_type = rolePermission.request_type
-
-				if (permissionsByModule[module]) {
-					const existingRequestTypes = permissionsByModule[module].request_type
-					const uniqueRequestTypes = new Set([...existingRequestTypes, ...request_type])
-					permissionsByModule[module].request_type = Array.from(uniqueRequestTypes)
-				} else {
-					permissionsByModule[module] = { module, request_type: [...request_type] }
-				}
-			})
-
-			const permissions = Object.entries(permissionsByModule).map(([key, value]) => ({
-				module: value.module,
-				request_type: value.request_type,
-			}))
+			const mentorPermissions = await permissions.getPermissions(mentorProfile.user_roles)
+			if (!Array.isArray(mentorProfile.permissions)) {
+				mentorProfile.permissions = []
+			}
+			mentorProfile.permissions.push(...mentorPermissions)
 
 			return responses.successResponse({
 				statusCode: httpStatusCode.ok,
@@ -618,7 +600,6 @@ module.exports = class MentorsHelper {
 					sessions_attended: totalSession,
 					sessions_hosted: totalSessionHosted,
 					...mentorProfile,
-					permissions: permissions,
 					...processDbResponse,
 				},
 			})
@@ -734,9 +715,6 @@ module.exports = class MentorsHelper {
 				if (queryParams.hasOwnProperty(key) & (key === 'organization_ids')) {
 					organization_ids = queryParams[key].split(',')
 				}
-				if (queryParams.hasOwnProperty(key) & (key === 'designation')) {
-					designation = queryParams[key].split(',')
-				}
 
 				if (
 					queryParams.hasOwnProperty(key) &
@@ -758,10 +736,6 @@ module.exports = class MentorsHelper {
 
 			const filteredQuery = utils.validateFilters(query, validationData, mentorExtensionsModelName)
 			const userType = common.MENTOR_ROLE
-
-			if (designation.length > 0) {
-				filteredQuery.designation = designation
-			}
 
 			const saasFilter = await this.filterMentorListBasedOnSaasPolicy(userId, isAMentor)
 
@@ -953,9 +927,9 @@ module.exports = class MentorsHelper {
 					 * OR if mentor visibility is ALL that mentor is also accessible
 					 */
 					if (relatedOrganizations.length == 0) {
-						filter = `AND (${userPolicyDetails.organization_id} = ANY("visible_to_organizations") AND "visibility" != 'CURRENT' ) OR "visibility" = 'ALL' OR "organization_id" = ${userPolicyDetails.organization_id}`
+						filter = `AND ((${userPolicyDetails.organization_id} = ANY("visible_to_organizations") AND "visibility" != 'CURRENT' ) OR "visibility" = 'ALL' OR "organization_id" = ${userPolicyDetails.organization_id})`
 					} else {
-						filter = `AND (${userPolicyDetails.organization_id} = ANY("visible_to_organizations") AND "visibility" != 'CURRENT' ) OR "visibility" = 'ALL' OR  "organization_id" in ( ${relatedOrganizations})`
+						filter = `AND ((${userPolicyDetails.organization_id} = ANY("visible_to_organizations") AND "visibility" != 'CURRENT' ) OR "visibility" = 'ALL' OR  "organization_id" in ( ${relatedOrganizations}))`
 					}
 				}
 			}

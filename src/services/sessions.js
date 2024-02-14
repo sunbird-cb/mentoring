@@ -13,7 +13,6 @@ const mentorExtensionQueries = require('@database/queries/mentorExtension')
 const menteeExtensionQueries = require('@database/queries/userExtension')
 const sessionEnrollmentQueries = require('@database/queries/sessionEnrollments')
 const postSessionQueries = require('@database/queries/postSessionDetail')
-const sessionOwnershipQueries = require('@database/queries/sessionOwnership')
 const entityTypeQueries = require('@database/queries/entityType')
 const entitiesQueries = require('@database/queries/entity')
 const { Op } = require('sequelize')
@@ -217,12 +216,6 @@ module.exports = class SessionsHelper {
 			if (menteeIdsToEnroll.length > 0) {
 				await this.addMentees(data.id, menteeIdsToEnroll, bodyData.time_zone)
 			}
-
-			// create session ownership for the session creator
-			await sessionOwnershipQueries.create({
-				mentor_id: loggedInUserId,
-				session_id: data.id,
-			})
 
 			await this.setMentorPassword(data.id, data.mentor_id)
 			await this.setMenteePassword(data.id, data.created_at)
