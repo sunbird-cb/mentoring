@@ -11,15 +11,33 @@ Please refer to the below documentation to install Docker and docker-compose on 
 1. Download the docker and setup file from the elevate repositories
 
     - Create folder 'elevate/backend'
+
         ```bash
         mkdir elevate
         cd elevate/
         mkdir backend
         cd backend
         ```
+
     - Download the [docker-compose-mentoring.yml](https://github.com/ELEVATE-Project/mentoring/blob/temp_setup/docker-compose-mentoring.yml) file from the elevate-mentoring repository and paste that to the backend folder
-    - Since the setup file and distributionColumn file for both the user and the mentoring service have the same name, download the mentoring [setup](https://github.com/ELEVATE-Project/mentoring/blob/temp_setup/src/setup.sh) and mentoring[ distributionColumn.sql](https://github.com/ELEVATE-Project/mentoring/blob/temp_setup/src/distributionColumns.psql). Create a folder named "mentoring" and move the setup file and distributionColumn.sql to mentoring folder
-    - Apply the same for user service also, download the user[ setup](https://github.com/ELEVATE-Project/user/blob/temp_setup/src/setup.sh) file and user[ distributionColumn.sql](https://github.com/ELEVATE-Project/user/blob/temp_setup/src/distributionColumns.sql). Create a folder named "user" and move the setup file and distributionColumn.sql to user folder
+    - The setup of the mentoring service and the user require two files, distributionColumn.sql and setup.sh, respectively. Because of this, we are making two files inside the backend folder called user and mentoring in order to resolve the name problem.
+    - Create a folder named mentoring inside backend folder
+        ```bash
+        mkdir mentoring
+        ```
+    - Download the below 2 files from the mentoring service and paste them into the mentoring folder.
+        - [setup file of mentoring service](https://github.com/ELEVATE-Project/mentoring/blob/temp_setup/src/setup.sh)
+        - [distributionColumn file of mentoring service ](https://github.com/ELEVATE-Project/mentoring/blob/temp_setup/src/distributionColumns.psql)
+    - Create a folder named user inside backend folder
+
+        ```bash
+        mkdir user
+        ```
+
+    - Do the same for user; download the below 2 files from the user service and paste them into the user folder.
+        - [ setup file of user service](https://github.com/ELEVATE-Project/user/blob/temp_setup/src/setup.sh)
+        - [ distributionColumn.sql of user service ](https://github.com/ELEVATE-Project/user/blob/temp_setup/src/distributionColumns.sql)
+
 
 2. Create .env file for mentoring service
    The [link](https://github.com/ELEVATE-Project/mentoring.git) to the mentoring repository has been provided for your reference:
