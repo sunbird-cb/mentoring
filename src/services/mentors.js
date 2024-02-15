@@ -804,12 +804,6 @@ module.exports = class MentorsHelper {
 				false
 			)
 
-			if (organization_ids.length > 0) {
-				extensionDetails.data = extensionDetails.data.filter((mentee) =>
-					organization_ids.includes(String(mentee.organization_id))
-				)
-			}
-
 			if (extensionDetails.data.length > 0) {
 				const uniqueOrgIds = [...new Set(extensionDetails.data.map((obj) => obj.organization_id))]
 				extensionDetails.data = await entityTypeService.processEntityTypesToAddValueLabels(
@@ -897,7 +891,7 @@ module.exports = class MentorsHelper {
 	 * @param {Boolean} isAMentor 				- user mentor or not.
 	 * @returns {JSON} 							- List of filtered sessions
 	 */
-	static async filterMentorListBasedOnSaasPolicy(userId, isAMentor) {
+	static async filterMentorListBasedOnSaasPolicy(userId, isAMentor, organization_ids = []) {
 		try {
 			const userPolicyDetails = isAMentor
 				? await mentorQueries.getMentorExtension(userId, ['external_mentor_visibility', 'organization_id'])
@@ -920,7 +914,7 @@ module.exports = class MentorsHelper {
 
 				// list of related org ids
 				relatedOrganizations = userOrgDetails.data.result.related_orgs
-				if (relatedOrganizations) {
+				if (relatedOrganizations && organization_ids.length == 0) {
 					relatedOrganizations.push(userPolicyDetails.organization_id)
 				} else {
 					relatedOrganizations = []
@@ -928,19 +922,25 @@ module.exports = class MentorsHelper {
 
 				// Filter user data based on policy
 				// generate filter based on condition
-				if (userPolicyDetails.external_mentor_visibility === common.CURRENT) {
+				if (userPolicyDetails.external_mentor_visibility === common.CURRENT && organization_ids.length == 0) {
 					/**
 					 * if user external_mentor_visibility is current. He can only see his/her organizations mentors
 					 * so we will check mentor's organization_id and user organization_id are matching
 					 */
 					filter = `AND "organization_id" = ${userPolicyDetails.organization_id}`
-				} else if (userPolicyDetails.external_mentor_visibility === common.ASSOCIATED) {
+				} else if (
+					userPolicyDetails.external_mentor_visibility === common.ASSOCIATED &&
+					organization_ids.length == 0
+				) {
 					/**
 					 * If user external_mentor_visibility is associated
 					 * <<point**>> first we need to check if mentor's visible_to_organizations contain the user organization_id and verify mentor's visibility is not current (if it is ALL and ASSOCIATED it is accessible)
 					 */
 					filter = `AND (${userPolicyDetails.organization_id} = ANY("visible_to_organizations") AND "visibility" != 'CURRENT') OR "organization_id" = ${userPolicyDetails.organization_id}`
-				} else if (userPolicyDetails.external_mentor_visibility === common.ALL) {
+				} else if (
+					userPolicyDetails.external_mentor_visibility === common.ALL &&
+					organization_ids.length == 0
+				) {
 					/**
 					 * We need to check if mentor's visible_to_organizations contain the user organization_id and verify mentor's visibility is not current (if it is ALL and ASSOCIATED it is accessible)
 					 * OR if mentor visibility is ALL that mentor is also accessible
@@ -950,6 +950,10 @@ module.exports = class MentorsHelper {
 					} else {
 						filter = `AND ((${userPolicyDetails.organization_id} = ANY("visible_to_organizations") AND "visibility" != 'CURRENT' ) OR "visibility" = 'ALL' OR  "organization_id" in ( ${relatedOrganizations}))`
 					}
+				} else if (organization_ids.length > 0) {
+					filter = `AND "organization_id" in (${organization_ids.join(
+						','
+					)}) AND( "visibility" != 'CURRENT' OR "visibility" = 'ALL')`
 				}
 			}
 
