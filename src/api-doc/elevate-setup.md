@@ -8,23 +8,24 @@ It is necessary to install docker and docker-compose on the system.
 
 Please refer to the below documentation to install Docker and docker-compose on the Ubuntu server. https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-compose-on-ubuntu-20-04
 
-1. Download docker and setup file from elevate repositories
+1. Download the docker and setup file from the elevate repositories
 
     - Create folder 'elevate/backend'
         ```bash
         mkdir elevate
-        cd /elevate/
+        cd elevate/
         mkdir backend
+        cd backend
         ```
     - Download the [docker-compose-mentoring.yml](https://github.com/ELEVATE-Project/mentoring/blob/temp_setup/docker-compose-mentoring.yml) file from the elevate-mentoring repository and paste that to the backend folder
-    - Since the setup file and distributionColumn file for both the user and the mentoring service has the same name, download the mentoring [setup](https://github.com/ELEVATE-Project/mentoring/blob/temp_setup/src/setup.sh) and mentoring[ distributionColumn.sql](https://github.com/ELEVATE-Project/mentoring/blob/temp_setup/src/distributionColumns.psql). Create a folder named "mentoring" and move the setup file and distributionColumn.sql to mentoring folder
-    - Apply the same for user service also, download the user[ setup](https://github.com/ELEVATE-Project/user/blob/temp_setup/src/setup.sh) file and user[ distributionColumn.sql](https://github.com/ELEVATE-Project/user/blob/temp_setup/src/distributionColumns.psql). Create a folder named "user" and move the setup file and distributionColumn.sql to user folder
+    - Since the setup file and distributionColumn file for both the user and the mentoring service have the same name, download the mentoring [setup](https://github.com/ELEVATE-Project/mentoring/blob/temp_setup/src/setup.sh) and mentoring[ distributionColumn.sql](https://github.com/ELEVATE-Project/mentoring/blob/temp_setup/src/distributionColumns.psql). Create a folder named "mentoring" and move the setup file and distributionColumn.sql to mentoring folder
+    - Apply the same for user service also, download the user[ setup](https://github.com/ELEVATE-Project/user/blob/temp_setup/src/setup.sh) file and user[ distributionColumn.sql](https://github.com/ELEVATE-Project/user/blob/temp_setup/src/distributionColumns.sql). Create a folder named "user" and move the setup file and distributionColumn.sql to user folder
 
 2. Create .env file for mentoring service
    The [link](https://github.com/ELEVATE-Project/mentoring.git) to the mentoring repository has been provided for your reference:
 
     ```bash
-    $ cd /elevate/backend
+    $ cd elevate/backend
     $ nano mentoring_env
     ```
 
@@ -270,7 +271,7 @@ Please refer to the below documentation to install Docker and docker-compose on 
    The [link](https://github.com/ELEVATE-Project/notification.git) to the notification repository has been provided for your reference:
 
     ```bash
-    $ sudo nano notification_env
+    $ nano notification_env
     ```
 
     Copy-paste the following env variables to the notification_env file:
@@ -318,7 +319,7 @@ Please refer to the below documentation to install Docker and docker-compose on 
     The [link](https://github.com/ELEVATE-Project/scheduler.git) to the scheduler repository has been provided for your reference:
 
     ```bash
-    $ sudo nano scheduler_env
+    $ nano scheduler_env
     ```
 
     Copy-paste the following env variables to the .env file:
@@ -358,7 +359,7 @@ Please refer to the below documentation to install Docker and docker-compose on 
    The [link](https://github.com/ELEVATE-Project/interface-service.git) to the interface-service repository has been provided for your reference:
 
     ```bash
-    $ sudo nano interface_env
+    $ nano interface_env
     ```
 
     Copy-paste the following env variables to the .env file:
@@ -366,12 +367,13 @@ Please refer to the below documentation to install Docker and docker-compose on 
     ```bash
     APPLICATION_PORT=3569
     APPLICATION_ENV='development'
-    REQUIRED_PACKAGES="elevate-user@1.1.30 elevate-mentoring@1.1.23 elevate-scheduler@1.0.4"
+    REQUIRED_PACKAGES="elevate-user@1.1.32 elevate-mentoring@1.1.28 elevate-scheduler@1.0.4"
     SUPPORTED_HTTP_TYPES="GET POST PUT PATCH DELETE"
     USER_SERVICE_BASE_URL='http://user:3001'
     MENTORING_SERVICE_BASE_URL='http://mentoring:3000'
     NOTIFICATION_SERVICE_BASE_URL='http://notification:3002'
     SCHEDULER_SERVICE_BASE_URL='http://scheduler:4000'
+    INSTALLED_PACKAGES="elevate-user elevate-mentoring elevate-scheduler
     ```
 
 7. Replace the latest image for all service (Optional)
@@ -395,8 +397,8 @@ Please refer to the below documentation to install Docker and docker-compose on 
     cd /elevate/backend
     ./setup.sh postgres://postgres:postgres@localhost:5432/elevate-user
     ```
-    please pass the database url in the argument. Copy the database url from the env
-10. Stop the docker
+    please pass the database URL in the argument. Copy the database URL from the env file.
+10. Stop the docker containers
     ```bash
     notification_env="/user/elevate/backend/notification_env" \
     scheduler_env="/user/elevate/backend/scheduler_env" \
@@ -414,13 +416,13 @@ Please refer to the below documentation to install Docker and docker-compose on 
     docker exec -it ${container_id} bash
     ```
 13. To persist the database data while down the docker
-    As per our docker-compose file, the data will lose when down the docker. To prevent that please add these additional things in the docker-compsoe file
+    As per our docker-compose file, the data will be lost when down the docker. To prevent that, please add these additional things in the docker-compsoe file
     Define the volume for each service respectively. Adjust the /path/to/postgres/data to your desired host machine path where you want to store the data. For example
     ```bash
     volumes:
       - user_postgres_data:/path/to/postgres/data
     ```
-    And below list each volumn. For example
+    And below, list each volume. For example
     ```bash
     volumes:
       user_postgres_data:
