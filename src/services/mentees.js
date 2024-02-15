@@ -1137,12 +1137,6 @@ module.exports = class MenteesHelper {
 			extensionDetails.data = [...extensionDetails.data, ...mentorExtensionDetails.data]
 			extensionDetails.count += mentorExtensionDetails.count
 
-			// if (organization_ids.length > 0) {
-			// 	extensionDetails.data = extensionDetails.data.filter((mentee) =>
-			// 		organization_ids.includes(String(mentee.organization_id))
-			// 	)
-			// }
-
 			if (extensionDetails.data.length > 0) {
 				const uniqueOrgIds = [...new Set(extensionDetails.data.map((obj) => obj.organization_id))]
 				extensionDetails.data = await entityTypeService.processEntityTypesToAddValueLabels(
@@ -1195,12 +1189,6 @@ module.exports = class MenteesHelper {
 					return sortOrder * a[sortBy].localeCompare(b[sortBy])
 				})
 			}
-
-			// add index number to the response
-			userDetails.data.result.data = userDetails.data.result.data.map((data, index) => ({
-				...data,
-				index_number: index + 1 + pageSize * (pageNo - 1), //To keep consistency with pagination
-			}))
 
 			return responses.successResponse({
 				statusCode: httpStatusCode.ok,
@@ -1275,7 +1263,7 @@ module.exports = class MenteesHelper {
 				} else if (organization_ids.length > 0) {
 					filter = `AND "organization_id" in (${organization_ids.join(
 						','
-					)}) AND( "visibility" != 'CURRENT' OR "visibility" = 'ALL')`
+					)}) AND ( ARRAY[${organization_ids}] @> "visible_to_organizations" AND "visibility" = 'CURRENT' OR "visibility" = 'ALL')`
 				}
 			}
 

@@ -837,8 +837,6 @@ module.exports = class MentorsHelper {
 			if (directory) {
 				let foundKeys = {}
 				let result = []
-				userDetails.data.result.data = await this.addIndexNumber(userDetails, pageNo, pageSize)
-
 				for (let user of userDetails.data.result.data) {
 					let firstChar = user.name.charAt(0)
 					firstChar = firstChar.toUpperCase()
@@ -868,9 +866,6 @@ module.exports = class MentorsHelper {
 						return sortOrder * a[sortBy].localeCompare(b[sortBy])
 					})
 				}
-
-				// add index number to the response
-				userDetails.data.result.data = await this.addIndexNumber(userDetails, pageNo, pageSize)
 			}
 
 			return responses.successResponse({
@@ -953,7 +948,7 @@ module.exports = class MentorsHelper {
 				} else if (organization_ids.length > 0) {
 					filter = `AND "organization_id" in (${organization_ids.join(
 						','
-					)}) AND( "visibility" != 'CURRENT' OR "visibility" = 'ALL')`
+					)}) AND ( ARRAY[${organization_ids}] @> "visible_to_organizations" AND "visibility" = 'CURRENT' OR "visibility" = 'ALL')`
 				}
 			}
 
@@ -1049,12 +1044,5 @@ module.exports = class MentorsHelper {
 		} catch (error) {
 			throw error
 		}
-	}
-
-	static async addIndexNumber(userDetails, pageNo, pageSize) {
-		return userDetails.data.result.data.map((data, index) => ({
-			...data,
-			index_number: index + 1 + pageSize * (pageNo - 1),
-		}))
 	}
 }
