@@ -2113,12 +2113,11 @@ module.exports = class SessionsHelper {
 					responseCode: 'CLIENT_ERROR',
 				})
 			}
-
 			const menteeDetails = menteeAccounts.result.map((element) => ({
 				id: element.id,
 				email: element.email,
 				name: element.name,
-				roles: element.roles,
+				roles: element.user_roles,
 			}))
 
 			// Enroll mentees to the given session
