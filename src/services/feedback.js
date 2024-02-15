@@ -325,6 +325,15 @@ const getFeedbackQuestions = async function (formCode) {
 			let questions = await questionsQueries.find({
 				id: QuestionSet.questions,
 			})
+			const questionIndexMap = new Map()
+			QuestionSet.questions.forEach((id, index) => {
+				questionIndexMap.set(id.toString(), index)
+			})
+			questions.sort((x, y) => {
+				const idX = parseInt(x.id)
+				const idY = parseInt(y.id)
+				return questionIndexMap.get(idX.toString()) - questionIndexMap.get(idY.toString())
+			})
 
 			if (questions && questions.length > 0) {
 				questions.map((data) => {
