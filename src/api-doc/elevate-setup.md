@@ -8,32 +8,38 @@ It is necessary to install docker and docker-compose on the system.
 
 Please refer to the below documentation to install Docker and docker-compose on the Ubuntu server. https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-compose-on-ubuntu-20-04
 
-1. Download docker and setup file from elevate repositories
-    - Create folder 'elevate'
+1. Download the docker and setup file from the elevate repositories
+
+    - Create folder 'elevate/backend'
         ```bash
-        sudo mkdir elevate
+        mkdir elevate
+        cd elevate/
+        mkdir backend
+        cd backend
         ```
-    - Download the [docker-compose-mentoring.yml](https://github.com/ELEVATE-Project/mentoring/blob/temp_setup/docker-compose-mentoring.yml) file from the elevate-mentoring repository.
-    - Since the setup file for both the user and the mentoring service has the same name, download the [mentoring setup](https://github.com/ELEVATE-Project/mentoring/blob/temp_setup/src/setup.sh) first, then rename it to mentoring_setup.sh.
-    - Apply the same for user service also, download the [user setup](https://github.com/ELEVATE-Project/user/blob/temp_setup/src/setup.sh) file and rename to user_setup.sh
-    - Move mentoring, user setup file and docker-compose-mentoring.yml files; change the source and destination paths.
-      `bash
-    cd /elevate/
-    sudo mkdir backend
-    cd backend/
-    cp ${source path} ${destination path}
-    `
-      For example,
-      `bash
-    cp /user/Downloads/docker-compose-mentoring.yml /elevate/backend/docker-compose-mentoring.yml
-    `
-      Please check the files
+    - Download the [docker-compose-mentoring.yml](https://github.com/ELEVATE-Project/mentoring/blob/temp_setup/docker-compose-mentoring.yml) file from the elevate-mentoring repository and paste that to the backend folder
+    - The setup of the mentoring service and the user require two files, distributionColumn.sql and setup.sh, respectively. Because of this, we are making two files inside the backend folder called user and mentoring in order to resolve the name problem.
+    - Create a folder named mentoring inside backend folder
+        ```bash
+        mkdir mentoring
+        ```
+    - Download the below 2 files from the mentoring service and paste them into the mentoring folder.
+        - [setup file of mentoring service](https://github.com/ELEVATE-Project/mentoring/blob/temp_setup/src/setup.sh)
+        - [distributionColumn file of mentoring service ](https://github.com/ELEVATE-Project/mentoring/blob/temp_setup/src/distributionColumns.psql)
+    - Create a folder named user inside backend folder
+        ```bash
+        mkdir user
+        ```
+    - Do the same for user; download the below 2 files from the user service and paste them into the user folder.
+        - [ setup file of user service](https://github.com/ELEVATE-Project/user/blob/temp_setup/src/setup.sh)
+        - [ distributionColumn.sql of user service ](https://github.com/ELEVATE-Project/user/blob/temp_setup/src/distributionColumns.sql)
+
 2. Create .env file for mentoring service
    The [link](https://github.com/ELEVATE-Project/mentoring.git) to the mentoring repository has been provided for your reference:
 
     ```bash
-    $ cd /elevate/backend
-    $ sudo nano mentoring_env
+    $ cd elevate/backend
+    $ nano mentoring_env
     ```
 
     Copy paste the env variables .env file
@@ -43,7 +49,7 @@ Please refer to the below documentation to install Docker and docker-compose on 
 
     # Port on which service runs
     APPLICATION_PORT=3000
-
+    APPLICATION_HOST=mentoring
     # Service environment
     APPLICATION_ENV=development
 
@@ -169,7 +175,7 @@ Please refer to the below documentation to install Docker and docker-compose on 
     # BIG_BLUE_BUTTON_LAST_USER_TIMEOUT_MINUTES=15
     SESSION_EDIT_WINDOW_MINUTES=0
     SESSION_MENTEE_LIMIT=5
-    DEV_DATABASE_URL=postgres://shikshalokam:slpassword@localhost:5432/elevate_mentoring
+    DEV_DATABASE_URL=postgres://postgres:postgres@localhost:5432/elevate_mentoring
     MENTOR_SESSION_DELETE_EMAIL_TEMPLATE='mentor_session_delete'
 
     SCHEDULER_SERVICE_HOST="http://scheduler:4000"
@@ -185,8 +191,7 @@ Please refer to the below documentation to install Docker and docker-compose on 
    The [link](https://github.com/ELEVATE-Project/user.git) to the user repository has been provided for your reference:
 
     ```bash
-    $ cd .cd /elevate/backend
-    $ sudo nano user_env
+    $ nano user_env
     ```
 
     Copy-paste the following env variables to the .env file:
@@ -198,6 +203,7 @@ Please refer to the below documentation to install Docker and docker-compose on 
     APP_NAME=MentorED
     APPLICATION_ENV=development
     APPLICATION_PORT=3001
+    APPLICATION_HOST=user
     AWS_ACCESS_KEY_ID="adsfg98a7sdfg"
     AWS_BUCKET_ENDPOINT="s3.ap-south-1.amazonaws.com"
     AWS_BUCKET_REGION="ap-south-1"
@@ -241,7 +247,7 @@ Please refer to the below documentation to install Docker and docker-compose on 
     DISABLE_LOG=false
     DEFAULT_ORGANISATION_CODE=default_code
 
-    DEV_DATABASE_URL=postgres://shikshalokam:slpassword@localhost:5432/elevate_user
+    DEV_DATABASE_URL=postgres://postgres:postgres@localhost:5432/elevate_user
     ADMIN_SECRET_CODE=a98sd76fasdfasd
     MENTORING_SERVICE_URL=test
     DEFAULT_QUEUE="test"
@@ -278,8 +284,7 @@ Please refer to the below documentation to install Docker and docker-compose on 
    The [link](https://github.com/ELEVATE-Project/notification.git) to the notification repository has been provided for your reference:
 
     ```bash
-    $ cd /elevate/backend
-    $ sudo nano notification_env
+    $ nano notification_env
     ```
 
     Copy-paste the following env variables to the notification_env file:
@@ -319,7 +324,7 @@ Please refer to the below documentation to install Docker and docker-compose on 
     ENABLE_LOG=true
     ERROR_LOG_LEVEL='silly'
     DISABLE_LOG=false
-    DEV_DATABASE_URL=postgres://shikshalokam:slpassword@localhost:5432/elevate_notification
+    DEV_DATABASE_URL=postgres://postgres:postgres@localhost:5432/elevate_notification
     ```
 
 5. Create env file for Scheduler
@@ -327,8 +332,7 @@ Please refer to the below documentation to install Docker and docker-compose on 
     The [link](https://github.com/ELEVATE-Project/scheduler.git) to the scheduler repository has been provided for your reference:
 
     ```bash
-    $ cd elevate/backend
-    $ sudo nano scheduler_env
+    $ nano scheduler_env
     ```
 
     Copy-paste the following env variables to the .env file:
@@ -368,8 +372,7 @@ Please refer to the below documentation to install Docker and docker-compose on 
    The [link](https://github.com/ELEVATE-Project/interface-service.git) to the interface-service repository has been provided for your reference:
 
     ```bash
-    $ cd /elevate/backend
-    $ sudo nano interface_env
+    $ nano interface_env
     ```
 
     Copy-paste the following env variables to the .env file:
@@ -377,12 +380,13 @@ Please refer to the below documentation to install Docker and docker-compose on 
     ```bash
     APPLICATION_PORT=3569
     APPLICATION_ENV='development'
-    REQUIRED_PACKAGES="elevate-user@1.1.30 elevate-mentoring@1.1.23 elevate-scheduler@1.0.4"
+    REQUIRED_PACKAGES="elevate-user@1.1.32 elevate-mentoring@1.1.28 elevate-scheduler@1.0.4"
     SUPPORTED_HTTP_TYPES="GET POST PUT PATCH DELETE"
     USER_SERVICE_BASE_URL='http://user:3001'
     MENTORING_SERVICE_BASE_URL='http://mentoring:3000'
     NOTIFICATION_SERVICE_BASE_URL='http://notification:3002'
     SCHEDULER_SERVICE_BASE_URL='http://scheduler:4000'
+    INSTALLED_PACKAGES="elevate-user elevate-mentoring elevate-scheduler
     ```
 
 7. Replace the latest image for all service (Optional)
@@ -406,8 +410,8 @@ Please refer to the below documentation to install Docker and docker-compose on 
     cd /elevate/backend
     ./setup.sh postgres://postgres:postgres@localhost:5432/elevate-user
     ```
-    please pass the database url in the argument. Copy the database url from the env
-10. Stop the docker
+    please pass the database URL in the argument. Copy the database URL from the env file.
+10. Stop the docker containers
     ```bash
     notification_env="/user/elevate/backend/notification_env" \
     scheduler_env="/user/elevate/backend/scheduler_env" \
@@ -425,13 +429,13 @@ Please refer to the below documentation to install Docker and docker-compose on 
     docker exec -it ${container_id} bash
     ```
 13. To persist the database data while down the docker
-    As per our docker-compose file, the data will lose when down the docker. To prevent that please add these additional things in the docker-compsoe file
+    As per our docker-compose file, the data will be lost when down the docker. To prevent that, please add these additional things in the docker-compsoe file
     Define the volume for each service respectively. Adjust the /path/to/postgres/data to your desired host machine path where you want to store the data. For example
     ```bash
     volumes:
       - user_postgres_data:/path/to/postgres/data
     ```
-    And below list each volumn. For example
+    And below, list each volume. For example
     ```bash
     volumes:
       user_postgres_data:
