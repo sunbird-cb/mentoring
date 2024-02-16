@@ -767,10 +767,13 @@ module.exports = class SessionsHelper {
 						}
 					}
 				})
-				// send mail to mentor if session is created and handled by a manager
+				// send mail to mentor if session is created and handled by a manager and if there is any data change
 				// send notification only if front end request for user notification
 				// notifyUser ---> this key is added for above purpose
-				if (isSessionCreatedByManager && notifyUser) {
+				if (
+					(method == common.DELETE_METHOD && isSessionCreatedByManager) ||
+					(notifyUser && isSessionDataChanged)
+				) {
 					let response = await this.pushSessionRelatedMentorEmailToKafka(
 						mentorEmailTemplate,
 						orgId,
