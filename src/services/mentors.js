@@ -77,6 +77,15 @@ module.exports = class MentorsHelper {
 				})
 			}
 
+			// Process entity types to add value labels.
+			const uniqueOrgIds = [...new Set(upcomingSessions.data.map((obj) => obj.mentor_organization_id))]
+			upcomingSessions.data = await entityTypeService.processEntityTypesToAddValueLabels(
+				upcomingSessions.data,
+				uniqueOrgIds,
+				common.sessionModelName,
+				'mentor_organization_id'
+			)
+
 			upcomingSessions.data = await this.sessionMentorDetails(upcomingSessions.data)
 			if (menteeUserId && id != menteeUserId) {
 				upcomingSessions.data = await this.menteeSessionDetails(upcomingSessions.data, menteeUserId)
