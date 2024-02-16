@@ -946,9 +946,17 @@ module.exports = class MentorsHelper {
 						filter = `AND ((${userPolicyDetails.organization_id} = ANY("visible_to_organizations") AND "visibility" != 'CURRENT' ) OR "visibility" = 'ALL' OR  "organization_id" in ( ${relatedOrganizations}))`
 					}
 				} else if (organization_ids.length > 0) {
-					filter = `AND "organization_id" in (${organization_ids.join(',')}) AND ( ARRAY[${
-						userPolicyDetails.organization_id
-					}] @> "visible_to_organizations" AND "visibility" = 'CURRENT' OR "visibility" = 'ALL')`
+					let orgFromOrgPolicy = organization_ids.includes(userPolicyDetails.organization_id.toString())
+						? false
+						: userPolicyDetails.organization_id
+					const visible_to_organizations =
+						orgFromOrgPolicy !== false
+							? `ARRAY[${userPolicyDetails.organization_id}] @> "visible_to_organizations" AND`
+							: ''
+
+					filter = `AND "organization_id" in (${organization_ids.join(
+						','
+					)}) AND ( ${visible_to_organizations} "visibility" = 'CURRENT' OR "visibility" = 'ALL')`
 				}
 			}
 
