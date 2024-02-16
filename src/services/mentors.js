@@ -1008,7 +1008,6 @@ module.exports = class MentorsHelper {
 					}
 				}
 				item.is_assigned = item.mentor_id !== item.created_by
-				delete item.created_by
 			})
 			const uniqueOrgIds = [...new Set(sessionDetails.rows.map((obj) => obj.mentor_organization_id))]
 			sessionDetails.rows = await entityTypeService.processEntityTypesToAddValueLabels(
