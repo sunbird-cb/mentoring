@@ -895,17 +895,21 @@ module.exports = class SessionsHelper {
 			if (mentorExtension?.user_id) {
 				const mentorExtensionsModelName = await mentorExtensionQueries.getModelName()
 
-				let entity_types = await entityTypeQueries.findUserEntityTypesAndEntities({
+				let entityTypes = await entityTypeQueries.findUserEntityTypesAndEntities({
 					status: 'ACTIVE',
 					organization_id: {
 						[Op.in]: [mentorExtension.organization_id, defaultOrgId],
 					},
 					model_names: { [Op.contains]: [mentorExtensionsModelName] },
 				})
-				const validation_data = removeDefaultOrgEntityTypes(entity_types, mentorExtension.organization_id)
+				const validationData = removeDefaultOrgEntityTypes(entityTypes, mentorExtension.organization_id)
+
 				const processedEntityType = utils.processDbResponse(
-					{ designation: mentorExtension.designation },
-					validation_data
+					{
+						designation: mentorExtension.designation,
+						custom_entity_text: mentorExtension.custom_entity_text,
+					},
+					validationData
 				)
 				sessionDetails.mentor_designation = processedEntityType.designation
 			}
