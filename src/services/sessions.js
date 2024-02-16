@@ -1893,10 +1893,14 @@ module.exports = class SessionsHelper {
 	 * @param {number} [page] - Page number for pagination.
 	 * @param {number} [limit] - Limit of sessions per page for pagination.
 	 * @param {boolean} [transformEntities=false] - Flag to indicate whether to transform entity types.
+	 * @param {boolean} sendEpochTime - Flag to indicate whether to pass start_date as epoch.
 	 * @returns {Promise<Array>} - Array of session objects with populated details.
 	 * @throws {Error} - Throws an error if there's an issue during processing.
 	 */
-	static async populateSessionDetails({ sessions, timezone, page, limit, transformEntities = false }) {
+	static async populateSessionDetails(
+		{ sessions, timezone, page, limit, transformEntities = false },
+		sendEpochTime = false
+	) {
 		try {
 			const uniqueOrgIds = [...new Set(sessions.map((obj) => obj.mentor_organization_id))]
 			sessions = await entityTypeService.processEntityTypesToAddValueLabels(
@@ -1919,7 +1923,12 @@ module.exports = class SessionsHelper {
 					indexNumber = index + 1 + (page && limit ? limit * (page - 1) : 0)
 
 					Object.assign(session, {
-						start_date: res.start_date,
+						// Check if sendEpochTimeAndMeetingInfo is false before adding start_date
+						...(sendEpochTime
+							? {}
+							: {
+									start_date: res.start_date,
+							  }),
 						start_time: res.start_time,
 						duration_in_minutes: res.duration_in_minutes,
 						mentee_count: menteeCount,
@@ -1977,12 +1986,15 @@ module.exports = class SessionsHelper {
 				})
 			}
 
-			sessions.rows = await this.populateSessionDetails({
-				sessions: sessions.rows,
-				timezone: timezone,
-				page: page,
-				limit: limit,
-			})
+			sessions.rows = await this.populateSessionDetails(
+				{
+					sessions: sessions.rows,
+					timezone: timezone,
+					page: page,
+					limit: limit,
+				},
+				true
+			)
 
 			const formattedSessionList = sessions.rows.map((session, index) => ({
 				id: session.id,
@@ -1991,7 +2003,7 @@ module.exports = class SessionsHelper {
 				type: session.type,
 				mentor_name: session.mentor_name,
 				start_date: session.start_date,
-				start_time: session.start_time,
+				end_date: session.end_date,
 				duration_in_minutes: session.duration_in_minutes,
 				status: session.status,
 				mentee_count: session.mentee_count,
