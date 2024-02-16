@@ -316,17 +316,17 @@ module.exports = class MenteesHelper {
 
 const getFeedbackQuestions = async function (formCode) {
 	try {
-		let QuestionSet = await questionSetQueries.findOneQuestionSet({
+		let questionSet = await questionSetQueries.findOneQuestionSet({
 			code: formCode,
 		})
 
 		let result = {}
-		if (QuestionSet && QuestionSet.questions) {
+		if (questionSet && questionSet.questions) {
 			let questions = await questionsQueries.find({
-				id: QuestionSet.questions,
+				id: questionSet.questions,
 			})
 			const questionIndexMap = new Map()
-			QuestionSet.questions.forEach((id, index) => {
+			questionSet.questions.forEach((id, index) => {
 				questionIndexMap.set(id.toString(), index)
 			})
 			questions.sort((x, y) => {
