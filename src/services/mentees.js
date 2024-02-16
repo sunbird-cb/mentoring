@@ -1244,9 +1244,11 @@ module.exports = class MenteesHelper {
 						filter = `AND ((${userPolicyDetails.organization_id} = ANY("visible_to_organizations") AND "visibility" != 'CURRENT' ) OR "visibility" = 'ALL' OR  "organization_id" in ( ${relatedOrganizations}))`
 					}
 				} else if (organization_ids.length > 0) {
-					filter = `AND "organization_id" in (${organization_ids.join(',')}) AND ( ARRAY[${
+					filter = `AND "organization_id" in (${organization_ids.join(',')}) AND ( (ARRAY[${
 						userPolicyDetails.organization_id
-					}] @> "visible_to_organizations" AND "visibility" = 'CURRENT' OR "visibility" = 'ALL')`
+					}] @> "visible_to_organizations" OR "organization_id" = ${
+						userPolicyDetails.organization_id
+					}) AND "visibility" = 'CURRENT' OR "visibility" = 'ALL')`
 				}
 			}
 
