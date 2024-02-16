@@ -746,7 +746,7 @@ module.exports = class MentorsHelper {
 			const filteredQuery = utils.validateFilters(query, validationData, mentorExtensionsModelName)
 			const userType = common.MENTOR_ROLE
 
-			const saasFilter = await this.filterMentorListBasedOnSaasPolicy(userId, isAMentor)
+			const saasFilter = await this.filterMentorListBasedOnSaasPolicy(userId, isAMentor, organization_ids)
 
 			let extensionDetails = await mentorQueries.getMentorsByUserIdsFromView(
 				[],
@@ -936,9 +936,9 @@ module.exports = class MentorsHelper {
 						filter = `AND ((${userPolicyDetails.organization_id} = ANY("visible_to_organizations") AND "visibility" != 'CURRENT' ) OR "visibility" = 'ALL' OR  "organization_id" in ( ${relatedOrganizations}))`
 					}
 				} else if (organization_ids.length > 0) {
-					filter = `AND "organization_id" in (${organization_ids.join(
-						','
-					)}) AND ( ARRAY[${organization_ids}] @> "visible_to_organizations" AND "visibility" = 'CURRENT' OR "visibility" = 'ALL')`
+					filter = `AND "organization_id" in (${organization_ids.join(',')}) AND ( ARRAY[${
+						userPolicyDetails.organization_id
+					}] @> "visible_to_organizations" AND "visibility" = 'CURRENT' OR "visibility" = 'ALL')`
 				}
 			}
 
