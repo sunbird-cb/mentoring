@@ -1244,10 +1244,11 @@ module.exports = class MenteesHelper {
 					 */
 					filter =
 						additionalFilter +
-						`AND (${userPolicyDetails.organization_id} = ANY("visible_to_organizations") AND "visibility" != 'CURRENT')`
+						`AND ( (${userPolicyDetails.organization_id} = ANY("visible_to_organizations") AND "visibility" != 'CURRENT')`
 
 					if (additionalFilter.length === 0)
-						filter += ` OR organization_id = ${userPolicyDetails.organization_id}`
+						filter += ` OR organization_id = ${userPolicyDetails.organization_id} )`
+					else filter += `)`
 				} else if (externalVisibilityPolicy === common.ALL) {
 					/**
 					 * We need to check if mentor's visible_to_organizations contain the user organization_id and verify mentor's visibility is not current (if it is ALL and ASSOCIATED it is accessible)
