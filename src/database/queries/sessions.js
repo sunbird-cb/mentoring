@@ -767,7 +767,7 @@ exports.getMentorsUpcomingSessionsFromView = async (page, limit, search, mentorI
 			${saasFilterClause}
 		ORDER BY
 			start_date ASC
-		OFFSETp
+		OFFSET
 			:offset
 		LIMIT
 			:limit;
