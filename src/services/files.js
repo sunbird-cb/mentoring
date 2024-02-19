@@ -5,13 +5,13 @@ const utils = require('@generics/utils')
 const responses = require('@helpers/responses')
 
 module.exports = class FilesHelper {
-	static async getSignedUrl(fileName, _id, dynamicPath) {
+	static async getSignedUrl(fileName, id, dynamicPath) {
 		try {
 			let destFilePath
 			if (dynamicPath != '') {
 				destFilePath = dynamicPath + '/' + fileName
 			} else {
-				destFilePath = `session/${_id}-${new Date().getTime()}-${fileName}`
+				destFilePath = `session/${id}-${new Date().getTime()}-${fileName}`
 			}
 			let response
 			if (process.env.CLOUD_STORAGE === 'GCP') {
