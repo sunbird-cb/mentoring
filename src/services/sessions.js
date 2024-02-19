@@ -212,6 +212,14 @@ module.exports = class SessionsHelper {
 
 			// Create session
 			const data = await sessionQueries.create(bodyData)
+			if (!data?.id) {
+				return responses.failureResponse({
+					message: 'SESSION_CREATION_FAILED',
+					statusCode: httpStatusCode.bad_request,
+					responseCode: 'CLIENT_ERROR',
+					result: res.errors,
+				})
+			}
 			// If menteeIds are provided in the req body enroll them
 			if (menteeIdsToEnroll.length > 0) {
 				await this.addMentees(data.id, menteeIdsToEnroll, bodyData.time_zone)
