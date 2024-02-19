@@ -5082,6 +5082,44 @@ paths:
                     notification: true
                     visibility: public
     parameters: []
+  /mentoring/v1/profile/filterList?entity_types={entity_types}:
+    get:
+      summary: Get entity type and organization filter
+      tags:
+        - Profile APIs
+      description: |-
+        To obtain the list of filters used in the mentee/mentor list, use this API.
+         - The API Endpoint for get the filter is `/mentoring/v1/profile/filterList` 
+         - It is mandatory to provide values for parameters which are marked as `required` 
+         - This is a mandatory parameter and cannot be empty or null.
+      parameters:
+        - name: X-auth-token
+          in: header
+          description: >-
+            To use this API, you require an X-auth-token. This is available in
+            the login API Response.
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: entity_types
+          description: Please add the entity type. example designation
+          schema:
+            type: string
+          example: designation
+      responses:
+        '200':
+          description: OK
+          content:
+            application.json:
+              schema:
+                $ref: '#/components/schemas/users/filterList200Response'
+        '400':
+          description: Bad Request. User Entity already exists.
+          content:
+            application.json:
+              schema:
+                $ref: '#/components/schemas/entity/createUserEntity400Response'
   /mentoring/v1/entity-type/create:
     post:
       summary: Create entity type
@@ -10018,6 +10056,102 @@ components:
               count:
                 type: number
                 example: 1
+      filterList200Response:
+        type: object
+        properties:
+          responseCode:
+            type: string
+            example: 'OK'
+          message:
+            type: string
+            example: 'Filter list fetched successfully.'
+          result:
+            type: object
+            properties:
+              organizations:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      example: 24
+                    name:
+                      type: string
+                      example: 'Tunerlabs'
+                    code:
+                      type: string
+                      example: 'tl'
+                    description:
+                      type: string
+                      example: 'Tunerlabs'
+              entity_types:
+                type: object
+                properties:
+                  designation:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/users/FilterDesignation'
+
+      FilterDesignation:
+        type: object
+        properties:
+          id:
+            type: integer
+            example: 5
+          label:
+            type: string
+            example: 'Designation'
+          value:
+            type: string
+            example: 'designation'
+          parent_id:
+            type: integer
+            nullable: true
+          organization_id:
+            type: integer
+            example: 1
+          entities:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  example: 19
+                entity_type_id:
+                  type: integer
+                  example: 5
+                value:
+                  type: string
+                  example: 'beo'
+                label:
+                  type: string
+                  example: 'Block education officer'
+                status:
+                  type: string
+                  example: 'ACTIVE'
+                type:
+                  type: string
+                  example: 'SYSTEM'
+                created_by:
+                  type: integer
+                  example: 0
+                updated_by:
+                  type: integer
+                  nullable: true
+                created_at:
+                  type: string
+                  format: date-time
+                  example: '2023-12-12T14:05:07.769Z'
+                updated_at:
+                  type: string
+                  format: date-time
+                  example: '2023-12-12T14:05:07.769Z'
+                deleted_at:
+                  type: string
+                  format: date-time
+                  nullable: true
     email:
       emailSendRequest:
         description: Email Sent request
