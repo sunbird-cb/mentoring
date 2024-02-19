@@ -767,10 +767,13 @@ module.exports = class SessionsHelper {
 						}
 					}
 				})
-				// send mail to mentor if session is created and handled by a manager
+				// send mail to mentor if session is created and handled by a manager and if there is any data change
 				// send notification only if front end request for user notification
 				// notifyUser ---> this key is added for above purpose
-				if (isSessionCreatedByManager && notifyUser) {
+				if (
+					(method == common.DELETE_METHOD && isSessionCreatedByManager) ||
+					(notifyUser && isSessionDataChanged)
+				) {
 					let response = await this.pushSessionRelatedMentorEmailToKafka(
 						mentorEmailTemplate,
 						orgId,
@@ -895,17 +898,21 @@ module.exports = class SessionsHelper {
 			if (mentorExtension?.user_id) {
 				const mentorExtensionsModelName = await mentorExtensionQueries.getModelName()
 
-				let entity_types = await entityTypeQueries.findUserEntityTypesAndEntities({
+				let entityTypes = await entityTypeQueries.findUserEntityTypesAndEntities({
 					status: 'ACTIVE',
 					organization_id: {
 						[Op.in]: [mentorExtension.organization_id, defaultOrgId],
 					},
 					model_names: { [Op.contains]: [mentorExtensionsModelName] },
 				})
-				const validation_data = removeDefaultOrgEntityTypes(entity_types, mentorExtension.organization_id)
+				const validationData = removeDefaultOrgEntityTypes(entityTypes, mentorExtension.organization_id)
+
 				const processedEntityType = utils.processDbResponse(
-					{ designation: mentorExtension.designation },
-					validation_data
+					{
+						designation: mentorExtension.designation,
+						custom_entity_text: mentorExtension.custom_entity_text,
+					},
+					validationData
 				)
 				sessionDetails.mentor_designation = processedEntityType.designation
 			}
@@ -2113,12 +2120,11 @@ module.exports = class SessionsHelper {
 					responseCode: 'CLIENT_ERROR',
 				})
 			}
-
 			const menteeDetails = menteeAccounts.result.map((element) => ({
 				id: element.id,
 				email: element.email,
 				name: element.name,
-				roles: element.roles,
+				roles: element.user_roles,
 			}))
 
 			// Enroll mentees to the given session

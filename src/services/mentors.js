@@ -77,6 +77,15 @@ module.exports = class MentorsHelper {
 				})
 			}
 
+			// Process entity types to add value labels.
+			const uniqueOrgIds = [...new Set(upcomingSessions.data.map((obj) => obj.mentor_organization_id))]
+			upcomingSessions.data = await entityTypeService.processEntityTypesToAddValueLabels(
+				upcomingSessions.data,
+				uniqueOrgIds,
+				common.sessionModelName,
+				'mentor_organization_id'
+			)
+
 			upcomingSessions.data = await this.sessionMentorDetails(upcomingSessions.data)
 			if (menteeUserId && id != menteeUserId) {
 				upcomingSessions.data = await this.menteeSessionDetails(upcomingSessions.data, menteeUserId)
@@ -737,7 +746,7 @@ module.exports = class MentorsHelper {
 			const filteredQuery = utils.validateFilters(query, validationData, mentorExtensionsModelName)
 			const userType = common.MENTOR_ROLE
 
-			const saasFilter = await this.filterMentorListBasedOnSaasPolicy(userId, isAMentor)
+			const saasFilter = await this.filterMentorListBasedOnSaasPolicy(userId, isAMentor, organization_ids)
 
 			let extensionDetails = await mentorQueries.getMentorsByUserIdsFromView(
 				[],
@@ -785,12 +794,6 @@ module.exports = class MentorsHelper {
 				false
 			)
 
-			if (organization_ids.length > 0) {
-				extensionDetails.data = extensionDetails.data.filter((mentee) =>
-					organization_ids.includes(String(mentee.organization_id))
-				)
-			}
-
 			if (extensionDetails.data.length > 0) {
 				const uniqueOrgIds = [...new Set(extensionDetails.data.map((obj) => obj.organization_id))]
 				extensionDetails.data = await entityTypeService.processEntityTypesToAddValueLabels(
@@ -824,8 +827,6 @@ module.exports = class MentorsHelper {
 			if (directory) {
 				let foundKeys = {}
 				let result = []
-				userDetails.data.result.data = await this.addIndexNumber(userDetails, pageNo, pageSize)
-
 				for (let user of userDetails.data.result.data) {
 					let firstChar = user.name.charAt(0)
 					firstChar = firstChar.toUpperCase()
@@ -855,9 +856,6 @@ module.exports = class MentorsHelper {
 						return sortOrder * a[sortBy].localeCompare(b[sortBy])
 					})
 				}
-
-				// add index number to the response
-				userDetails.data.result.data = await this.addIndexNumber(userDetails, pageNo, pageSize)
 			}
 
 			return responses.successResponse({
@@ -878,7 +876,7 @@ module.exports = class MentorsHelper {
 	 * @param {Boolean} isAMentor 				- user mentor or not.
 	 * @returns {JSON} 							- List of filtered sessions
 	 */
-	static async filterMentorListBasedOnSaasPolicy(userId, isAMentor) {
+	static async filterMentorListBasedOnSaasPolicy(userId, isAMentor, organization_ids = []) {
 		try {
 			const userPolicyDetails = isAMentor
 				? await mentorQueries.getMentorExtension(userId, ['external_mentor_visibility', 'organization_id'])
@@ -894,19 +892,13 @@ module.exports = class MentorsHelper {
 			}
 
 			let filter = ''
-			let relatedOrganizations = []
+			// searching for specific organization
+			let additionalFilter = ``
+			if (organization_ids.length !== 0) {
+				additionalFilter = `AND "organization_id" in (${organization_ids.join(',')}) `
+			}
+
 			if (userPolicyDetails.external_mentor_visibility && userPolicyDetails.organization_id) {
-				// fetch organisation details to get the related org
-				let userOrgDetails = await userRequests.fetchDefaultOrgDetails(userPolicyDetails.organization_id)
-
-				// list of related org ids
-				relatedOrganizations = userOrgDetails.data.result.related_orgs
-				if (relatedOrganizations) {
-					relatedOrganizations.push(userPolicyDetails.organization_id)
-				} else {
-					relatedOrganizations = []
-				}
-
 				// Filter user data based on policy
 				// generate filter based on condition
 				if (userPolicyDetails.external_mentor_visibility === common.CURRENT) {
@@ -920,17 +912,21 @@ module.exports = class MentorsHelper {
 					 * If user external_mentor_visibility is associated
 					 * <<point**>> first we need to check if mentor's visible_to_organizations contain the user organization_id and verify mentor's visibility is not current (if it is ALL and ASSOCIATED it is accessible)
 					 */
-					filter = `AND (${userPolicyDetails.organization_id} = ANY("visible_to_organizations") AND "visibility" != 'CURRENT') OR "organization_id" = ${userPolicyDetails.organization_id}`
+
+					filter =
+						additionalFilter +
+						`AND (${userPolicyDetails.organization_id} = ANY("visible_to_organizations") AND "visibility" != 'CURRENT')`
+
+					if (additionalFilter.length === 0)
+						filter += ` OR organization_id = ${userPolicyDetails.organization_id}`
 				} else if (userPolicyDetails.external_mentor_visibility === common.ALL) {
 					/**
 					 * We need to check if mentor's visible_to_organizations contain the user organization_id and verify mentor's visibility is not current (if it is ALL and ASSOCIATED it is accessible)
 					 * OR if mentor visibility is ALL that mentor is also accessible
 					 */
-					if (relatedOrganizations.length == 0) {
-						filter = `AND ((${userPolicyDetails.organization_id} = ANY("visible_to_organizations") AND "visibility" != 'CURRENT' ) OR "visibility" = 'ALL' OR "organization_id" = ${userPolicyDetails.organization_id})`
-					} else {
-						filter = `AND ((${userPolicyDetails.organization_id} = ANY("visible_to_organizations") AND "visibility" != 'CURRENT' ) OR "visibility" = 'ALL' OR  "organization_id" in ( ${relatedOrganizations}))`
-					}
+					filter =
+						additionalFilter +
+						`AND ((${userPolicyDetails.organization_id} = ANY("visible_to_organizations") AND "visibility" != 'CURRENT' ) OR "visibility" = 'ALL' OR "organization_id" = ${userPolicyDetails.organization_id})`
 				}
 			}
 
@@ -1008,7 +1004,6 @@ module.exports = class MentorsHelper {
 					}
 				}
 				item.is_assigned = item.mentor_id !== item.created_by
-				delete item.created_by
 			})
 			const uniqueOrgIds = [...new Set(sessionDetails.rows.map((obj) => obj.mentor_organization_id))]
 			sessionDetails.rows = await entityTypeService.processEntityTypesToAddValueLabels(
@@ -1026,12 +1021,5 @@ module.exports = class MentorsHelper {
 		} catch (error) {
 			throw error
 		}
-	}
-
-	static async addIndexNumber(userDetails, pageNo, pageSize) {
-		return userDetails.data.result.data.map((data, index) => ({
-			...data,
-			index_number: index + 1 + pageSize * (pageNo - 1),
-		}))
 	}
 }
