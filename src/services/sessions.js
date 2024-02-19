@@ -861,7 +861,7 @@ module.exports = class SessionsHelper {
 				}
 			}
 
-			if (userId != sessionDetails.mentor_id) {
+			if (userId != sessionDetails.mentor_id && userId != sessionDetails.created_by) {
 				delete sessionDetails?.meeting_info?.link
 				delete sessionDetails?.meeting_info?.meta
 			} else {
