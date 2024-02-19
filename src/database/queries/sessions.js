@@ -377,6 +377,8 @@ exports.getCreatedSessionsCountInDateRange = async (mentorId, startDate, endDate
 				created_at: {
 					[Op.between]: [startDate, endDate],
 				},
+				mentor_id: mentorId, // Check mentor_id
+				created_by: mentorId, // Check created_by
 			},
 		})
 		return count
@@ -394,7 +396,7 @@ exports.getCreatedSessionsCountInDateRange = async (mentorId, startDate, endDate
  * @throws {Error} 				- If an error occurs during the process.
  */
 
-exports.getMentoringSessionsCountInDateRange = async (mentorId, startDate, endDate) => {
+exports.getAssignedSessionsCountInDateRange = async (mentorId, startDate, endDate) => {
 	try {
 		const filter = {
 			user_id: mentorId,
@@ -413,6 +415,7 @@ exports.getMentoringSessionsCountInDateRange = async (mentorId, startDate, endDa
 					[Op.between]: [startDate, endDate],
 				},
 				mentor_id: mentorId,
+				created_by: { [Op.ne]: mentorId },
 			},
 		})
 		return count

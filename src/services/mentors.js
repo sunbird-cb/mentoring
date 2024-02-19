@@ -179,7 +179,7 @@ module.exports = class MentorsHelper {
 				filterEndDate.toISOString()
 			)
 
-			const totalSessionsMentoring = await sessionQueries.getMentoringSessionsCountInDateRange(
+			const totalSessionsAssigned = await sessionQueries.getAssignedSessionsCountInDateRange(
 				userId,
 				filterStartDate.toISOString(),
 				filterEndDate.toISOString()
@@ -194,7 +194,7 @@ module.exports = class MentorsHelper {
 			const result = {
 				total_session_created: totalSessionsCreated,
 				total_session_hosted: totalSessionsHosted,
-				total_session_mentoring: totalSessionsMentoring,
+				total_session_assigned: totalSessionsAssigned,
 			}
 			return responses.successResponse({
 				statusCode: httpStatusCode.ok,
