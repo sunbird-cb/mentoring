@@ -7,7 +7,6 @@ module.exports = {
 		await queryInterface.removeConstraint('session_ownerships', 'session_ownerships_pkey')
 		// change mentor_id column name
 		await queryInterface.renameColumn('session_ownerships', 'mentor_id', 'user_id')
-
 		// add new column called type
 		await queryInterface.addColumn('session_ownerships', 'type', {
 			allowNull: false,
@@ -20,13 +19,16 @@ module.exports = {
 		const oldSessionOwnerships = await queryInterface.sequelize.query('SELECT * FROM session_ownerships', {
 			type: Sequelize.QueryTypes.SELECT,
 		})
+		// Do only if old data is present
+		if (oldSessionOwnerships.length > 0) {
+			const creatorEntries = oldSessionOwnerships.map((entry) => ({
+				...entry,
+				type: 'CREATOR',
+			}))
 
-		const creatorEntries = oldSessionOwnerships.map((entry) => ({
-			...entry,
-			type: 'CREATOR',
-		}))
+			await queryInterface.bulkInsert('session_ownerships', creatorEntries)
+		}
 
-		await queryInterface.bulkInsert('session_ownerships', creatorEntries)
 		await queryInterface.addConstraint('session_ownerships', {
 			fields: ['user_id', 'session_id', 'type'],
 			type: 'primary key',
