@@ -179,13 +179,23 @@ module.exports = class MentorsHelper {
 				filterEndDate.toISOString()
 			)
 
+			const totalSessionsAssigned = await sessionQueries.getAssignedSessionsCountInDateRange(
+				userId,
+				filterStartDate.toISOString(),
+				filterEndDate.toISOString()
+			)
+
 			const totalSessionsHosted = await sessionQueries.getHostedSessionsCountInDateRange(
 				userId,
 				Date.parse(filterStartDate) / 1000, // Converts milliseconds to seconds
 				Date.parse(filterEndDate) / 1000
 			)
 
-			const result = { total_session_created: totalSessionsCreated, total_session_hosted: totalSessionsHosted }
+			const result = {
+				total_session_created: totalSessionsCreated,
+				total_session_hosted: totalSessionsHosted,
+				total_session_assigned: totalSessionsAssigned,
+			}
 			return responses.successResponse({
 				statusCode: httpStatusCode.ok,
 				message: 'MENTORS_REPORT_FETCHED_SUCCESSFULLY',

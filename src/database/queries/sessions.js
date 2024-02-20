@@ -377,6 +377,45 @@ exports.getCreatedSessionsCountInDateRange = async (mentorId, startDate, endDate
 				created_at: {
 					[Op.between]: [startDate, endDate],
 				},
+				mentor_id: mentorId, // Check mentor_id
+				created_by: mentorId, // Check created_by
+			},
+		})
+		return count
+	} catch (error) {
+		throw error
+	}
+}
+
+/**
+ * Get the count of mentoring sessions within a date range for a specific mentor.
+ * @param {number} mentorId 	- The ID of the mentor.
+ * @param {Date} startDate 		- The start date of the date range.
+ * @param {Date} endDate 		- The end date of the date range.
+ * @returns {Promise<number>} 	- The count of mentoring sessions.
+ * @throws {Error} 				- If an error occurs during the process.
+ */
+
+exports.getAssignedSessionsCountInDateRange = async (mentorId, startDate, endDate) => {
+	try {
+		const filter = {
+			user_id: mentorId,
+			type: common.SESSION_OWNERSHIP_TYPE.MENTOR,
+		}
+
+		const option = {
+			attributes: ['session_id'],
+		}
+		const sessionIds = await sessionOwnership.findAll(filter, option, true)
+
+		const count = await Session.count({
+			where: {
+				id: { [Op.in]: sessionIds },
+				created_at: {
+					[Op.between]: [startDate, endDate],
+				},
+				mentor_id: mentorId,
+				created_by: { [Op.ne]: mentorId },
 			},
 		})
 		return count
