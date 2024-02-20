@@ -1235,7 +1235,7 @@ module.exports = class MenteesHelper {
 					 */
 					filter =
 						additionalFilter +
-						`AND ( (${userPolicyDetails.organization_id} = ANY("visible_to_organizations") AND "visibility" != 'CURRENT')`
+						`AND ( (${userPolicyDetails.organization_id} = ANY("visible_to_organizations") AND "external_session_visibility" != 'CURRENT')`
 
 					if (additionalFilter.length === 0)
 						filter += ` OR organization_id = ${userPolicyDetails.organization_id} )`
@@ -1247,7 +1247,7 @@ module.exports = class MenteesHelper {
 					 */
 					filter =
 						additionalFilter +
-						`AND ((${userPolicyDetails.organization_id} = ANY("visible_to_organizations") AND "visibility" != 'CURRENT' ) OR "visibility" = 'ALL' OR "organization_id" = ${userPolicyDetails.organization_id})`
+						`AND ((${userPolicyDetails.organization_id} = ANY("visible_to_organizations") AND "external_session_visibility" != 'CURRENT' ) OR "external_session_visibility" = 'ALL' OR "organization_id" = ${userPolicyDetails.organization_id})`
 				}
 			}
 
