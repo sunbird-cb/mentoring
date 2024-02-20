@@ -1191,9 +1191,17 @@ module.exports = class MenteesHelper {
 				: ['external_mentor_visibility', 'organization_id']
 
 			const userPolicyDetails = isAMentor
-				? await mentorQueries.getMentorExtension(userId, extensionColumns)
-				: await menteeQueries.getMenteeExtension(userId, extensionColumns)
+				? await mentorQueries.getMentorExtension(userId, ['organization_id'])
+				: await menteeQueries.getMenteeExtension(userId, ['organization_id'])
 
+			const getOrgPolicy = await organisationExtensionQueries.findOne(
+				{
+					organization_id: userPolicyDetails.organization_id,
+				},
+				{
+					attributes: ['session_visibility_policy', 'organization_id'],
+				}
+			)
 			// Throw error if mentor/mentee extension not found
 			if (!userPolicyDetails || Object.keys(userPolicyDetails).length === 0) {
 				return responses.failureResponse({
@@ -1209,18 +1217,18 @@ module.exports = class MenteesHelper {
 			if (organization_ids.length !== 0) {
 				additionalFilter = `AND "organization_id" in (${organization_ids.join(',')})`
 			}
-			if (userPolicyDetails.external_mentor_visibility && userPolicyDetails.organization_id) {
-				const externalVisibilityPolicy = userPolicyDetails[extensionColumns[0]]
+			if (getOrgPolicy.session_visibility_policy && userPolicyDetails.organization_id) {
+				const visibilityPolicy = getOrgPolicy.session_visibility_policy
 
 				// Filter user data based on policy
 				// generate filter based on condition
-				if (externalVisibilityPolicy === common.CURRENT) {
+				if (visibilityPolicy === common.CURRENT) {
 					/**
 					 * if user external_mentor_visibility is current. He can only see his/her organizations mentors
 					 * so we will check mentor's organization_id and user organization_id are matching
 					 */
 					filter = `AND "organization_id" = ${userPolicyDetails.organization_id}`
-				} else if (externalVisibilityPolicy === common.ASSOCIATED) {
+				} else if (visibilityPolicy === common.ASSOCIATED) {
 					/**
 					 * If user external_mentor_visibility is associated
 					 * <<point**>> first we need to check if mentor's visible_to_organizations contain the user organization_id and verify mentor's visibility is not current (if it is ALL and ASSOCIATED it is accessible)
@@ -1232,7 +1240,7 @@ module.exports = class MenteesHelper {
 					if (additionalFilter.length === 0)
 						filter += ` OR organization_id = ${userPolicyDetails.organization_id} )`
 					else filter += `)`
-				} else if (externalVisibilityPolicy === common.ALL) {
+				} else if (visibilityPolicy === common.ALL) {
 					/**
 					 * We need to check if mentor's visible_to_organizations contain the user organization_id and verify mentor's visibility is not current (if it is ALL and ASSOCIATED it is accessible)
 					 * OR if mentor visibility is ALL that mentor is also accessible
