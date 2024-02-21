@@ -33,6 +33,14 @@ module.exports = (sequelize, DataTypes) => {
 				type: DataTypes.STRING,
 				defaultValue: 'MENTOR_QS2',
 			},
+			mentee_visibility_policy: {
+				type: DataTypes.STRING,
+				defaultValue: 'CURRENT',
+			},
+			external_mentee_visibility_policy: {
+				type: DataTypes.STRING,
+				defaultValue: 'CURRENT',
+			},
 		},
 		{
 			sequelize,
