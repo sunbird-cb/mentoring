@@ -702,7 +702,7 @@ module.exports = class MenteesHelper {
 			let res = utils.validateInput(data, validationData, userExtensionsModelName)
 			if (!res.success) {
 				return responses.failureResponse({
-					message: 'SESSION_CREATION_FAILED',
+					message: 'PROFILE_UPDATE_FAILED',
 					statusCode: httpStatusCode.bad_request,
 					responseCode: 'CLIENT_ERROR',
 					result: res.errors,
