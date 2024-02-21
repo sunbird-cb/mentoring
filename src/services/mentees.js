@@ -702,7 +702,7 @@ module.exports = class MenteesHelper {
 			let res = utils.validateInput(data, validationData, userExtensionsModelName)
 			if (!res.success) {
 				return responses.failureResponse({
-					message: 'SESSION_CREATION_FAILED',
+					message: 'PROFILE_UPDATE_FAILED',
 					statusCode: httpStatusCode.bad_request,
 					responseCode: 'CLIENT_ERROR',
 					result: res.errors,
@@ -830,17 +830,20 @@ module.exports = class MenteesHelper {
 	 * @param {Boolean} queryParams - queryParams
 	 * @returns {JSON} - Filter list.
 	 */
-	static async getFilterList(queryParams, tokenInformation) {
+	static async getFilterList(entity_type, filterType, tokenInformation) {
 		try {
 			let result = {
 				organizations: [],
 				entity_types: {},
 			}
 
+			const filter_type = filterType !== '' ? filterType : common.MENTOR_ROLE
+
 			let organization_ids = []
 			const organizations = await this.getOrganizationIdBasedOnPolicy(
 				tokenInformation.id,
-				tokenInformation.organization_id
+				tokenInformation.organization_id,
+				filter_type
 			)
 
 			if (organizations.success && organizations.result.length > 0) {
@@ -858,7 +861,7 @@ module.exports = class MenteesHelper {
 					// get entity type with entities list
 					const getEntityTypesWithEntities = await this.getEntityTypeWithEntitiesBasedOnOrg(
 						organization_ids,
-						queryParams,
+						entity_type,
 						defaultOrgId ? defaultOrgId : ''
 					)
 
@@ -890,39 +893,52 @@ module.exports = class MenteesHelper {
 		}
 	}
 
-	static async getOrganizationIdBasedOnPolicy(userId, organization_id) {
+	static async getOrganizationIdBasedOnPolicy(userId, organization_id, filter_type) {
 		try {
 			let organization_ids = []
+
+			const attributes =
+				filter_type.toLowerCase() == common.MENTEE_ROLE
+					? ['organization_id', 'session_visibility_policy']
+					: ['organization_id', 'external_mentor_visibility_policy']
 
 			const orgPolicies = await organisationExtensionQueries.findOne(
 				{ organization_id },
 				{
-					attributes: ['organization_id', 'external_mentor_visibility_policy'],
+					attributes: attributes,
 				}
 			)
 
+			const visibilityPolicy =
+				filter_type.toLowerCase() == common.MENTEE_ROLE
+					? orgPolicies.session_visibility_policy
+					: orgPolicies.external_mentor_visibility_policy
+
 			if (orgPolicies?.organization_id) {
-				if (orgPolicies.external_mentor_visibility_policy === common.CURRENT) {
+				if (visibilityPolicy === common.CURRENT) {
 					organization_ids.push(orgPolicies.organization_id)
-				} else if (
-					orgPolicies.external_mentor_visibility_policy === common.ASSOCIATED ||
-					orgPolicies.external_mentor_visibility_policy === common.ALL
-				) {
+				} else if (visibilityPolicy === common.ASSOCIATED || visibilityPolicy === common.ALL) {
 					organization_ids.push(orgPolicies.organization_id)
 					let relatedOrgs = []
 					let userOrgDetails = await userRequests.fetchDefaultOrgDetails(orgPolicies.organization_id)
 					if (userOrgDetails.success && userOrgDetails.data?.result?.related_orgs?.length > 0) {
 						relatedOrgs = userOrgDetails.data.result.related_orgs
 					}
-					if (orgPolicies.external_mentor_visibility_policy === common.ASSOCIATED) {
+					if (visibilityPolicy === common.ASSOCIATED) {
 						organization_ids.push(...relatedOrgs)
 					} else {
+						const filterQuery =
+							filter_type.toLowerCase() == common.MENTEE_ROLE
+								? {
+										external_session_visibility_policy: common.ALL,
+								  }
+								: {
+										mentor_visibility_policy: common.ALL,
+								  }
 						const organizationExtension = await organisationExtensionQueries.findAll(
 							{
 								[Op.or]: [
-									{
-										mentor_visibility_policy: common.ALL,
-									},
+									filterQuery,
 									{
 										organization_id: {
 											[Op.in]: [...relatedOrgs, orgPolicies.organization_id],
