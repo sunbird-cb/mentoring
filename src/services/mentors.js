@@ -433,6 +433,16 @@ module.exports = class MentorsHelper {
 			const validationData = removeDefaultOrgEntityTypes(entityTypes, orgId)
 			let mentorExtensionsModel = await mentorQueries.getColumns()
 
+			let res = utils.validateInput(data, validationData, mentorExtensionsModelName)
+			if (!res.success) {
+				return responses.failureResponse({
+					message: 'PROFILE_UPDATE_FAILED',
+					statusCode: httpStatusCode.bad_request,
+					responseCode: 'CLIENT_ERROR',
+					result: res.errors,
+				})
+			}
+
 			data = utils.restructureBody(data, validationData, mentorExtensionsModel)
 
 			const [updateCount, updatedMentor] = await mentorQueries.updateMentorExtension(userId, data, {
