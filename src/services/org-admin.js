@@ -210,6 +210,15 @@ module.exports = class OrgAdminService {
 					responseCode: 'UNAUTHORIZED',
 				})
 			}
+
+			if (!policies.hasOwnProperty('mentee_visibility_policy')) {
+				policies['mentee_visibility_policy'] = 'CURRENT'
+			}
+
+			if (!policies.hasOwnProperty('external_mentee_visibility_policy')) {
+				policies['external_mentee_visibility_policy'] = 'CURRENT'
+			}
+
 			const orgPolicies = await organisationExtensionQueries.upsert({
 				organization_id: decodedToken.organization_id,
 				...policies,
