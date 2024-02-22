@@ -19,8 +19,8 @@ Please refer to the below documentation to install Docker and docker-compose on 
         cd backend
         ```
 
-    - Download the [docker-compose-mentoring.yml](https://github.com/ELEVATE-Project/mentoring/blob/temp_setup/docker-compose-mentoring.yml) file from the elevate-mentoring repository and paste that to the backend folder
-    - The setup of the mentoring service and the user require two files, distributionColumn.sql and setup.sh, respectively. Because of this, we are making two files inside the backend folder called user and mentoring in order to resolve the name problem.
+    - Download the [docker-compose-mentoring.yml](https://github.com/ELEVATE-Project/mentoring/blob/temp_setup/docker-compose-mentoring.yml) file from the elevate-mentoring repository and paste that to the backend folder.
+    - To setup the mentoring and the user service, require two files, distributionColumn.sql and setup.sh, respectively. Because of this, we have to create two different folders inside the backend folder called user and mentoring in order to resolve the name problem.
     - Create a folder named mentoring inside backend folder
         ```bash
         mkdir mentoring
@@ -28,6 +28,8 @@ Please refer to the below documentation to install Docker and docker-compose on 
     - Download the below 2 files from the mentoring service and paste them into the mentoring folder.
         - [setup file of mentoring service](https://github.com/ELEVATE-Project/mentoring/blob/temp_setup/src/setup.sh)
         - [distributionColumn file of mentoring service ](https://github.com/ELEVATE-Project/mentoring/blob/temp_setup/src/distributionColumns.psql)
+        Change the permission of setup file using below command
+        chmod +x setup.sh
     - Create a folder named user inside backend folder
 
         ```bash
@@ -37,17 +39,19 @@ Please refer to the below documentation to install Docker and docker-compose on 
     - Do the same for user; download the below 2 files from the user service and paste them into the user folder.
         - [ setup file of user service](https://github.com/ELEVATE-Project/user/blob/temp_setup/src/setup.sh)
         - [ distributionColumn.sql of user service ](https://github.com/ELEVATE-Project/user/blob/temp_setup/src/distributionColumns.sql)
+        Change the permission of setup file using below command
+        chmod +x setup.sh
 
+2. Create env file to the mentoring service
 
-2. Create .env file for mentoring service
-   The [link](https://github.com/ELEVATE-Project/mentoring.git) to the mentoring repository has been provided for your reference:
+    Create a file named mentoring_env in backend folder
 
     ```bash
     $ cd elevate/backend
     $ nano mentoring_env
     ```
 
-    Copy paste the env variables .env file
+    Copy and paste the below env variables into mentoring_env file
 
     ```bash
     # Mentoring Service Config
@@ -192,14 +196,17 @@ Please refer to the below documentation to install Docker and docker-compose on 
     DEFAULT_ORG_ID=1
     ```
 
+    We've provided a [link](https://github.com/ELEVATE-Project/mentoring) to the mentoring repository, so you can explore the code for yourself.
+
 3. Create env file for user
-   The [link](https://github.com/ELEVATE-Project/user.git) to the user repository has been provided for your reference:
+   Create a file named user_env in backend folder
 
     ```bash
+    $ cd elevate/backend
     $ nano user_env
     ```
 
-    Copy-paste the following env variables to the .env file:
+    Copy-paste the following env variables to the user_env file:
 
     ```bash
     ACCESS_TOKEN_EXPIRY=1
@@ -285,10 +292,13 @@ Please refer to the below documentation to install Docker and docker-compose on 
     REFRESH_VIEW_INTERVAL=540000
     ```
 
+    We've provided a [link](https://github.com/ELEVATE-Project/user) to the user service repository, so you can explore the code for yourself.
+
 4. Create env file for Notification
-   The [link](https://github.com/ELEVATE-Project/notification.git) to the notification repository has been provided for your reference:
+   Create a file named notification_env in backend folder
 
     ```bash
+    $ cd elevate/backend
     $ nano notification_env
     ```
 
@@ -332,15 +342,18 @@ Please refer to the below documentation to install Docker and docker-compose on 
     DEV_DATABASE_URL=postgres://postgres:postgres@localhost:5432/elevate_notification
     ```
 
+    We've provided a [link](https://github.com/ELEVATE-Project/notification) to the notification service repository, so you can explore the code for yourself.
+
 5. Create env file for Scheduler
 
-    The [link](https://github.com/ELEVATE-Project/scheduler.git) to the scheduler repository has been provided for your reference:
+    Create a file named scheduler_env in backend folder
 
     ```bash
+    $ cd elevate/backend
     $ nano scheduler_env
     ```
 
-    Copy-paste the following env variables to the .env file:
+    Copy-paste the following env variables to the scheduler_env file:
 
     ```bash
     # Scheduler Service Config
@@ -373,14 +386,16 @@ Please refer to the below documentation to install Docker and docker-compose on 
     REDIS_PORT=6379
     ```
 
+    We've provided a [link](https://github.com/ELEVATE-Project/scheduler) to the scheduler service repository, so you can explore the code for yourself
+
 6. Create env file for Interface
-   The [link](https://github.com/ELEVATE-Project/interface-service.git) to the interface-service repository has been provided for your reference:
+   Create a file named interface_env in backend folder
 
     ```bash
     $ nano interface_env
     ```
 
-    Copy-paste the following env variables to the .env file:
+    Copy-paste the following env variables to the interface_env file:
 
     ```bash
     APPLICATION_PORT=3569
@@ -393,6 +408,8 @@ Please refer to the below documentation to install Docker and docker-compose on 
     SCHEDULER_SERVICE_BASE_URL='http://scheduler:4000'
     INSTALLED_PACKAGES="elevate-user elevate-mentoring elevate-scheduler
     ```
+
+    We've provided a [link](https://github.com/ELEVATE-Project/interface-service) to the interface service repository, so you can explore the code for yourself.
 
 7. Replace the latest image for all service (Optional)
    Check the latest imge in shikshalokam [Docker hub](https://hub.docker.com/r/shikshalokamqa/elevate-user/tags)
