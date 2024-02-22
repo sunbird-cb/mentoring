@@ -1,5 +1,7 @@
 # ShikshaLokam Elevate Project Documentation
 
+## Mentoring service
+
 ## System Requirements
 
 -   **Operating System:** Ubuntu 22
@@ -264,31 +266,19 @@ $ sudo npm install pm2@latest -g
 
 ## Setting up Repositories
 
-### Clone the repositories
+### Clone the mentoring repositorie
 
 ```bash
 $ cd /opt/
 $ sudo mkdir backend
 $ cd backend/
 $ git clone -b develop-2.5 --single-branch "https://github.com/ELEVATE-Project/mentoring.git"
-$ git clone -b develop-2.5 --single-branch "https://github.com/ELEVATE-Project/user.git"
-$ git clone -b develop-2.5 --single-branch "https://github.com/ELEVATE-Project/notification.git"
-$ git clone -b develop --single-branch "https://github.com/ELEVATE-Project/scheduler.git"
-$ git clone -b develop --single-branch "https://github.com/ELEVATE-Project/interface-service.git"
 ```
 
 ### Install Npm packages
 
 ```bash
 $ cd /opt/backend/mentoring/src
-$ sudo npm i
-$ cd ../../user/src
-$ sudo npm i
-$ cd ../../notification/src
-$ sudo npm i
-$ cd ../../scheduler/src
-$ sudo npm i
-$ cd ../../interface-service/src
 $ sudo npm i
 ```
 
@@ -448,215 +438,6 @@ DEFAULT_ORG_ID=1
 
 Save and exit.
 
-#### User service
-
-```bash
-$ cd ../../user/src
-$ sudo nano .env
-```
-
-Copy-paste the following env variables to the `.env` file:
-
-```env
-ACCESS_TOKEN_EXPIRY=1
-ACCESS_TOKEN_SECRET=asadsd8as7df9as8df987asdf
-API_DOC_URL=/user/api-doc
-APP_NAME=MentorED
-APPLICATION_ENV=development
-APPLICATION_PORT=3001
-AWS_ACCESS_KEY_ID="adsfg98a7sdfg"
-AWS_BUCKET_ENDPOINT="s3.ap-south-1.amazonaws.com"
-AWS_BUCKET_REGION="ap-south-1"
-AWS_SECRET_ACCESS_KEY="asd9786fg9a8sd/asdfg9a8sd7fg"
-AZURE_ACCOUNT_KEY=asd897gfa09sd87f09as8d
-AZURE_ACCOUNT_NAME=mentoring
-CLEAR_INTERNAL_CACHE=userinternal
-CLOUD_STORAGE=AWS
-DEFAULT_AWS_BUCKET_NAME=mentoring-dev-storage
-DEFAULT_AZURE_CONTAINER_NAME=mentoring-images
-DEFAULT_GCP_BUCKET_NAME=mentoring-dev-storage
-
-
-ENABLE_EMAIL_OTP_VERIFICATION=false
-ENABLE_LOG=true
-GCP_PATH=gcp.json
-GCP_PROJECT_ID=sl-dev-project
-INTERNAL_ACCESS_TOKEN=internal_access_token
-INTERNAL_CACHE_EXP_TIME=86400
-IV=09sdf8g098sdf/Q==
-KAFKA_GROUP_ID=mentoring
-KAFKA_TOPIC=
-KAFKA_URL=localhost:9092
-KEY=fasd98fg9a8sydg98a7usd89fg
-MONGODB_URL=mongodb://localhost:27017/elevate-users
-NOTIFICATION_KAFKA_TOPIC=dev.notifications
-OTP_EMAIL_TEMPLATE_CODE=emailotp
-OTP_EXP_TIME=86400
-REDIS_HOST=redis://localhost:6379
-REFRESH_TOKEN_EXPIRY=183
-REFRESH_TOKEN_SECRET=as9d87fa9s87df98as7d9f87a9sd87f98as7dg987asf
-REGISTRATION_EMAIL_TEMPLATE_CODE=registration
-REGISTRATION_OTP_EMAIL_TEMPLATE_CODE=registrationotp
-
-DEFAULT_OCI_BUCKET_NAME=dev-mentoring
-OCI_ACCESS_KEY_ID=asdgf6a0s98d76g9a8sasdasd7df987as98df
-OCI_BUCKET_ENDPOINT=https://as98d7asdasdf.compat.objectstorage.ap-hyderabad-1.oraclecloud.com
-OCI_BUCKET_REGION=ap-hyderabad-1
-OCI_SECRET_ACCESS_KEY=as09d7f8/as0d7f09as7d8f=
-
-ERROR_LOG_LEVEL=silly
-DISABLE_LOG=false
-DEFAULT_ORGANISATION_CODE=default_code
-
-DEV_DATABASE_URL=postgres://shikshalokam:slpassword@localhost:9700/elevate_user
-ADMIN_SECRET_CODE=a98sd76fasdfasd
-MENTORING_SERVICE_URL=test
-DEFAULT_QUEUE="test"
-
-INVITEE_EMAIL_TEMPLATE_CODE='test'
-ADMIN_INVITEE_UPLOAD_EMAIL_TEMPLATE_CODE='test'
-# Default role
-DEFAULT_ROLE="mentee"
-
-# Sample file upload path
-SAMPLE_CSV_FILE_PATH=sample/bulk_user_creation.csv
-
-# Email template for org admin invitation
-ORG_ADMIN_INVITATION_EMAIL_TEMPLATE_CODE=invite_org_admin
-DEFAULT_ORG_ID=1
-MENTORING_SERVICE_URL=http://mentoring:3000
-# Email template for mentor role request accepted
-MENTOR_REQUEST_ACCEPTED_EMAIL_TEMPLATE_CODE=mentor_request_accepted
-
-# Email template for mentor role request rejected
-MENTOR_REQUEST_REJECTED_EMAIL_TEMPLATE_CODE=mentor_request_rejected
-DEFAULT_ROLE=mentee
-PORTAL_URL='https://mentored.some.org/auth/login'
-SCHEDULER_SERVICE_ERROR_REPORTING_EMAIL_ID="rakesh.k@some.com"
-SCHEDULER_SERVICE_URL="http://localhost:4000/jobs/scheduleJob"
-SCHEDULER_SERVICE_HOST="http://localhost:4000"
-SCHEDULER_SERVICE_BASE_URL= '/scheduler/'
-REFRESH_VIEW_INTERVAL=540000
-```
-
-Save and exit.
-
-#### Notification Service
-
-```bash
-$ cd ../../notification/src
-$ sudo nano .env
-```
-
-Copy-paste the following env variables to the `.env` file:
-
-```env
-# Notification Service Config
-
-# Port on which service runs
-APPLICATION_PORT=3002
-
-# Application environment
-APPLICATION_ENV=development
-
-# Route after the base URL
-APPLICATION_BASE_URL=/notification/
-
-# Kafka endpoint
-KAFKA_HOST="localhost:9092"
-
-# Kafka topic name
-KAFKA_TOPIC="develop.notifications"
-
-# Kafka consumer group id
-KAFKA_GROUP_ID="notification"
-
-# Sendgrid API key
-# SENDGRID_API_KEY="SG.asd89f7a9s8d7f.as9d8f7a9s8d7f-asd98f76as987df"
-SENDGRID_API_KEY="SG.asd9f87a9s8d7f."
-
-# Sendgrid sender email address
-SENDGRID_FROM_MAIL="no-reply@some.org"
-
-# Api doc URL
-API_DOC_URL='/api-doc'
-
-INTERNAL_ACCESS_TOKEN="internal_access_token"
-ENABLE_LOG=true
-ERROR_LOG_LEVEL='silly'
-DISABLE_LOG=false
-DEV_DATABASE_URL=postgres://shikshalokam:slpassword@localhost:9700/elevate_notification
-```
-
-Save and exit.
-
-#### Scheduler Service
-
-```bash
-$ cd ../../scheduler/src
-$ sudo nano .env
-```
-
-Copy-paste the following env variables to the `.env` file:
-
-```env
-# Scheduler Service Config
-
-# Application Base URL
-APPLICATION_BASE_URL=/scheduler/
-
-# Kafka hosted server URL
-KAFKA_URL=localhost:9092
-
-# Kafka topic to push notification data
-NOTIFICATION_KAFKA_TOPIC='develop.notifications'
-
-# MongoDB URL
-MONGODB_URL='mongodb://localhost:27017/tl-cron-rest'
-
-# App running port
-APPLICATION_PORT=4000
-
-# Api doc URL
-API_DOC_URL='/api-doc'
-
-APPLICATION_ENV=development
-
-ENABLE_LOG='true'
-
-ERROR_LOG_LEVEL='silly'
-DISABLE_LOG=false
-
-DEFAULT_QUEUE='email'
-
-REDIS_HOST='localhost'
-REDIS_PORT=6379
-```
-
-Save and exit.
-
-#### Interface Service
-
-```bash
-$ cd ../../interface-service/src
-$ sudo nano .env
-```
-
-Copy-paste the following env variables to the `.env` file:
-
-```env
-APPLICATION_PORT=3569
-APPLICATION_ENV='development'
-REQUIRED_PACKAGES="elevate-user@1.1.30 elevate-mentoring@1.1.23 elevate-scheduler@1.0.4"
-SUPPORTED_HTTP_TYPES="GET POST PUT PATCH DELETE"
-USER_SERVICE_BASE_URL='http://localhost:3001'
-MENTORING_SERVICE_BASE_URL='http://localhost:3000'
-NOTIFICATION_SERVICE_BASE_URL='http://localhost:3002'
-SCHEDULER_SERVICE_BASE_URL='http://scheduler:4000'
-```
-
-Save and exit.
-
 ## Setting up Databases
 
 **Log into the postgres user**
@@ -686,24 +467,6 @@ GRANT ALL PRIVILEGES ON DATABASE elevate_mentoring TO shikshalokam;
 GRANT ALL ON SCHEMA public TO shikshalokam;
 ```
 
-**Create the elevate_user database**
-
-```sql
-CREATE DATABASE elevate_user;
-GRANT ALL PRIVILEGES ON DATABASE elevate_user TO shikshalokam;
-\c elevate_user
-GRANT ALL ON SCHEMA public TO shikshalokam;
-```
-
-**Create the elevate_notification database**
-
-```sql
-CREATE DATABASE elevate_notification;
-GRANT ALL PRIVILEGES ON DATABASE elevate_notification TO shikshalokam;
-\c elevate_notification
-GRANT ALL ON SCHEMA public TO shikshalokam;
-```
-
 ## Running Migrations To Create Tables
 
 **Exit the postgres user account**
@@ -722,16 +485,6 @@ sudo npm i sequelize-cli -g
 
 ```bash
 cd /opt/backend/mentoring/src
-npx sequelize-cli db:migrate
-```
-
-```bash
-cd ../../user/src
-npx sequelize-cli db:migrate
-```
-
-```bash
-cd ../../notification/src
 npx sequelize-cli db:migrate
 ```
 
@@ -786,73 +539,12 @@ SELECT create_distributed_table('sessions', 'id');
 SELECT create_distributed_table('user_extensions', 'user_id');
 ```
 
-**Login to the elevate_user database**
-
-```sql
-\c elevate_user
-```
-
-**Enable Citus for elevate_user**
-
-```sql
-CREATE EXTENSION citus;
-```
-
-**Within elevate_user, run the following queries:**
-
-```sql
-SELECT create_distributed_table('entities', 'entity_type_id');
-SELECT create_distributed_table('entity_types', 'organization_id');
-SELECT create_distributed_table('file_uploads', 'organization_id');
-SELECT create_distributed_table('forms', 'organization_id');
-SELECT create_distributed_table('notification_templates', 'organization_id');
-SELECT create_distributed_table('organizations', 'id');
-SELECT create_distributed_table('organization_codes', 'code');
-SELECT create_distributed_table('organization_domains', 'domain');
-SELECT create_distributed_table('organization_role_requests','organization_id');
-SELECT create_distributed_table('organization_user_invites','organization_id');
-SELECT create_distributed_table('users_credentials','email');
-SELECT create_distributed_table('users', 'organization_id');
-```
-
 ## Running Seeder to Populate the Tables with Seed Data
 
 **Exit the postgres user**
 
 ```bash
 exit (run twice)
-```
-
-**Navigate to the src/scripts directory of the user service**
-
-```bash
-cd /opt/backend/user/src/scripts
-```
-
-**Run the insertDefaultOrg.js script**
-
-```bash
-node insertDefaultOrg.js
-```
-
-_Keep note of the default organization id generated by the script_
-
-**Navigate to the src folder of the user service and update the .env file with these variables:**
-
-```bash
-sudo nano /opt/backend/user/src/.env
-```
-
-```env
-DEFAULT_ORG_ID=<id generated by the insertDefaultOrg script>
-DEFAULT_ORGANISATION_CODE=default_code
-```
-
-**Run the seeder command**
-
-```bash
-cd /opt/backend/user/src
-npm run db:seed:all
 ```
 
 **Navigate to the src folder of the mentoring service and update the .env file with these variables:**
@@ -881,17 +573,6 @@ Navigate to the src folder of all 5 services and run pm2 start command:
 $ cd /opt/backend/mentoring/src
 mentoring/src$ pm2 start app.js -i 2 --name elevate-mentoring
 
-$ cd /opt/backend/user/src
-user/src$ pm2 start app.js -i 2 --name elevate-user
-
-$ cd /opt/backend/notification/src
-notification/src$ pm2 start app.js -i 2 --name elevate-notification
-
-$ cd /opt/backend/interface-service/src
-interface-service/src$ pm2 start app.js -i 2 --name elevate-interface
-
-$ cd /opt/backend/scheduler/src
-scheduler/src$ pm2 start app.js -i 2 --name elevate-scheduler
 ```
 
 #### Run pm2 ls command
@@ -906,16 +587,8 @@ Output should look like this (Sample output, might slightly differ in your insta
 ┌────┬─────────────────────────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────────┬──────────┐
 │ id │ name                    │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user     │ watching │
 ├────┼─────────────────────────┼─────────────┼─────────┼─────────┼──────────┼────────┼──────┼───────────┼──────────┼──────────┼──────────┼──────────┤
-│ 6  │ elevate-interface       │ default     │ 1.0.0   │ cluster │ 79252    │ 2D     │ 0    │ online    │ 0%       │ 79.2mb   │ jenkins  │ disabled │
-│ 7  │ elevate-interface       │ default     │ 1.0.0   │ cluster │ 79262    │ 2D     │ 0    │ online    │ 0%       │ 78.7mb   │ jenkins  │ disabled │
 │ 23 │ elevate-mentoring       │ default     │ 1.0.0   │ cluster │ 90643    │ 46h    │ 0    │ online    │ 0%       │ 171.0mb  │ jenkins  │ disabled │
 │ 24 │ elevate-mentoring       │ default     │ 1.0.0   │ cluster │ 90653    │ 46h    │ 0    │ online    │ 0%       │ 168.9mb  │ jenkins  │ disabled │
-│ 19 │ elevate-notification    │ default     │ 1.0.0   │ cluster │ 88026    │ 47h    │ 0    │ online    │ 0%       │ 113.2mb  │ jenkins  │ disabled │
-│ 20 │ elevate-notification    │ default     │ 1.0.0   │ cluster │ 88036    │ 47h    │ 0    │ online    │ 0%       │ 80.3mb   │ jenkins  │ disabled │
-│ 15 │ elevate-scheduler       │ default     │ 1.0.0   │ cluster │ 86368    │ 47h    │ 0    │ online    │ 0%       │ 89.8mb   │ jenkins  │ disabled │
-│ 16 │ elevate-scheduler       │ default     │ 1.0.0   │ cluster │ 86378    │ 47h    │ 0    │ online    │ 0%       │ 86.9mb   │ jenkins  │ disabled │
-│ 29 │ elevate-user            │ default     │ 1.0.0   │ cluster │ 106976   │ 27h    │ 0    │ online    │ 0%       │ 167.0mb  │ jenkins  │ disabled │
-│ 30 │ elevate-user            │ default     │ 1.0.0   │ cluster │ 106986   │ 27h    │ 0    │ online    │ 0%       │ 169.3mb  │ jenkins  │ disabled │
 └────┴─────────────────────────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
 ```
 
@@ -923,5 +596,4 @@ This concludes the services and dependency setup.
 
 ## Postman Collections
 
--   [User Service](https://github.com/ELEVATE-Project/user/tree/develop-2.5/src/api-doc)
 -   [Mentoring Service](https://github.com/ELEVATE-Project/mentoring/tree/develop-2.5/src/api-doc)
