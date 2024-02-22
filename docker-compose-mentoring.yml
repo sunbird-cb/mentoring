@@ -48,11 +48,11 @@ services:
         tag: 'redis-logs'
   mentoring:
     # update image url with latest one:
-    image: shikshalokamqa/elevate-mentoring:2.5.5
+    image: shikshalokamqa/elevate-mentoring:2.5.6
     ports:
       - '3000:3000'
     command: >
-      bash -c "npm run db:init && npm run db:seed:all && (cd scripts && echo 'Running script' && node viewsScript.js) && nodemon app.js"
+      bash -c "npm run db:init && npm run db:seed:all && (echo 'Running nodeee' && nodemon app.js &); (while ! curl -sSf http://mentoring:3000 > /dev/null; do sleep 1; done && echo 'Service is up' && /bin/bash -c 'cd scripts && echo Running script && node psqlFunction.js && node viewsScript.js'); tail -f /dev/null"
     environment:
       - KAFKA_URL=kafka:9092
       - USER_SERIVCE_HOST=http://user:3001
@@ -74,7 +74,7 @@ services:
     ports:
       - '3001:3001'
     command: >
-      bash -c "npm run db:init && npm run db:seed:all && (cd scripts && echo 'Running script' && node insertDefaultOrg.js && node viewsScript.js && node -r module-alias/register uploadSampleCSV.js) && nodemon app.js"
+      bash -c "npm run db:init && npm run db:seed:all && (echo 'Running nodeee' && nodemon app.js &); (while ! curl -sSf http://user:3001 > /dev/null; do sleep 1; done && echo 'Service is up' && /bin/bash -c 'cd scripts && echo Running user service scripts && node insertDefaultOrg.js && node viewsScript.js && node -r module-alias/register uploadSampleCSV.js'); tail -f /dev/null"
     environment:
       - DEV_DATABASE_URL=postgres://postgres:postgres@citus_master:5432/elevate-user
       - KAFKA_URL=kafka:9092
@@ -107,7 +107,7 @@ services:
       - ${notification_env}
   scheduler:
     # Update with latest image
-    image: shikshalokamqa/elevate-scheduler:2.5.1
+    image: shikshalokamqa/elevate-scheduler:2.5.2
     ports:
       - '4000:4000'
     command: ['nodemon', 'app.js']
