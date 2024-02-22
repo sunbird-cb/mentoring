@@ -61,8 +61,8 @@ module.exports = class OrganizationService {
 		try {
 			console.log('EVENT BODY: ', eventBody)
 			const extensionData = {
-				organization_id: eventBody.entityId,
 				...common.DEFAULT_ORGANISATION_POLICY,
+				organization_id: eventBody.entityId,
 				created_by: eventBody.created_by,
 				updated_by: eventBody.created_by,
 			}
