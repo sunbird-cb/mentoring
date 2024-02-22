@@ -21,6 +21,8 @@ module.exports = (app) => {
 		let controllerResponse
 		let validationError
 
+		console.log('ROUTER REQUEST BODY: ', req.body)
+
 		/* Check for input validation error */
 		try {
 			validationError = req.validationErrors()

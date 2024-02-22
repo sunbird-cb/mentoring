@@ -59,6 +59,7 @@ module.exports = class OrganizationService {
 
 	static async createOrgExtension(eventBody) {
 		try {
+			console.log('EVENT BODY: ', eventBody)
 			const extensionData = {
 				organization_id: eventBody.entityId,
 				...common.DEFAULT_ORGANISATION_POLICY,
