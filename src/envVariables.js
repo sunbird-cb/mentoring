@@ -197,6 +197,11 @@ let enviromentVariables = {
 		message: 'Default organization ID',
 		optional: false,
 	},
+	GENERIC_INVITATION_EMAIL_TEMPLATE_CODE: {
+		message: 'Generic invitation email template code is required',
+		optional: true,
+		default: 'generic_invite',
+	},
 }
 
 let success = true
