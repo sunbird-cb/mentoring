@@ -896,9 +896,9 @@ module.exports = class MenteesHelper {
 	static async getOrganizationIdBasedOnPolicy(userId, organization_id, filter_type) {
 		try {
 			let organization_ids = []
-
+			filter_type = filter_type.toLowerCase()
 			const attributes =
-				filter_type.toLowerCase() == common.MENTEE_ROLE
+				filter_type == common.MENTEE_ROLE
 					? ['organization_id', 'session_visibility_policy']
 					: ['organization_id', 'external_mentor_visibility_policy']
 
@@ -910,7 +910,7 @@ module.exports = class MenteesHelper {
 			)
 
 			const visibilityPolicy =
-				filter_type.toLowerCase() == common.MENTEE_ROLE
+				filter_type == common.MENTEE_ROLE
 					? orgPolicies.session_visibility_policy
 					: orgPolicies.external_mentor_visibility_policy
 
@@ -926,7 +926,7 @@ module.exports = class MenteesHelper {
 					}
 					if (visibilityPolicy === common.ASSOCIATED) {
 						const associatedAdditionalFilter =
-							filter_type.toLowerCase() == common.MENTEE_ROLE
+							filter_type == common.MENTEE_ROLE
 								? {
 										external_session_visibility_policy: {
 											[Op.ne]: 'CURRENT',
@@ -943,7 +943,7 @@ module.exports = class MenteesHelper {
 								[Op.and]: [
 									{
 										organization_id: {
-											[Op.in]: [...relatedOrgs, orgPolicies.organization_id],
+											[Op.in]: [...relatedOrgs],
 										},
 									},
 									associatedAdditionalFilter,
@@ -953,6 +953,7 @@ module.exports = class MenteesHelper {
 								attributes: ['organization_id'],
 							}
 						)
+						organization_ids.push(orgPolicies.organization_id)
 						if (organizationExtension) {
 							const organizationIds = organizationExtension.map((orgExt) => orgExt.organization_id)
 							organization_ids.push(...organizationIds)
@@ -962,7 +963,7 @@ module.exports = class MenteesHelper {
 						// CASE 1 : in case of mentee listing filterout organizations with external_session_visibility_policy = ALL
 						// CASE 2 : in case of mentor listing filterout organizations with mentor_visibility_policy = ALL
 						const filterQuery =
-							filter_type.toLowerCase() == common.MENTEE_ROLE
+							filter_type == common.MENTEE_ROLE
 								? {
 										external_session_visibility_policy: common.ALL,
 								  }
@@ -975,7 +976,7 @@ module.exports = class MenteesHelper {
 						//  and CASE 1 (mentee list) : Mentees is related to the SM org but external_session_visibility is CURRENT (exclude these mentees)
 						//  CASE 2 : (mentor list) : Mentors is related to SM Org but mentor_visibility set to CURRENT  (exclude these mentors)
 						const additionalFilter =
-							filter_type.toLowerCase() == common.MENTEE_ROLE
+							filter_type == common.MENTEE_ROLE
 								? {
 										external_session_visibility_policy: {
 											[Op.ne]: 'CURRENT',
@@ -994,7 +995,7 @@ module.exports = class MenteesHelper {
 										[Op.and]: [
 											{
 												organization_id: {
-													[Op.in]: [...relatedOrgs, orgPolicies.organization_id],
+													[Op.in]: [...relatedOrgs],
 												},
 											},
 											additionalFilter,
@@ -1006,6 +1007,7 @@ module.exports = class MenteesHelper {
 								attributes: ['organization_id'],
 							}
 						)
+						organization_ids.push(orgPolicies.organization_id)
 						if (organizationExtension) {
 							const organizationIds = organizationExtension.map((orgExt) => orgExt.organization_id)
 							organization_ids.push(...organizationIds)
