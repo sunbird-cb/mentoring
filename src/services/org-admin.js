@@ -502,32 +502,25 @@ module.exports = class OrgAdminService {
 
 	static async updateRelatedOrgs(relatedOrgs, orgId) {
 		try {
-			const orgPolicies = await organisationExtensionQueries.getById(orgId)
-			if (
-				orgPolicies.external_mentor_visibility_policy == common.ASSOCIATED ||
-				orgPolicies.mentor_visibility_policy == common.ASSOCIATED
-			) {
-				relatedOrgs.push(orgId) //Adding there own org id since its used for querying
-
-				const updateData = {
-					visible_to_organizations: relatedOrgs,
-				}
-
-				await Promise.all([
-					mentorQueries.updateMentorExtension(
-						null,
-						updateData,
-						{ raw: true, returning: true },
-						{ organization_id: orgId }
-					),
-					menteeQueries.updateMenteeExtension(
-						null,
-						updateData,
-						{ raw: true, returning: true },
-						{ organization_id: orgId }
-					),
-				])
+			relatedOrgs.push(orgId) //Adding there own org id since its used for querying
+			const updateData = {
+				visible_to_organizations: relatedOrgs,
 			}
+			await Promise.all([
+				mentorQueries.updateMentorExtension(
+					null,
+					updateData,
+					{ raw: true, returning: true },
+					{ organization_id: orgId }
+				),
+				menteeQueries.updateMenteeExtension(
+					null,
+					updateData,
+					{ raw: true, returning: true },
+					{ organization_id: orgId }
+				),
+			])
+
 			return responses.successResponse({
 				statusCode: httpStatusCode.ok,
 				message: 'RELATED_ORG_UPDATED',
