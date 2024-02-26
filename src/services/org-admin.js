@@ -500,26 +500,31 @@ module.exports = class OrgAdminService {
 		return policyData
 	}
 
-	static async updateRelatedOrgs(relatedOrgs, orgId) {
+	/**
+	 * @description 							- update related organization of mentees and mentors if there is an update in the organization
+	 * @method									- POST
+	 * @name 									- updateRelatedOrgs
+	 * @param {Array} relatedOrgs 		 		- Array of related organization passed
+	 * @param {Number} orgId 					- Specific orgId which was updated
+	 * @param {Object} organizationDetails 		- Object of organization details of the related org from user service.
+	 * @returns {Object} 						- A object that reurn a response object.
+	 */
+	static async updateRelatedOrgs(relatedOrgs, orgId, organizationDetails) {
 		try {
 			relatedOrgs.push(orgId) //Adding there own org id since its used for querying
-			const updateData = {
-				visible_to_organizations: relatedOrgs,
-			}
-			await Promise.all([
-				mentorQueries.updateMentorExtension(
-					null,
-					updateData,
-					{ raw: true, returning: true },
-					{ organization_id: orgId }
-				),
-				menteeQueries.updateMenteeExtension(
-					null,
-					updateData,
-					{ raw: true, returning: true },
-					{ organization_id: orgId }
-				),
-			])
+
+			// iterate through the related orgs and update the visible_to_organizations value of mentees and mentors
+			// like in user service
+			relatedOrgs.map(async (eachOrgId) => {
+				// fetch the related org from organizationDetails
+				const organization = organizationDetails.find((entry) => entry.id === eachOrgId)
+				let relatedOrganizations = [...new Set([...organization.related_orgs, orgId, eachOrgId])]
+				let updateData = {
+					visible_to_organizations: relatedOrganizations,
+				}
+
+				await this.updateUserMentorExtensions(updateData, eachOrgId)
+			})
 
 			return responses.successResponse({
 				statusCode: httpStatusCode.ok,
@@ -528,6 +533,24 @@ module.exports = class OrgAdminService {
 		} catch (error) {
 			throw error
 		}
+	}
+
+	static async updateUserMentorExtensions(updateData, orgId) {
+		// call mentee and mentor extension update
+		await Promise.all([
+			mentorQueries.updateMentorExtension(
+				null,
+				updateData,
+				{ raw: true, returning: true },
+				{ organization_id: orgId }
+			),
+			menteeQueries.updateMenteeExtension(
+				null,
+				updateData,
+				{ raw: true, returning: true },
+				{ organization_id: orgId }
+			),
+		])
 	}
 
 	static async setDefaultQuestionSets(bodyData, decodedToken) {
