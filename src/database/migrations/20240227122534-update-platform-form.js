@@ -14,14 +14,6 @@ module.exports = {
 					fields: {
 						forms: [
 							{
-								name: 'BigBlueButton (Default)',
-								hint: 'BigBlueButton is the default meeting platform.',
-								value: 'Default',
-								form: {
-									controls: [],
-								},
-							},
-							{
 								name: 'Google meet',
 								hint: 'To use google meet for your meeting, schedule a meeting on google meet and add meeting link below.',
 								value: 'Gmeet',
