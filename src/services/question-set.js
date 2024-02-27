@@ -1,8 +1,8 @@
 //Dependencies
 const httpStatusCode = require('@generics/http-status')
-const common = require('@constants/common')
-const questionsSetQueries = require('../database/queries/questionSet')
+const questionSetQueries = require('../database/queries/question-set')
 const questionQueries = require('../database/queries/questions')
+const responses = require('@helpers/responses')
 
 module.exports = class questionsSetHelper {
 	/**
@@ -17,7 +17,7 @@ module.exports = class questionsSetHelper {
 		try {
 			let questions = await questionQueries.find({ id: bodyData.questions })
 			if (questions.length != bodyData.questions.length) {
-				return common.failureResponse({
+				return responses.failureResponse({
 					message: 'QUESTION_NOT_FOUND',
 					statusCode: httpStatusCode.bad_request,
 					responseCode: 'CLIENT_ERROR',
@@ -26,9 +26,9 @@ module.exports = class questionsSetHelper {
 			const questionSetData = {
 				code: bodyData.code,
 			}
-			let questionSet = await questionsSetQueries.findOneQuestionsSet(questionSetData)
+			let questionSet = await questionSetQueries.findOneQuestionSet(questionSetData)
 			if (questionSet) {
-				return common.failureResponse({
+				return responses.failureResponse({
 					message: 'QUESTIONS_SET_ALREADY_EXISTS',
 					statusCode: httpStatusCode.bad_request,
 					responseCode: 'CLIENT_ERROR',
@@ -37,9 +37,9 @@ module.exports = class questionsSetHelper {
 			questionSetData['questions'] = bodyData.questions
 			questionSetData['created_by'] = decodedToken.id
 			questionSetData['updated_by'] = decodedToken.id
-			questionSet = await questionsSetQueries.createQuestionsSet(questionSetData)
+			questionSet = await questionSetQueries.createQuestionSet(questionSetData)
 
-			return common.successResponse({
+			return responses.successResponse({
 				statusCode: httpStatusCode.created,
 				message: 'QUESTIONS_SET_CREATED_SUCCESSFULLY',
 				result: questionSet,
@@ -64,7 +64,7 @@ module.exports = class questionsSetHelper {
 			if (bodyData.questions) {
 				let questionInfo = await questionQueries.find({ id: bodyData.questions })
 				if (questionInfo.length != bodyData.questions.length) {
-					return common.failureResponse({
+					return responses.failureResponse({
 						message: 'QUESTION_NOT_FOUND',
 						statusCode: httpStatusCode.bad_request,
 						responseCode: 'CLIENT_ERROR',
@@ -80,16 +80,16 @@ module.exports = class questionsSetHelper {
 				created_by: decodedToken.id,
 				questions: bodyData.questions,
 			}
-			const questionSet = await questionsSetQueries.updateOneQuestionsSet(filter, questionSetData)
+			const questionSet = await questionSetQueries.updateOneQuestionSet(filter, questionSetData)
 			if (questionSet === 'QUESTIONS_SET_NOT_FOUND') {
-				return common.failureResponse({
+				return responses.failureResponse({
 					message: 'QUESTIONS_SET_NOT_FOUND',
 					statusCode: httpStatusCode.bad_request,
 					responseCode: 'CLIENT_ERROR',
 				})
 			}
 
-			return common.successResponse({
+			return responses.successResponse({
 				statusCode: httpStatusCode.accepted,
 				message: 'QUESTIONS_SET_UPDATED_SUCCESSFULLY',
 			})
@@ -107,20 +107,23 @@ module.exports = class questionsSetHelper {
 	 * @returns {JSON} - Read question set.
 	 */
 
-	static async read(questionsSetId) {
+	static async read(questionsSetId, questionSetCode) {
 		try {
 			const filter = {
 				id: questionsSetId,
 			}
-			const questionSet = await questionsSetQueries.findOneQuestionsSet(filter)
+			if (questionSetCode) {
+				filter.code = questionSetCode
+			}
+			const questionSet = await questionSetQueries.findOneQuestionSet(filter)
 			if (!questionSet) {
-				return common.failureResponse({
+				return responses.failureResponse({
 					message: 'QUESTION_NOT_FOUND',
 					statusCode: httpStatusCode.bad_request,
 					responseCode: 'CLIENT_ERROR',
 				})
 			}
-			return common.successResponse({
+			return responses.successResponse({
 				statusCode: httpStatusCode.ok,
 				message: 'QUESTIONS_SET_FETCHED_SUCCESSFULLY',
 				result: questionSet,

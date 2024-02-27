@@ -61,4 +61,38 @@ module.exports = class OrganizationExtensionQueries {
 			throw new Error(`Error finding/inserting organisation extension: ${error.message}`)
 		}
 	}
+
+	static async findAll(filter, options = {}) {
+		try {
+			const orgExtensions = await OrganizationExtension.findAll({
+				where: filter,
+				...options,
+				raw: true,
+			})
+			return orgExtensions
+		} catch (error) {
+			throw new Error(`Error fetching organisation extension: ${error.message}`)
+		}
+	}
+	static async findOne(filter, options = {}) {
+		try {
+			const orgExtension = await OrganizationExtension.findOne({
+				where: filter,
+				...options,
+				raw: true,
+			})
+			return orgExtension
+		} catch (error) {
+			throw new Error(`Error fetching organisation extension: ${error.message}`)
+		}
+	}
+
+	static async create(data, options = {}) {
+		try {
+			const newOrgExtension = await OrganizationExtension.create(data, options)
+			return newOrgExtension
+		} catch (error) {
+			throw error
+		}
+	}
 }

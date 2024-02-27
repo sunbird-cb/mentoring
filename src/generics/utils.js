@@ -183,6 +183,62 @@ function validateInput(input, validationData, modelName) {
 			})
 		}
 
+		function addError(field, value, dataType, message) {
+			errors.push({
+				param: field.value,
+				msg: `${value} is invalid for data type ${dataType}. ${message}`,
+			})
+		}
+
+		if (fieldValue !== undefined) {
+			const dataType = field.data_type
+
+			switch (dataType) {
+				case 'ARRAY[STRING]':
+					if (Array.isArray(fieldValue)) {
+						fieldValue.forEach((element) => {
+							if (typeof element !== 'string') {
+								addError(field, element, dataType, 'It should be a string')
+							} else if (field.allow_custom_entities && /[^A-Za-z0-9\s_]/.test(element)) {
+								addError(
+									field,
+									element,
+									dataType,
+									'It should not contain special characters except underscore.'
+								)
+							}
+						})
+					} else {
+						addError(field, field.value, dataType, '')
+					}
+					break
+
+				case 'STRING':
+					if (typeof fieldValue !== 'string') {
+						addError(field, fieldValue, dataType, 'It should be a string')
+					} else if (field.allow_custom_entities && /[^A-Za-z0-9\s_]/.test(fieldValue)) {
+						addError(
+							field,
+							fieldValue,
+							dataType,
+							'It should not contain special characters except underscore.'
+						)
+					}
+					break
+
+				case 'NUMBER':
+					console.log('Type of', typeof fieldValue)
+					if (typeof fieldValue !== 'number') {
+						addError(field, fieldValue, dataType, '')
+					}
+					break
+
+				default:
+					//isValid = false
+					break
+			}
+		}
+
 		if (!fieldValue || field.allow_custom_entities === true || field.has_entities === false) {
 			continue // Skip validation if the field is not present in the input or allow_custom_entities is true
 		}
@@ -498,17 +554,17 @@ const generateWhereClause = (tableName) => {
 }
 
 function validateFilters(input, validationData, modelName) {
-	const allValues = []
-	validationData.forEach((item) => {
+	const entityTypes = []
+	validationData.forEach((entityType) => {
 		// Extract the 'value' property from the main object
-		allValues.push(item.value)
+		entityTypes.push(entityType.value)
 
 		// Extract the 'value' property from the 'entities' array
 	})
 
 	for (const key in input) {
 		if (input.hasOwnProperty(key)) {
-			if (allValues.includes(key)) {
+			if (entityTypes.includes(key)) {
 				continue
 			} else {
 				delete input[key]

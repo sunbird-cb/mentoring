@@ -102,7 +102,7 @@ services:
     image: shikshalokamqa/elevate-scheduler:2.5.2
     ports:
       - '4000:4000'
-    command: ['nodemon', 'app.js']
+    command: ['nodemon', '--trace-warnings', 'app.js']
     environment:
       - KAFKA_URL=kafka:9092
     depends_on:
@@ -116,8 +116,8 @@ services:
     # Update with latest image
     image: shikshalokamqa/elevate-interface:2.5
     ports:
-      - '3569:3569'
-    command: ['node', 'app.js']
+      - '3567:3567'
+    command: ['node', '--trace-warnings', 'app.js']
     networks:
       - elevate_net
     env_file:

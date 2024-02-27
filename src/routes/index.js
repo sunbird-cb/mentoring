@@ -21,6 +21,8 @@ module.exports = (app) => {
 		let controllerResponse
 		let validationError
 
+		console.log('ROUTER REQUEST BODY: ', req.body)
+
 		/* Check for input validation error */
 		try {
 			validationError = req.validationErrors()
@@ -62,7 +64,13 @@ module.exports = (app) => {
 			/* If error obtained then global error handler gets executed */
 			return next(controllerResponse)
 		}
-		if (controllerResponse) {
+
+		if (controllerResponse.isResponseAStream == true) {
+			// Check if file specified by the filePath exists
+			res.setHeader('Content-disposition', 'attachment; filename=' + controllerResponse.fileName)
+			res.set('Content-Type', 'application/octet-stream')
+			res.status(controllerResponse.statusCode).send(controllerResponse.stream)
+		} else if (controllerResponse) {
 			res.status(controllerResponse.statusCode).json({
 				responseCode: controllerResponse.responseCode,
 				message: req.t(controllerResponse.message),
@@ -86,33 +94,42 @@ module.exports = (app) => {
 
 	// Global error handling middleware, should be present in last in the stack of a middleware's
 	app.use((error, req, res, next) => {
-		console.error(error)
-		const status = error.statusCode || 500
-		const responseCode = error.responseCode || 'SERVER_ERROR'
-		const message = error.message || ''
-		let errorData = []
+		if (error.statusCode || error.responseCode) {
+			// Detailed error response
+			const status = error.statusCode || 500
+			const responseCode = error.responseCode || 'SERVER_ERROR'
+			const message = error.message || 'Oops! Something Went Wrong.'
+			const errorData = error.data || []
 
-		if (error.data) {
-			errorData = error.data
-		}
-		if (status == 500) {
-			logger.error('Server error!', { message: error.stack, triggerNotification: true })
-		} else {
 			logger.info(message, { message: error })
-		}
-		const options = {
-			responseCode,
-			error: errorData,
-			meta: { correlation: correlationId.getId() },
-		}
-		let interpolationOptions = {
-			...error?.interpolation,
-			interpolation: { escapeValue: false },
-		}
-		error.interpolation
-			? (options.message = req.t(message, interpolationOptions))
-			: (options.message = req.t(message))
 
-		res.status(status).json(options)
+			const options = {
+				responseCode,
+				error: errorData,
+				meta: { correlation: correlationId.getId() },
+			}
+
+			const interpolationOptions = {
+				...error?.interpolation,
+				interpolation: { escapeValue: false },
+			}
+
+			options.message = error.interpolation ? req.t(message, interpolationOptions) : req.t(message)
+
+			res.status(status).json(options)
+		} else {
+			// Limited info response
+			const errorMessage = 'Oops! Something Went Wrong.'
+
+			logger.error('Server error!', { message: error.stack, triggerNotification: true })
+			console.error('Error occurred on the server:')
+			console.error(error)
+
+			res.status(500).json({
+				responseCode: 'SERVER_ERROR',
+				message: errorMessage,
+				meta: { correlation: correlationId.getId() },
+			})
+		}
 	})
 }

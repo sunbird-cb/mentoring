@@ -6,10 +6,11 @@
  */
 
 // Dependencies
-const questionsService = require('@services/questionsSet')
+const questionSetService = require('@services/question-set')
 const utilsHelper = require('@generics/utils')
 const common = require('@constants/common')
 const httpStatusCode = require('@generics/http-status')
+const responses = require('@helpers/responses')
 
 module.exports = class QuestionsSet {
 	/**
@@ -23,14 +24,15 @@ module.exports = class QuestionsSet {
 	async create(req) {
 		try {
 			if (!utilsHelper.validateRoleAccess(req.decodedToken.roles, [common.ADMIN_ROLE, common.ORG_ADMIN_ROLE])) {
-				throw common.failureResponse({
+				throw responses.failureResponse({
 					message: 'USER_IS_NOT_A_ADMIN',
 					statusCode: httpStatusCode.bad_request,
 					responseCode: 'CLIENT_ERROR',
 				})
 			}
-			const createQuestionsSet = await questionsService.create(req.body, req.decodedToken)
-			return createQuestionsSet
+			const createQuestionSet = await questionSetService.create(req.body, req.decodedToken)
+			console.log(createQuestionSet)
+			return createQuestionSet
 		} catch (error) {
 			return error
 		}
@@ -48,13 +50,13 @@ module.exports = class QuestionsSet {
 	async update(req) {
 		try {
 			if (!utilsHelper.validateRoleAccess(req.decodedToken.roles, [common.ADMIN_ROLE, common.ORG_ADMIN_ROLE])) {
-				throw common.failureResponse({
+				throw responses.failureResponse({
 					message: 'USER_IS_NOT_A_ADMIN',
 					statusCode: httpStatusCode.bad_request,
 					responseCode: 'CLIENT_ERROR',
 				})
 			}
-			const updateQuestionsSet = await questionsService.update(req.params.id, req.body, req.decodedToken)
+			const updateQuestionsSet = await questionSetService.update(req.params.id, req.body, req.decodedToken)
 			return updateQuestionsSet
 		} catch (error) {
 			return error
@@ -72,7 +74,7 @@ module.exports = class QuestionsSet {
 
 	async read(req) {
 		try {
-			const questionsSetData = await questionsService.read(req.params.id)
+			const questionsSetData = await questionSetService.read(req.params.id, req.body.code)
 			return questionsSetData
 		} catch (error) {
 			return error

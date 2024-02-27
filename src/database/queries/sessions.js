@@ -6,6 +6,7 @@ const sequelize = require('sequelize')
 const moment = require('moment')
 const SessionOwnership = require('../models/index').SessionOwnership
 const Sequelize = require('@database/models/index').sequelize
+const sessionOwnership = require('@database/queries/sessionOwnership')
 
 exports.getColumns = async () => {
 	try {
@@ -25,7 +26,21 @@ exports.getModelName = async () => {
 
 exports.create = async (data) => {
 	try {
-		return await Session.create(data)
+		const session = await Session.create(data)
+		// create session ownership entry for the session creator
+		await sessionOwnership.create({
+			user_id: session.created_by,
+			session_id: session.id,
+			type: common.SESSION_OWNERSHIP_TYPE.CREATOR,
+		})
+
+		// create session ownership entry for the session mentor
+		await sessionOwnership.create({
+			user_id: session.mentor_id,
+			session_id: session.id,
+			type: common.SESSION_OWNERSHIP_TYPE.MENTOR,
+		})
+		return session
 	} catch (error) {
 		return error
 	}
@@ -194,14 +209,15 @@ exports.removeAndReturnMentorSessions = async (userId) => {
 				},
 			],
 		}) */
-		const foundSessionOwnerships = await SessionOwnership.findAll({
+
+		const filter = {
+			user_id: userId,
+		}
+
+		const option = {
 			attributes: ['session_id'],
-			where: {
-				mentor_id: userId,
-			},
-			raw: true,
-		})
-		const sessionIds = foundSessionOwnerships.map((ownership) => ownership.session_id)
+		}
+		const sessionIds = await sessionOwnership.findAll(filter, option, true)
 
 		const foundSessions = await Session.findAll({
 			where: {
@@ -259,6 +275,7 @@ exports.findAllSessions = async (page, limit, search, filters) => {
 				'image',
 				'created_at',
 				'meeting_info',
+				'created_by',
 			],
 			offset: parseInt((page - 1) * limit, 10),
 			limit: parseInt(limit, 10),
@@ -317,15 +334,15 @@ exports.updateEnrollmentCount = async (sessionId, increment = true) => {
 }
 exports.countHostedSessions = async (id) => {
 	try {
-		const foundSessionOwnerships = await SessionOwnership.findAll({
-			attributes: ['session_id'],
-			where: {
-				mentor_id: id,
-			},
-			raw: true,
-		})
+		const filter = {
+			user_id: id,
+			type: common.SESSION_OWNERSHIP_TYPE.MENTOR,
+		}
 
-		const sessionIds = foundSessionOwnerships.map((ownership) => ownership.session_id)
+		const option = {
+			attributes: ['session_id'],
+		}
+		const sessionIds = await sessionOwnership.findAll(filter, option, true)
 
 		const count = await Session.count({
 			where: {
@@ -344,15 +361,15 @@ exports.countHostedSessions = async (id) => {
 
 exports.getCreatedSessionsCountInDateRange = async (mentorId, startDate, endDate) => {
 	try {
-		const foundSessionOwnerships = await SessionOwnership.findAll({
-			attributes: ['session_id'],
-			where: {
-				mentor_id: mentorId,
-			},
-			raw: true,
-		})
+		const filter = {
+			user_id: mentorId,
+			type: common.SESSION_OWNERSHIP_TYPE.CREATOR,
+		}
 
-		const sessionIds = foundSessionOwnerships.map((ownership) => ownership.session_id)
+		const option = {
+			attributes: ['session_id'],
+		}
+		const sessionIds = await sessionOwnership.findAll(filter, option, true)
 
 		const count = await Session.count({
 			where: {
@@ -360,6 +377,45 @@ exports.getCreatedSessionsCountInDateRange = async (mentorId, startDate, endDate
 				created_at: {
 					[Op.between]: [startDate, endDate],
 				},
+				mentor_id: mentorId, // Check mentor_id
+				created_by: mentorId, // Check created_by
+			},
+		})
+		return count
+	} catch (error) {
+		throw error
+	}
+}
+
+/**
+ * Get the count of mentoring sessions within a date range for a specific mentor.
+ * @param {number} mentorId 	- The ID of the mentor.
+ * @param {Date} startDate 		- The start date of the date range.
+ * @param {Date} endDate 		- The end date of the date range.
+ * @returns {Promise<number>} 	- The count of mentoring sessions.
+ * @throws {Error} 				- If an error occurs during the process.
+ */
+
+exports.getAssignedSessionsCountInDateRange = async (mentorId, startDate, endDate) => {
+	try {
+		const filter = {
+			user_id: mentorId,
+			type: common.SESSION_OWNERSHIP_TYPE.MENTOR,
+		}
+
+		const option = {
+			attributes: ['session_id'],
+		}
+		const sessionIds = await sessionOwnership.findAll(filter, option, true)
+
+		const count = await Session.count({
+			where: {
+				id: { [Op.in]: sessionIds },
+				created_at: {
+					[Op.between]: [startDate, endDate],
+				},
+				mentor_id: mentorId,
+				created_by: { [Op.ne]: mentorId },
 			},
 		})
 		return count
@@ -370,15 +426,16 @@ exports.getCreatedSessionsCountInDateRange = async (mentorId, startDate, endDate
 
 exports.getHostedSessionsCountInDateRange = async (mentorId, startDate, endDate) => {
 	try {
-		const foundSessionOwnerships = await SessionOwnership.findAll({
-			attributes: ['session_id'],
-			where: {
-				mentor_id: mentorId,
-			},
-			raw: true,
-		})
+		const filter = {
+			user_id: mentorId,
+			type: common.SESSION_OWNERSHIP_TYPE.MENTOR,
+		}
 
-		const sessionIds = foundSessionOwnerships.map((ownership) => ownership.session_id)
+		const option = {
+			attributes: ['session_id'],
+		}
+		const sessionIds = await sessionOwnership.findAll(filter, option, true)
+
 		const count = await Session.count({
 			where: {
 				id: { [Op.in]: sessionIds },
@@ -431,15 +488,15 @@ exports.getHostedSessionsCountInDateRange = async (mentorId, startDate, endDate)
 
 exports.getMentorsUpcomingSessions = async (page, limit, search, mentorId) => {
 	try {
-		const foundSessionOwnerships = await SessionOwnership.findAll({
-			attributes: ['session_id'],
-			where: {
-				mentor_id: mentorId,
-			},
-			raw: true,
-		})
+		const filter = {
+			user_id: mentorId,
+		}
 
-		const sessionIds = foundSessionOwnerships.map((ownership) => ownership.session_id)
+		const option = {
+			attributes: ['session_id'],
+		}
+		const sessionIds = await sessionOwnership.findAll(filter, option, true)
+
 		const currentEpochTime = moment().unix()
 
 		const sessionAttendeesData = await Session.findAndCountAll({
@@ -591,6 +648,9 @@ exports.getUpcomingSessionsFromView = async (
 		const filterClause = filterConditions.length > 0 ? `AND ${filterConditions.join(' AND ')}` : ''
 
 		const saasFilterClause = saasFilter != '' ? saasFilter : ''
+
+		let publicSessionFilter = " AND type = '" + common.SESSION_TYPE.PUBLIC + "'"
+
 		// Create selection clause
 		let projectionClause = `
 			id, title, description, start_date, end_date, meta, recommended_for, medium, categories, status, image, mentor_id, visibility, mentor_organization_id, created_at,
@@ -611,6 +671,7 @@ exports.getUpcomingSessionsFromView = async (
 			AND status IN ('PUBLISHED', 'LIVE')
 			${filterClause}
 			${saasFilterClause}
+			${publicSessionFilter}
 		OFFSET
 			:offset
 		LIMIT
@@ -740,14 +801,14 @@ exports.deactivateAndReturnMentorSessions = async (userId) => {
 		const currentEpochTime = moment().unix()
 		const currentDateTime = moment().format('YYYY-MM-DD HH:mm:ssZ')
 
-		const foundSessionOwnerships = await SessionOwnership.findAll({
+		const filter = {
+			user_id: userId,
+		}
+
+		const option = {
 			attributes: ['session_id'],
-			where: {
-				mentor_id: userId,
-			},
-			raw: true,
-		})
-		const sessionIds = foundSessionOwnerships.map((ownership) => ownership.session_id)
+		}
+		const sessionIds = await sessionOwnership.findAll(filter, option, true)
 		const foundSessions = await Session.findAll({
 			where: {
 				id: { [Op.in]: sessionIds },
