@@ -3,10 +3,12 @@ const userRequests = require('@requests/user')
 const common = require('@constants/common')
 const httpStatusCode = require('@generics/http-status')
 const feedbackHelper = require('./feedback')
-const utils = require('@generics/utils')
 
-const { successResponse } = require('@constants/common')
-const rolePermissionMappingQueries = require('@database/queries/role-permission-mapping')
+const cloudUtils = require('@utils/cloud')
+const dateTimeUtils = require('@utils/dateTime')
+const requestUtils = require('@utils/request')
+const entityHelpers = require('@helpers/entity')
+
 const { UniqueConstraintError } = require('sequelize')
 const menteeQueries = require('@database/queries/userExtension')
 const sessionAttendeesQueries = require('@database/queries/sessionAttendees')
@@ -19,9 +21,7 @@ const orgAdminService = require('@services/org-admin')
 const mentorQueries = require('@database/queries/mentorExtension')
 const { getDefaultOrgId } = require('@helpers/getDefaultOrgId')
 const { Op } = require('sequelize')
-const { removeDefaultOrgEntityTypes } = require('@generics/utils')
 const entityTypeService = require('@services/entity-type')
-const entityType = require('@database/models/entityType')
 const { getEnrolledMentees } = require('@helpers/getEnrolledMentees')
 const responses = require('@helpers/responses')
 const permissions = require('@helpers/getPermissions')
@@ -56,10 +56,10 @@ module.exports = class MenteesHelper {
 			},
 			model_names: { [Op.contains]: [userExtensionsModelName] },
 		})
-		const validationData = removeDefaultOrgEntityTypes(entityTypes, orgId)
+		const validationData = entityHelpers.removeDefaultOrgEntityTypes(entityTypes, orgId)
 		//validationData = utils.removeParentEntityTypes(JSON.parse(JSON.stringify(validationData)))
 
-		const processDbResponse = utils.processDbResponse(mentee, validationData)
+		const processDbResponse = entityHelpers.processDbResponse(mentee, validationData)
 
 		const totalSession = await sessionAttendeesQueries.countEnrolledSessions(id)
 
@@ -126,13 +126,13 @@ module.exports = class MenteesHelper {
 
 			switch (filterType) {
 				case 'MONTHLY':
-					;[filterStartDate, filterEndDate] = utils.getCurrentMonthRange()
+					;[filterStartDate, filterEndDate] = dateTimeUtils.getCurrentMonthRange()
 					break
 				case 'WEEKLY':
-					;[filterStartDate, filterEndDate] = utils.getCurrentWeekRange()
+					;[filterStartDate, filterEndDate] = dateTimeUtils.getCurrentWeekRange()
 					break
 				case 'QUARTERLY':
-					;[filterStartDate, filterEndDate] = utils.getCurrentQuarterRange()
+					;[filterStartDate, filterEndDate] = dateTimeUtils.getCurrentQuarterRange()
 					break
 				default:
 					throw new Error('Invalid filterType')
@@ -272,7 +272,7 @@ module.exports = class MenteesHelper {
 					},
 					{
 						meeting_info: meetingInfo,
-						joined_at: utils.utcFormat(),
+						joined_at: dateTimeUtils.utcFormat(),
 					}
 				)
 				return responses.successResponse({
@@ -300,7 +300,7 @@ module.exports = class MenteesHelper {
 					},
 					{
 						meeting_info: meetingInfo,
-						joined_at: utils.utcFormat(),
+						joined_at: dateTimeUtils.utcFormat(),
 					}
 				)
 			}
@@ -334,7 +334,7 @@ module.exports = class MenteesHelper {
 			additionalProjectionString = queryParams.fields
 			delete queryParams.fields
 		}
-		let query = utils.processQueryParametersWithExclusions(queryParams)
+		let query = requestUtils.processQueryParametersWithExclusions(queryParams)
 		const sessionModelName = await sessionQueries.getModelName()
 
 		let validationData = await entityTypeQueries.findAllEntityTypesAndEntities({
@@ -343,7 +343,7 @@ module.exports = class MenteesHelper {
 			model_names: { [Op.contains]: [sessionModelName] },
 		})
 
-		let filteredQuery = utils.validateFilters(query, validationData, sessionModelName)
+		let filteredQuery = requestUtils.validateFilters(query, validationData, sessionModelName)
 
 		// Create saas filter for view query
 		const saasFilter = await this.filterSessionsBasedOnSaasPolicy(userId, isAMentor)
@@ -551,7 +551,7 @@ module.exports = class MenteesHelper {
 					if (session.image && session.image.length > 0) {
 						session.image = await Promise.all(
 							session.image.map(async (imgPath) =>
-								imgPath ? await utils.getDownloadableUrl(imgPath) : null
+								imgPath ? await cloudUtils.getDownloadableUrl(imgPath) : null
 							)
 						)
 					}
@@ -607,9 +607,9 @@ module.exports = class MenteesHelper {
 			})
 
 			//validationData = utils.removeParentEntityTypes(JSON.parse(JSON.stringify(validationData)))
-			const validationData = removeDefaultOrgEntityTypes(entityTypes, orgId)
+			const validationData = entityHelpers.removeDefaultOrgEntityTypes(entityTypes, orgId)
 
-			let res = utils.validateInput(data, validationData, userExtensionsModelName)
+			let res = entityHelpers.validateInput(data, validationData, userExtensionsModelName)
 			if (!res.success) {
 				return responses.failureResponse({
 					message: 'MENTEE_EXTENSION_CREATION_FAILED',
@@ -619,7 +619,7 @@ module.exports = class MenteesHelper {
 				})
 			}
 			let menteeExtensionsModel = await menteeQueries.getColumns()
-			data = utils.restructureBody(data, validationData, menteeExtensionsModel)
+			data = entityHelpers.restructureBody(data, validationData, menteeExtensionsModel)
 
 			// construct policy object
 			let saasPolicyData = await orgAdminService.constructOrgPolicyObject(organisationPolicy, true)
@@ -636,7 +636,7 @@ module.exports = class MenteesHelper {
 			}
 
 			const response = await menteeQueries.createMenteeExtension(data)
-			const processDbResponse = utils.processDbResponse(response.toJSON(), validationData)
+			const processDbResponse = entityHelpers.processDbResponse(response.toJSON(), validationData)
 
 			return responses.successResponse({
 				statusCode: httpStatusCode.ok,
@@ -697,9 +697,9 @@ module.exports = class MenteesHelper {
 			}
 			let entityTypes = await entityTypeQueries.findUserEntityTypesAndEntities(filter)
 
-			//validationData = utils.removeParentEntityTypes(JSON.parse(JSON.stringify(validationData)))
-			const validationData = removeDefaultOrgEntityTypes(entityTypes, orgId)
-			let res = utils.validateInput(data, validationData, userExtensionsModelName)
+			//validationData = entityHelpers.removeParentEntityTypes(JSON.parse(JSON.stringify(validationData)))
+			const validationData = entityHelpers.removeDefaultOrgEntityTypes(entityTypes, orgId)
+			let res = entityHelpers.validateInput(data, validationData, userExtensionsModelName)
 			if (!res.success) {
 				return responses.failureResponse({
 					message: 'PROFILE_UPDATE_FAILED',
@@ -711,7 +711,7 @@ module.exports = class MenteesHelper {
 
 			let userExtensionModel = await menteeQueries.getColumns()
 
-			data = utils.restructureBody(data, validationData, userExtensionModel)
+			data = entityHelpers.restructureBody(data, validationData, userExtensionModel)
 
 			const [updateCount, updatedUser] = await menteeQueries.updateMenteeExtension(userId, data, {
 				returning: true,
@@ -727,7 +727,7 @@ module.exports = class MenteesHelper {
 						message: 'MENTEE_EXTENSION_NOT_FOUND',
 					})
 				}
-				const processDbResponse = utils.processDbResponse(fallbackUpdatedUser, validationData)
+				const processDbResponse = entityHelpers.processDbResponse(fallbackUpdatedUser, validationData)
 
 				return responses.successResponse({
 					statusCode: httpStatusCode.ok,
@@ -736,7 +736,7 @@ module.exports = class MenteesHelper {
 				})
 			}
 
-			const processDbResponse = utils.processDbResponse(updatedUser[0], validationData)
+			const processDbResponse = entityHelpers.processDbResponse(updatedUser[0], validationData)
 
 			return responses.successResponse({
 				statusCode: httpStatusCode.ok,
@@ -784,8 +784,8 @@ module.exports = class MenteesHelper {
 			let entityTypes = await entityTypeQueries.findUserEntityTypesAndEntities(filter)
 
 			//validationData = utils.removeParentEntityTypes(JSON.parse(JSON.stringify(validationData)))
-			const validationData = removeDefaultOrgEntityTypes(entityTypes, orgId)
-			const processDbResponse = utils.processDbResponse(mentee, validationData)
+			const validationData = entityHelpers.removeDefaultOrgEntityTypes(entityTypes, orgId)
+			const processDbResponse = entityHelpers.processDbResponse(mentee, validationData)
 
 			return responses.successResponse({
 				statusCode: httpStatusCode.ok,
@@ -1105,7 +1105,7 @@ module.exports = class MenteesHelper {
 				}
 			}
 
-			const query = utils.processQueryParametersWithExclusions(queryParams)
+			const query = requestUtils.processQueryParametersWithExclusions(queryParams)
 			const userExtensionModelName = await menteeQueries.getModelName()
 			const mentorExtensionModelName = await menteeQueries.getModelName()
 
@@ -1114,7 +1114,7 @@ module.exports = class MenteesHelper {
 				model_names: { [Op.overlap]: [userExtensionModelName, mentorExtensionModelName] },
 			})
 
-			let filteredQuery = utils.validateFilters(
+			let filteredQuery = requestUtils.validateFilters(
 				query,
 				JSON.parse(JSON.stringify(validationData)),
 				userExtensionModelName
