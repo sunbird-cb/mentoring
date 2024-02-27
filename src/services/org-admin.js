@@ -494,6 +494,7 @@ module.exports = class OrgAdminService {
 			mentor_visibility_policy,
 			external_session_visibility_policy,
 			external_mentor_visibility_policy,
+			external_mentee_visibility_policy,
 			organization_id,
 		} = organisationPolicy
 		// create policy object
@@ -501,6 +502,7 @@ module.exports = class OrgAdminService {
 			visibility: mentor_visibility_policy,
 			external_session_visibility: external_session_visibility_policy,
 			external_mentor_visibility: external_mentor_visibility_policy,
+			external_mentee_visibility: external_mentee_visibility_policy,
 		}
 		// add org_ id value if requested
 		if (addOrgId) {
