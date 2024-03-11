@@ -4,6 +4,7 @@ const sequelize = require('sequelize')
 const Sequelize = require('@database/models/index').sequelize
 const common = require('@constants/common')
 const _ = require('lodash')
+const { Op } = require('sequelize')
 
 module.exports = class MenteeExtensionQueries {
 	static async getColumns() {
@@ -43,6 +44,39 @@ module.exports = class MenteeExtensionQueries {
 			console.log(error)
 			throw error
 		}
+	}
+
+	static async updateMenteeExtensionAppendRelatedOrg(organizationId, newRelatedOrgs, options = {}) {
+		return await MenteeExtension.update(
+			{
+				visible_to_organizations: sequelize.fn(
+					'array_append',
+					sequelize.col('visible_to_organizations'),
+					[82, 88]
+				),
+			},
+			{
+				where: {
+					organization_id: organizationId,
+					[Op.or]: [
+						{
+							[Op.not]: {
+								visible_to_organizations: {
+									[Op.contains]: [82, 88],
+								},
+							},
+						},
+						{
+							visible_to_organizations: {
+								[Op.is]: null,
+							},
+						},
+					],
+				},
+				...options,
+				individualHooks: true,
+			}
+		)
 	}
 
 	static async getMenteeExtension(userId, attributes = []) {

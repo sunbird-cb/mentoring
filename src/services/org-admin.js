@@ -509,22 +509,24 @@ module.exports = class OrgAdminService {
 	 * @param {Object} organizationDetails 		- Object of organization details of the related org from user service.
 	 * @returns {Object} 						- A object that reurn a response object.
 	 */
-	static async updateRelatedOrgs(relatedOrgs, orgId, organizationDetails) {
+	static async updateRelatedOrgs(delta_organization_ids, orgId, action) {
 		try {
-			relatedOrgs.push(orgId) //Adding there own org id since its used for querying
+			let response = await menteeQueries.updateMenteeExtensionAppendRelatedOrg(orgId, delta_organization_ids)
 
-			// iterate through the related orgs and update the visible_to_organizations value of mentees and mentors
-			// like in user service
-			relatedOrgs.map(async (eachOrgId) => {
-				// fetch the related org from organizationDetails
-				const organization = organizationDetails.find((entry) => entry.id === eachOrgId)
-				let relatedOrganizations = [...new Set([...organization.related_orgs, orgId, eachOrgId])]
-				let updateData = {
-					visible_to_organizations: relatedOrganizations,
-				}
+			// relatedOrgs.push(orgId) //Adding there own org id since its used for querying
 
-				await this.updateUserMentorExtensions(updateData, eachOrgId)
-			})
+			// // iterate through the related orgs and update the visible_to_organizations value of mentees and mentors
+			// // like in user service
+			// relatedOrgs.map(async (eachOrgId) => {
+			// 	// fetch the related org from organizationDetails
+			// 	const organization = organizationDetails.find((entry) => entry.id === eachOrgId)
+			// 	let relatedOrganizations = [...new Set([...organization.related_orgs, orgId, eachOrgId])]
+			// 	let updateData = {
+			// 		visible_to_organizations: relatedOrganizations,
+			// 	}
+
+			// 	await this.updateUserMentorExtensions(updateData, eachOrgId)
+			// })
 
 			return responses.successResponse({
 				statusCode: httpStatusCode.ok,
