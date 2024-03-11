@@ -511,22 +511,17 @@ module.exports = class OrgAdminService {
 	 */
 	static async updateRelatedOrgs(delta_organization_ids, orgId, action) {
 		try {
-			let response = await menteeQueries.updateMenteeExtensionAppendRelatedOrg(orgId, delta_organization_ids)
-
-			// relatedOrgs.push(orgId) //Adding there own org id since its used for querying
-
-			// // iterate through the related orgs and update the visible_to_organizations value of mentees and mentors
-			// // like in user service
-			// relatedOrgs.map(async (eachOrgId) => {
-			// 	// fetch the related org from organizationDetails
-			// 	const organization = organizationDetails.find((entry) => entry.id === eachOrgId)
-			// 	let relatedOrganizations = [...new Set([...organization.related_orgs, orgId, eachOrgId])]
-			// 	let updateData = {
-			// 		visible_to_organizations: relatedOrganizations,
-			// 	}
-
-			// 	await this.updateUserMentorExtensions(updateData, eachOrgId)
-			// })
+			if (action == common.PUSH) {
+				await Promise.all([
+					await menteeQueries.updateMenteeExtensionAddRelatedOrg(orgId, delta_organization_ids),
+					await mentorQueries.updateMentorExtensionAddRelatedOrg(orgId, delta_organization_ids),
+				])
+			} else if (action == common.POP) {
+				await Promise.all([
+					await menteeQueries.updateMenteeExtensionRemoveRelatedOrg(orgId, delta_organization_ids),
+					await mentorQueries.updateMentorExtensionRemoveRelatedOrg(orgId, delta_organization_ids),
+				])
+			}
 
 			return responses.successResponse({
 				statusCode: httpStatusCode.ok,

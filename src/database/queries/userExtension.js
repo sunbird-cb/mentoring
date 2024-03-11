@@ -46,13 +46,12 @@ module.exports = class MenteeExtensionQueries {
 		}
 	}
 
-	static async updateMenteeExtensionAppendRelatedOrg(organizationId, newRelatedOrgs, options = {}) {
-		return await MenteeExtension.update(
+	static async updateMenteeExtensionAddRelatedOrg(organizationId, newRelatedOrgs, options = {}) {
+		// Update user extension and concat related org to the org id
+		await MenteeExtension.update(
 			{
-				visible_to_organizations: sequelize.fn(
-					'array_append',
-					sequelize.col('visible_to_organizations'),
-					[82, 88]
+				visible_to_organizations: sequelize.literal(
+					`array_cat("visible_to_organizations", ARRAY[${newRelatedOrgs}]::integer[])`
 				),
 			},
 			{
@@ -62,7 +61,7 @@ module.exports = class MenteeExtensionQueries {
 						{
 							[Op.not]: {
 								visible_to_organizations: {
-									[Op.contains]: [82, 88],
+									[Op.contains]: newRelatedOrgs,
 								},
 							},
 						},
@@ -75,6 +74,72 @@ module.exports = class MenteeExtensionQueries {
 				},
 				...options,
 				individualHooks: true,
+			}
+		)
+		// Update user extension and append org id to all the related orgs
+		return await MenteeExtension.update(
+			{
+				visible_to_organizations: sequelize.literal(
+					`COALESCE("visible_to_organizations", ARRAY[]::integer[]) || ARRAY[${organizationId}]::integer[]`
+				),
+			},
+			{
+				where: {
+					organization_id: {
+						[Op.in]: [...newRelatedOrgs],
+					},
+					[Op.or]: [
+						{
+							[Op.not]: {
+								visible_to_organizations: {
+									[Op.contains]: [organizationId],
+								},
+							},
+						},
+						{
+							visible_to_organizations: {
+								[Op.is]: null,
+							},
+						},
+					],
+				},
+				individualHooks: true,
+				...options,
+			}
+		)
+	}
+
+	static async updateMenteeExtensionRemoveRelatedOrg(organizationId, relatedOrgs, options = {}) {
+		// Update user extension and remove related org from the org id
+		await MenteeExtension.update(
+			{
+				visible_to_organizations: sequelize.literal(
+					`ARRAY(SELECT unnest("visible_to_organizations") EXCEPT SELECT unnest(ARRAY[${relatedOrgs}]::integer[]))`
+				),
+			},
+			{
+				where: {
+					organization_id: organizationId,
+				},
+				individualHooks: true,
+				...options,
+			}
+		)
+		// Update user extension and remove org id from the related org
+		return await MenteeExtension.update(
+			{
+				visible_to_organizations: sequelize.literal(
+					`ARRAY(SELECT unnest("visible_to_organizations") EXCEPT SELECT unnest(ARRAY[${organizationId}]::integer[]))`
+				),
+			},
+			{
+				where: {
+					organization_id: {
+						[Op.in]: [...relatedOrgs],
+					},
+				},
+				individualHooks: true,
+				...options,
 			}
 		)
 	}
