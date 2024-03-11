@@ -110,7 +110,6 @@ module.exports = class Mentees {
 		try {
 			const filterList = await menteesService.getFilterList(
 				req.query.entity_types ? req.query.entity_types : '',
-				req.query.filter_type ? req.query.filter_type : '',
 				req.decodedToken
 			)
 			return filterList
