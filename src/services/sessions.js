@@ -960,7 +960,7 @@ module.exports = class SessionsHelper {
 	 */
 	static async checkIfSessionIsAccessible(session, userId, isAMentor) {
 		try {
-			if (isAMentor && session.mentor_id === userId) return true
+			if ((isAMentor && session.mentor_id === userId) || session.created_by == userId) return true
 			const userPolicyDetails = isAMentor
 				? await mentorExtensionQueries.getMentorExtension(userId, [
 						'external_session_visibility',
