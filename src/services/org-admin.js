@@ -513,13 +513,13 @@ module.exports = class OrgAdminService {
 		try {
 			if (action == common.PUSH) {
 				await Promise.all([
-					await menteeQueries.updateMenteeExtensionAddRelatedOrg(orgId, delta_organization_ids),
-					await mentorQueries.updateMentorExtensionAddRelatedOrg(orgId, delta_organization_ids),
+					await menteeQueries.addVisibleToOrg(orgId, delta_organization_ids),
+					await mentorQueries.addVisibleToOrg(orgId, delta_organization_ids),
 				])
 			} else if (action == common.POP) {
 				await Promise.all([
-					await menteeQueries.updateMenteeExtensionRemoveRelatedOrg(orgId, delta_organization_ids),
-					await mentorQueries.updateMentorExtensionRemoveRelatedOrg(orgId, delta_organization_ids),
+					await menteeQueries.removeVisibleToOrg(orgId, delta_organization_ids),
+					await mentorQueries.removeVisibleToOrg(orgId, delta_organization_ids),
 				])
 			}
 
@@ -530,24 +530,6 @@ module.exports = class OrgAdminService {
 		} catch (error) {
 			throw error
 		}
-	}
-
-	static async updateUserMentorExtensions(updateData, orgId) {
-		// call mentee and mentor extension update
-		await Promise.all([
-			mentorQueries.updateMentorExtension(
-				null,
-				updateData,
-				{ raw: true, returning: true },
-				{ organization_id: orgId }
-			),
-			menteeQueries.updateMenteeExtension(
-				null,
-				updateData,
-				{ raw: true, returning: true },
-				{ organization_id: orgId }
-			),
-		])
 	}
 
 	static async setDefaultQuestionSets(bodyData, decodedToken) {

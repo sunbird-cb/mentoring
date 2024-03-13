@@ -220,7 +220,7 @@ module.exports = class MentorExtensionQueries {
 		}
 	}
 
-	static async updateMentorExtensionAddRelatedOrg(organizationId, newRelatedOrgs, options = {}) {
+	static async addVisibleToOrg(organizationId, newRelatedOrgs, options = {}) {
 		await MentorExtension.update(
 			{
 				visible_to_organizations: sequelize.literal(
@@ -279,7 +279,7 @@ module.exports = class MentorExtensionQueries {
 			}
 		)
 	}
-	static async updateMentorExtensionRemoveRelatedOrg(organizationId, relatedOrgs, options = {}) {
+	static async removeVisibleToOrg(organizationId, relatedOrgs, options = {}) {
 		await MentorExtension.update(
 			{
 				visible_to_organizations: sequelize.literal(

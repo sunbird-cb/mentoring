@@ -46,7 +46,7 @@ module.exports = class MenteeExtensionQueries {
 		}
 	}
 
-	static async updateMenteeExtensionAddRelatedOrg(organizationId, newRelatedOrgs, options = {}) {
+	static async addVisibleToOrg(organizationId, newRelatedOrgs, options = {}) {
 		// Update user extension and concat related org to the org id
 		await MenteeExtension.update(
 			{
@@ -109,7 +109,7 @@ module.exports = class MenteeExtensionQueries {
 		)
 	}
 
-	static async updateMenteeExtensionRemoveRelatedOrg(organizationId, relatedOrgs, options = {}) {
+	static async removeVisibleToOrg(organizationId, relatedOrgs, options = {}) {
 		// Update user extension and remove related org from the org id
 		await MenteeExtension.update(
 			{
