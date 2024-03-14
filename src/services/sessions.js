@@ -4,6 +4,7 @@ const moment = require('moment-timezone')
 const httpStatusCode = require('@generics/http-status')
 const apiEndpoints = require('@constants/endpoints')
 const common = require('@constants/common')
+
 const kafkaCommunication = require('@generics/kafka-communication')
 const apiBaseUrl = process.env.USER_SERVICE_HOST + process.env.USER_SERVICE_BASE_URL
 const request = require('request')
@@ -473,11 +474,7 @@ module.exports = class SessionsHelper {
 			let message
 			const sessionRelatedJobIds = common.notificationJobIdPrefixes.map((element) => element + sessionDetail.id)
 			if (method == common.DELETE_METHOD) {
-				let statTime = moment.unix(sessionDetail.start_date)
-				const current = moment.utc()
-				let diff = statTime.diff(current, 'minutes')
-
-				if (sessionDetail.status == common.PUBLISHED_STATUS && diff > 10) {
+				if (sessionDetail.status == common.PUBLISHED_STATUS) {
 					await sessionQueries.deleteSession({
 						id: sessionId,
 					})
@@ -490,7 +487,7 @@ module.exports = class SessionsHelper {
 					}
 				} else {
 					return responses.failureResponse({
-						message: 'SESSION_DELETION_FAILED',
+						message: 'CANNOT_DELETE_LIVE_SESSION',
 						statusCode: httpStatusCode.bad_request,
 						responseCode: 'CLIENT_ERROR',
 					})

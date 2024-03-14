@@ -1,7 +1,7 @@
 const { Sequelize } = require('sequelize')
 require('dotenv').config({ path: '../.env' })
 
-const nodeEnv = process.env.NODE_ENV || 'development'
+const nodeEnv = process.env.APPLICATION_ENV || 'development'
 
 let databaseUrl
 
@@ -18,7 +18,7 @@ switch (nodeEnv) {
 
 if (!databaseUrl) {
 	console.error(`${nodeEnv} DATABASE_URL not found in environment variables.`)
-	process.exit(1)
+	// process.exit(1)
 }
 
 const sequelize = new Sequelize(databaseUrl, {
