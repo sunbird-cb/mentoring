@@ -4,6 +4,7 @@ const moment = require('moment-timezone')
 const httpStatusCode = require('@generics/http-status')
 const apiEndpoints = require('@constants/endpoints')
 const common = require('@constants/common')
+
 const kafkaCommunication = require('@generics/kafka-communication')
 const apiBaseUrl = process.env.USER_SERVICE_HOST + process.env.USER_SERVICE_BASE_URL
 const request = require('request')
@@ -187,7 +188,7 @@ module.exports = class SessionsHelper {
 			}
 
 			bodyData['mentor_organization_id'] = orgId
-			// SAAS changes; Include visibility and visible organisations
+			// SAAS changes; Include visibility and visible organisation
 			// Call user service to fetch organisation details --SAAS related changes
 			let userOrgDetails = await userRequests.fetchDefaultOrgDetails(orgId)
 
@@ -473,11 +474,7 @@ module.exports = class SessionsHelper {
 			let message
 			const sessionRelatedJobIds = common.notificationJobIdPrefixes.map((element) => element + sessionDetail.id)
 			if (method == common.DELETE_METHOD) {
-				let statTime = moment.unix(sessionDetail.start_date)
-				const current = moment.utc()
-				let diff = statTime.diff(current, 'minutes')
-
-				if (sessionDetail.status == common.PUBLISHED_STATUS && diff > 10) {
+				if (sessionDetail.status == common.PUBLISHED_STATUS) {
 					await sessionQueries.deleteSession({
 						id: sessionId,
 					})
@@ -490,7 +487,7 @@ module.exports = class SessionsHelper {
 					}
 				} else {
 					return responses.failureResponse({
-						message: 'SESSION_DELETION_FAILED',
+						message: 'CANNOT_DELETE_LIVE_SESSION',
 						statusCode: httpStatusCode.bad_request,
 						responseCode: 'CLIENT_ERROR',
 					})
@@ -1145,7 +1142,7 @@ module.exports = class SessionsHelper {
 				})
 			}
 
-			if (session.seats_remaining <= 0) {
+			if (session.seats_remaining <= 0 && session.created_by != userId) {
 				return responses.failureResponse({
 					message: 'SESSION_SEAT_FULL',
 					statusCode: httpStatusCode.bad_request,
@@ -1163,7 +1160,9 @@ module.exports = class SessionsHelper {
 			await sessionAttendeesQueries.create(attendee)
 			await sessionEnrollmentQueries.create(_.omit(attendee, 'time_zone'))
 
-			await sessionQueries.updateEnrollmentCount(sessionId, false)
+			if (session.created_by !== userId) {
+				await sessionQueries.updateEnrollmentCount(sessionId, false)
+			}
 
 			const templateData = await notificationQueries.findOneEmailTemplate(
 				emailTemplateCode,
@@ -1222,7 +1221,7 @@ module.exports = class SessionsHelper {
 			let userId
 			let emailTemplateCode = process.env.MENTEE_SESSION_CANCELLATION_EMAIL_TEMPLATE
 			// If mentee request unenroll get email and name from user service via api call.
-			// Else it will be avalable in userTokenData
+			// Else it will be available in userTokenData
 			if (isSelfUnenrollment) {
 				const userDetails = (await userRequests.details('', userTokenData.id)).data.result
 				userId = userDetails.id
@@ -1260,7 +1259,9 @@ module.exports = class SessionsHelper {
 
 			await sessionEnrollmentQueries.unEnrollFromSession(sessionId, userId)
 
-			await sessionQueries.updateEnrollmentCount(sessionId)
+			if (session.created_by !== userId) {
+				await sessionQueries.updateEnrollmentCount(sessionId)
+			}
 
 			const templateData = await notificationQueries.findOneEmailTemplate(
 				emailTemplateCode,
