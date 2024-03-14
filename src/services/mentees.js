@@ -900,8 +900,8 @@ module.exports = class MenteesHelper {
 			let organizationIds = []
 			filterType = filterType.toLowerCase()
 			const attributes =
-				filterType == common.MENTEE_ROLE
-					? ['organization_id', 'session_visibility_policy']
+				filterType == common.MENTEE_ROLE					
+					? ['organization_id', 'external_mentee_visibility_policy']
 					: ['organization_id', 'external_mentor_visibility_policy']
 
 			const orgExtension = await organisationExtensionQueries.findOne(
@@ -913,7 +913,7 @@ module.exports = class MenteesHelper {
 
 			const visibilityPolicy =
 				filterType == common.MENTEE_ROLE
-					? orgExtension.session_visibility_policy
+					? orgExtension.external_mentee_visibility_policy
 					: orgExtension.external_mentor_visibility_policy
 
 			if (orgExtension?.organization_id) {
@@ -930,7 +930,7 @@ module.exports = class MenteesHelper {
 						const associatedAdditionalFilter =
 							filterType == common.MENTEE_ROLE
 								? {
-										external_session_visibility_policy: {
+										external_mentee_visibility_policy: {
 											[Op.ne]: 'CURRENT',
 										},
 								  }
