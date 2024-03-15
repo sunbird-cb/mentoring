@@ -21,6 +21,8 @@ module.exports = (app) => {
 		let controllerResponse
 		let validationError
 
+		console.log('ROUTER REQUEST BODY: ', req.body)
+
 		/* Check for input validation error */
 		try {
 			validationError = req.validationErrors()
@@ -92,7 +94,7 @@ module.exports = (app) => {
 
 	// Global error handling middleware, should be present in last in the stack of a middleware's
 	app.use((error, req, res, next) => {
-		if (error.statusCode || error.responseCode || error.message) {
+		if (error.statusCode || error.responseCode) {
 			// Detailed error response
 			const status = error.statusCode || 500
 			const responseCode = error.responseCode || 'SERVER_ERROR'

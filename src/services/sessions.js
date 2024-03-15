@@ -4,6 +4,7 @@ const moment = require('moment-timezone')
 const httpStatusCode = require('@generics/http-status')
 const apiEndpoints = require('@constants/endpoints')
 const common = require('@constants/common')
+
 const kafkaCommunication = require('@generics/kafka-communication')
 const apiBaseUrl = process.env.USER_SERVICE_HOST + process.env.USER_SERVICE_BASE_URL
 const request = require('request')
@@ -1141,7 +1142,7 @@ module.exports = class SessionsHelper {
 				})
 			}
 
-			if (session.seats_remaining <= 0) {
+			if (session.seats_remaining <= 0 && session.created_by != userId) {
 				return responses.failureResponse({
 					message: 'SESSION_SEAT_FULL',
 					statusCode: httpStatusCode.bad_request,

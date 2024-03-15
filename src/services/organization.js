@@ -59,13 +59,17 @@ module.exports = class OrganizationService {
 
 	static async createOrgExtension(eventBody) {
 		try {
+			console.log('EVENT BODY: ', eventBody)
+			console.log('DEFAULT ORGANISATION POLICY: ', common.DEFAULT_ORGANISATION_POLICY)
 			const extensionData = {
-				organization_id: eventBody.entityId,
 				...common.DEFAULT_ORGANISATION_POLICY,
+				organization_id: eventBody.entityId,
 				created_by: eventBody.created_by,
 				updated_by: eventBody.created_by,
 			}
+			console.log('EXTENSION DATA BEFORE INSERT: ', extensionData)
 			const orgExtension = await organisationExtensionQueries.upsert(extensionData)
+			console.log('EXTENSION DATA AFTER INSERT: ', orgExtension)
 			return responses.successResponse({
 				statusCode: httpStatusCode.ok,
 				message: 'ORG_EXTENSION_CREATED_SUCCESSFULLY',
@@ -75,7 +79,7 @@ module.exports = class OrganizationService {
 			})
 		} catch (error) {
 			if (error.name === 'SequelizeUniqueConstraintError')
-				throw new Error(`Extension Already Exist For Organization With Id: ${organizationId}`)
+				throw new Error(`Extension Already Exist For Organization With Id: ${eventBody.entityId}`)
 			else throw error
 		}
 	}
@@ -83,12 +87,13 @@ module.exports = class OrganizationService {
 	static async eventListener(eventBody) {
 		try {
 			//EventBody Validation - TODO: Check if this should be a middleware
-			const { entity, eventType, entityId } = eventBody
+			/* const { entity, eventType, entityId } = eventBody
 			if (!entity || !eventType || !entityId)
 				throw new Error('Entity, EventType & EntityId values are mandatory for an Event')
 			return await eventListenerRouter(eventBody, {
 				createFn: this.createOrgExtension,
-			})
+			}) */
+			return this.createOrgExtension(eventBody)
 		} catch (error) {
 			console.log(error)
 			return error
