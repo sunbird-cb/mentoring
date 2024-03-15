@@ -1,15 +1,15 @@
 # ShikshaLokam Mentoring Setup Documentation
 
-# System Requirements
+## System Requirements
 
 -   **Operating System:** Ubuntu 22
 -   **Node.js:** v20
 -   **PostgreSQL:** 16
 -   **Citus:** 12.1
 
-# Installations
+## Installations
 
-## Install Node.js LTS
+### Install Node.js LTS
 
 Refer to the [NodeSource distributions installation scripts](https://github.com/nodesource/distributions#installation-scripts) for Node.js installation.
 
@@ -18,13 +18,13 @@ $ curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash - &&\
 sudo apt-get install -y nodejs
 ```
 
-## Install Build Essential
+### Install Build Essential
 
 ```bash
 $ sudo apt-get install build-essential
 ```
 
-## Install Kafka
+### Install Kafka
 
 Refer to [Kafka Ubuntu 22.04 setup guide](https://www.fosstechnix.com/install-apache-kafka-on-ubuntu-22-04-lts/)
 
@@ -136,7 +136,7 @@ Refer to [Kafka Ubuntu 22.04 setup guide](https://www.fosstechnix.com/install-ap
 
     Kafka status should be shown as active (running).
 
-## Install Redis
+### Install Redis
 
 Refer to [Redis Ubuntu 22.04 setup guide](https://www.digitalocean.com/community/tutorials/how-to-install-and-secure-redis-on-ubuntu-22-04)
 
@@ -183,7 +183,7 @@ Refer to [Redis Ubuntu 22.04 setup guide](https://www.digitalocean.com/community
     $ sudo systemctl restart redis.service
     ```
 
-## Install Single-Node Citus (Distributed Database)
+### Install Single-Node Citus (Distributed Database)
 
 Refer to [official Citus single-node setup](https://docs.citusdata.com/en/stable/installation/single_node_debian.html)
 
@@ -248,7 +248,7 @@ Refer to [official Citus single-node setup](https://docs.citusdata.com/en/stable
     (1 row)
     ```
 
-## Install PM2
+### Install PM2
 
 Refer to [How To Set Up a Node.js Application for Production on Ubuntu 22.04](https://www.digitalocean.com/community/tutorials/how-to-set-up-a-node-js-application-for-production-on-ubuntu-22-04).
 
