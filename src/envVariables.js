@@ -236,6 +236,11 @@ let enviromentVariables = {
 		optional: true,
 		default: 'session_title_edited_by_manager_email_template',
 	},
+	ALLOWED_HOST: {
+		message: 'Required CORS allowed host',
+		optional: true,
+		default: '*',
+	},
 }
 
 let success = true
