@@ -958,6 +958,10 @@ module.exports = class SessionsHelper {
 	static async checkIfSessionIsAccessible(session, userId, isAMentor) {
 		try {
 			if ((isAMentor && session.mentor_id === userId) || session.created_by == userId) return true
+
+			// Check if session is private and user is not enrolled
+			if (session.type === common.SESSION_TYPE.PRIVATE && session.is_enrolled === false) return false
+
 			const userPolicyDetails = isAMentor
 				? await mentorExtensionQueries.getMentorExtension(userId, [
 						'external_session_visibility',
@@ -1119,6 +1123,14 @@ module.exports = class SessionsHelper {
 					responseCode: 'CLIENT_ERROR',
 				})
 			}
+			// Restrict self enrollment to a private session
+			if (isSelfEnrolled && session.type == common.SESSION_TYPE.PRIVATE && userId !== session.created_by) {
+				return responses.failureResponse({
+					message: 'INVALID_PERMISSION',
+					statusCode: httpStatusCode.bad_request,
+					responseCode: 'CLIENT_ERROR',
+				})
+			}
 			// check if the session is accessible to the user
 			let isAccessible = await this.checkIfSessionIsAccessible(session, userId, isAMentor)
 
@@ -1142,7 +1154,7 @@ module.exports = class SessionsHelper {
 				})
 			}
 
-			if (session.seats_remaining <= 0) {
+			if (session.seats_remaining <= 0 && session.created_by != userId) {
 				return responses.failureResponse({
 					message: 'SESSION_SEAT_FULL',
 					statusCode: httpStatusCode.bad_request,
