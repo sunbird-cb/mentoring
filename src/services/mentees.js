@@ -184,6 +184,11 @@ module.exports = class MenteesHelper {
 
 			let mySessions = await this.getMySessions(page, limit, search, userId)
 
+			mySessions.rows = mySessions.rows.map((session) => {
+				const { mentee_password, mentor_password, ...rest } = session
+				return rest
+			})
+
 			const result = {
 				all_sessions: allSessions.rows,
 				my_sessions: mySessions.rows,
