@@ -13,16 +13,8 @@ module.exports = class platformHelper {
 	 * @returns {Promise<Object>} - A promise that resolves with the application configuration.
 	 * @throws {Error} - Throws an error if there's an issue during configuration retrieval.
 	 */
-	static async getConfig(decodedToken) {
+	static async getConfig() {
 		try {
-			if (!decodedToken) {
-				return responses.failureResponse({
-					message: 'UNAUTHORIZED_REQUEST',
-					statusCode: httpStatusCode.unauthorized,
-					responseCode: 'UNAUTHORIZED',
-				})
-			}
-
 			let config = {
 				meeting_platform: process.env.DEFAULT_MEETING_SERVICE,
 				session_mentee_limit: process.env.SESSION_MENTEE_LIMIT,
