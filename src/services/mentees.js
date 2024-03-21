@@ -184,11 +184,6 @@ module.exports = class MenteesHelper {
 
 			let mySessions = await this.getMySessions(page, limit, search, userId)
 
-			mySessions.rows = mySessions.rows.map((session) => {
-				const { mentee_password, mentor_password, ...rest } = session
-				return rest
-			})
-
 			const result = {
 				all_sessions: allSessions.rows,
 				my_sessions: mySessions.rows,
@@ -476,8 +471,10 @@ module.exports = class MenteesHelper {
 				(usersUpcomingSession) => usersUpcomingSession.session_id
 			)
 
+			const attributes = { exclude: ['mentee_password', 'mentor_password'] }
 			let sessionDetails = await sessionQueries.findAndCountAll(
 				{ id: usersUpcomingSessionIds },
+				{ attributes: attributes },
 				{ order: [['start_date', 'ASC']] }
 			)
 			if (sessionDetails.rows.length > 0) {
