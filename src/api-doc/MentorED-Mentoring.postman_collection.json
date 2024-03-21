@@ -1715,12 +1715,14 @@
 					"name": "Get config",
 					"request": {
 						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{MentoringBaseUrl}}mentoring/v1/platform/config",
-							"host": ["{{MentoringBaseUrl}}mentoring"],
-							"path": ["v1", "platform", "config"]
-						}
+						"header": [
+							{
+								"key": "X-auth-token",
+								"value": "bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": "{{MentoringBaseUrl}}mentoring/v1/platform/config"
 					},
 					"response": []
 				}
