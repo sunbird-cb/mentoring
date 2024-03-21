@@ -2000,12 +2000,12 @@ module.exports = class SessionsHelper {
 			const attributes = { exclude: ['mentee_password', 'mentor_password'] }
 			let sessions = await sessionQueries.findAndCountAll(
 				filter,
-				{ attributes: attributes },
 				{
 					order: [[sortBy, order]],
 					offset: limit * (page - 1),
 					limit: limit,
-				}
+				},
+				{ attributes: attributes }
 			)
 			if (sessions.rows.length == 0) {
 				return responses.successResponse({

@@ -474,8 +474,8 @@ module.exports = class MenteesHelper {
 			const attributes = { exclude: ['mentee_password', 'mentor_password'] }
 			let sessionDetails = await sessionQueries.findAndCountAll(
 				{ id: usersUpcomingSessionIds },
-				{ attributes: attributes },
-				{ order: [['start_date', 'ASC']] }
+				{ order: [['start_date', 'ASC']] },
+				{ attributes: attributes }
 			)
 			if (sessionDetails.rows.length > 0) {
 				sessionDetails.rows.forEach((session) => {

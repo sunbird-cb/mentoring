@@ -593,12 +593,12 @@ exports.getUpcomingSessions = async (page, limit, search, userId) => {
 	}
 }
 
-exports.findAndCountAll = async (filter, attributes, options = {}) => {
+exports.findAndCountAll = async (filter, options = {}, attributes = {}) => {
 	try {
 		const { rows, count } = await Session.findAndCountAll({
 			where: filter,
-			...attributes,
 			...options,
+			...attributes,
 			raw: true,
 		})
 		return { rows, count }
