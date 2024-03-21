@@ -4,6 +4,7 @@ const moment = require('moment-timezone')
 const httpStatusCode = require('@generics/http-status')
 const apiEndpoints = require('@constants/endpoints')
 const common = require('@constants/common')
+
 const kafkaCommunication = require('@generics/kafka-communication')
 const apiBaseUrl = process.env.USER_SERVICE_HOST + process.env.USER_SERVICE_BASE_URL
 const request = require('request')
@@ -473,11 +474,7 @@ module.exports = class SessionsHelper {
 			let message
 			const sessionRelatedJobIds = common.notificationJobIdPrefixes.map((element) => element + sessionDetail.id)
 			if (method == common.DELETE_METHOD) {
-				let statTime = moment.unix(sessionDetail.start_date)
-				const current = moment.utc()
-				let diff = statTime.diff(current, 'minutes')
-
-				if (sessionDetail.status == common.PUBLISHED_STATUS && diff > 10) {
+				if (sessionDetail.status == common.PUBLISHED_STATUS) {
 					await sessionQueries.deleteSession({
 						id: sessionId,
 					})
@@ -490,7 +487,7 @@ module.exports = class SessionsHelper {
 					}
 				} else {
 					return responses.failureResponse({
-						message: 'SESSION_DELETION_FAILED',
+						message: 'CANNOT_DELETE_LIVE_SESSION',
 						statusCode: httpStatusCode.bad_request,
 						responseCode: 'CLIENT_ERROR',
 					})
@@ -961,6 +958,10 @@ module.exports = class SessionsHelper {
 	static async checkIfSessionIsAccessible(session, userId, isAMentor) {
 		try {
 			if ((isAMentor && session.mentor_id === userId) || session.created_by == userId) return true
+
+			// Check if session is private and user is not enrolled
+			if (session.type === common.SESSION_TYPE.PRIVATE && session.is_enrolled === false) return false
+
 			const userPolicyDetails = isAMentor
 				? await mentorExtensionQueries.getMentorExtension(userId, [
 						'external_session_visibility',
@@ -1122,6 +1123,14 @@ module.exports = class SessionsHelper {
 					responseCode: 'CLIENT_ERROR',
 				})
 			}
+			// Restrict self enrollment to a private session
+			if (isSelfEnrolled && session.type == common.SESSION_TYPE.PRIVATE && userId !== session.created_by) {
+				return responses.failureResponse({
+					message: 'INVALID_PERMISSION',
+					statusCode: httpStatusCode.bad_request,
+					responseCode: 'CLIENT_ERROR',
+				})
+			}
 			// check if the session is accessible to the user
 			let isAccessible = await this.checkIfSessionIsAccessible(session, userId, isAMentor)
 
@@ -1145,7 +1154,7 @@ module.exports = class SessionsHelper {
 				})
 			}
 
-			if (session.seats_remaining <= 0) {
+			if (session.seats_remaining <= 0 && session.created_by != userId) {
 				return responses.failureResponse({
 					message: 'SESSION_SEAT_FULL',
 					statusCode: httpStatusCode.bad_request,

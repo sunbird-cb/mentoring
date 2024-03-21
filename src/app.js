@@ -60,6 +60,11 @@ app.get(process.env.API_DOC_URL, function (req, res) {
 	res.sendFile(path.join(__dirname, './api-doc/index.html'))
 })
 
+// Middleware to set Access-Control-Allow-Origin header
+app.use((req, res, next) => {
+	res.setHeader('Access-Control-Allow-Origin', process.env.ALLOWED_HOST)
+	next()
+})
 app.all('*', (req, res, next) => {
 	logger.info('***Mentoring Service Request Log***', {
 		request: {

@@ -4,6 +4,7 @@ const sequelize = require('sequelize')
 const Sequelize = require('@database/models/index').sequelize
 const common = require('@constants/common')
 const _ = require('lodash')
+const { Op } = require('sequelize')
 
 module.exports = class MenteeExtensionQueries {
 	static async getColumns() {
@@ -45,6 +46,99 @@ module.exports = class MenteeExtensionQueries {
 		}
 	}
 
+	static async addVisibleToOrg(organizationId, newRelatedOrgs, options = {}) {
+		// Update user extension and concat related org to the org id
+		await MenteeExtension.update(
+			{
+				visible_to_organizations: sequelize.literal(
+					`array_cat("visible_to_organizations", ARRAY[${newRelatedOrgs}]::integer[])`
+				),
+			},
+			{
+				where: {
+					organization_id: organizationId,
+					[Op.or]: [
+						{
+							[Op.not]: {
+								visible_to_organizations: {
+									[Op.contains]: newRelatedOrgs,
+								},
+							},
+						},
+						{
+							visible_to_organizations: {
+								[Op.is]: null,
+							},
+						},
+					],
+				},
+				...options,
+				individualHooks: true,
+			}
+		)
+		// Update user extension and append org id to all the related orgs
+		return await MenteeExtension.update(
+			{
+				visible_to_organizations: sequelize.literal(
+					`COALESCE("visible_to_organizations", ARRAY[]::integer[]) || ARRAY[${organizationId}]::integer[]`
+				),
+			},
+			{
+				where: {
+					organization_id: {
+						[Op.in]: [...newRelatedOrgs],
+					},
+					[Op.or]: [
+						{
+							[Op.not]: {
+								visible_to_organizations: {
+									[Op.contains]: [organizationId],
+								},
+							},
+						},
+						{
+							visible_to_organizations: {
+								[Op.is]: null,
+							},
+						},
+					],
+				},
+				individualHooks: true,
+				...options,
+			}
+		)
+	}
+
+	static async removeVisibleToOrg(orgId, elementsToRemove) {
+		const organizationUpdateQuery = `
+		  UPDATE "user_extensions"
+		  SET "visible_to_organizations" = (
+			SELECT array_agg(elem)
+			FROM unnest("visible_to_organizations") AS elem
+			WHERE elem NOT IN (${elementsToRemove.join(',')})
+		  )
+		  WHERE organization_id = :orgId
+		`
+
+		await Sequelize.query(organizationUpdateQuery, {
+			replacements: { orgId },
+			type: Sequelize.QueryTypes.UPDATE,
+		})
+		const relatedOrganizationUpdateQuery = `
+		  UPDATE "user_extensions"
+		  SET "visible_to_organizations" = (
+			SELECT array_agg(elem)
+			FROM unnest("visible_to_organizations") AS elem
+			WHERE elem NOT IN (${orgId})
+		  )
+		  WHERE organization_id IN (:elementsToRemove)
+		`
+
+		await Sequelize.query(relatedOrganizationUpdateQuery, {
+			replacements: { elementsToRemove },
+			type: Sequelize.QueryTypes.UPDATE,
+		})
+	}
 	static async getMenteeExtension(userId, attributes = []) {
 		try {
 			const queryOptions = {

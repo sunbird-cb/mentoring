@@ -11,7 +11,8 @@ module.exports = class Organization {
 
 	async eventListener(req) {
 		try {
-			return await organizationService.eventListener(req.body)
+			console.log('CONTROLLER REQUEST BODY: ', req.body)
+			return await organizationService.createOrgExtension(req.body)
 		} catch (error) {
 			throw error
 		}

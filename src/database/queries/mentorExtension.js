@@ -4,6 +4,7 @@ const sequelize = require('sequelize')
 const Sequelize = require('@database/models/index').sequelize
 const common = require('@constants/common')
 const _ = require('lodash')
+const { Op } = require('sequelize')
 
 module.exports = class MentorExtensionQueries {
 	static async getColumns() {
@@ -217,5 +218,96 @@ module.exports = class MentorExtensionQueries {
 		} catch (error) {
 			return error
 		}
+	}
+
+	static async addVisibleToOrg(organizationId, newRelatedOrgs, options = {}) {
+		await MentorExtension.update(
+			{
+				visible_to_organizations: sequelize.literal(
+					`array_cat("visible_to_organizations", ARRAY[${newRelatedOrgs}]::integer[])`
+				),
+			},
+			{
+				where: {
+					organization_id: organizationId,
+					[Op.or]: [
+						{
+							[Op.not]: {
+								visible_to_organizations: {
+									[Op.contains]: newRelatedOrgs,
+								},
+							},
+						},
+						{
+							visible_to_organizations: {
+								[Op.is]: null,
+							},
+						},
+					],
+				},
+				...options,
+				individualHooks: true,
+			}
+		)
+		return await MentorExtension.update(
+			{
+				visible_to_organizations: sequelize.literal(`COALESCE("visible_to_organizations", 
+										 ARRAY[]::integer[]) || ARRAY[${organizationId}]::integer[]`),
+			},
+			{
+				where: {
+					organization_id: {
+						[Op.in]: [...newRelatedOrgs],
+					},
+					[Op.or]: [
+						{
+							[Op.not]: {
+								visible_to_organizations: {
+									[Op.contains]: [organizationId],
+								},
+							},
+						},
+						{
+							visible_to_organizations: {
+								[Op.is]: null,
+							},
+						},
+					],
+				},
+				individualHooks: true,
+				...options,
+			}
+		)
+	}
+
+	static async removeVisibleToOrg(orgId, elementsToRemove) {
+		const organizationUpdateQuery = `
+		  UPDATE "mentor_extensions"
+		  SET "visible_to_organizations" = (
+			SELECT array_agg(elem)
+			FROM unnest("visible_to_organizations") AS elem
+			WHERE elem NOT IN (${elementsToRemove.join(',')})
+		  )
+		  WHERE organization_id = :orgId
+		`
+
+		await Sequelize.query(organizationUpdateQuery, {
+			replacements: { orgId },
+			type: Sequelize.QueryTypes.UPDATE,
+		})
+		const relatedOrganizationUpdateQuery = `
+		  UPDATE "mentor_extensions"
+		  SET "visible_to_organizations" = (
+			SELECT array_agg(elem)
+			FROM unnest("visible_to_organizations") AS elem
+			WHERE elem NOT IN (${orgId})
+		  )
+		  WHERE organization_id IN (:elementsToRemove)
+		`
+
+		await Sequelize.query(relatedOrganizationUpdateQuery, {
+			replacements: { elementsToRemove },
+			type: Sequelize.QueryTypes.UPDATE,
+		})
 	}
 }
