@@ -1997,12 +1997,16 @@ module.exports = class SessionsHelper {
 			}
 			const sortBy = queryParams.sort_by || 'created_at'
 			const order = queryParams.order || 'DESC'
-
-			let sessions = await sessionQueries.findAndCountAll(filter, {
-				order: [[sortBy, order]],
-				offset: limit * (page - 1),
-				limit: limit,
-			})
+			const attributes = { exclude: ['mentee_password', 'mentor_password'] }
+			let sessions = await sessionQueries.findAndCountAll(
+				filter,
+				{
+					order: [[sortBy, order]],
+					offset: limit * (page - 1),
+					limit: limit,
+				},
+				{ attributes: attributes }
+			)
 			if (sessions.rows.length == 0) {
 				return responses.successResponse({
 					statusCode: httpStatusCode.ok,
