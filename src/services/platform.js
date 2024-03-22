@@ -17,10 +17,6 @@ module.exports = class platformHelper {
 		try {
 			let config = {
 				meeting_platform: process.env.DEFAULT_MEETING_SERVICE,
-				report_issue: {
-					to: process.env.SUPPORT_EMAIL_ID,
-					subject: common.REPORT_EMAIL_SUBJECT,
-				},
 				session_mentee_limit: process.env.SESSION_MENTEE_LIMIT,
 			}
 
