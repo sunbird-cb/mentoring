@@ -1,0 +1,5 @@
+module.exports = {
+	filterRequestBody: function (reqBody, blacklist) {
+		return Object.fromEntries(Object.entries(reqBody).filter(([key]) => !blacklist.includes(key)))
+	},
+}

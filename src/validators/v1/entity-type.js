@@ -4,9 +4,12 @@
  * Date : 04-Nov-2021
  * Description : Validations of user entities controller
  */
-
+const { filterRequestBody } = require('../common')
+const { entityType } = require('@constants/blacklistConfig')
 module.exports = {
 	create: (req) => {
+		req.body = filterRequestBody(req.body, entityType.create)
+
 		req.checkBody('value')
 			.trim()
 			.notEmpty()
@@ -25,7 +28,7 @@ module.exports = {
 			.trim()
 			.notEmpty()
 			.withMessage('data_type field is empty')
-			.matches(/^[A-Za-z]+$/)
+			.matches(/^[A-Za-z\[\]]+$/)
 			.withMessage('data_type is invalid, must not contain spaces')
 
 		req.checkBody('model_names')
@@ -36,11 +39,11 @@ module.exports = {
 		req.checkBody('model_names.*')
 			.isIn(['Session', 'MentorExtension', 'UserExtension'])
 			.withMessage('model_names must be in Session,MentorExtension,UserExtension')
-
-		req.checkBody('allow_filtering').optional().isEmpty().withMessage('allow_filtering is not allowed in create')
 	},
 
 	update: (req) => {
+		req.body = filterRequestBody(req.body, entityType.create)
+
 		req.checkParams('id').notEmpty().withMessage('id param is empty')
 
 		req.checkBody('value')
@@ -59,7 +62,6 @@ module.exports = {
 			.withMessage('status is invalid, must be in all caps')
 
 		req.checkBody('deleted').optional().isBoolean().withMessage('deleted is invalid')
-		req.checkBody('allow_filtering').optional().isEmpty().withMessage('allow_filtering is not allowed in create')
 
 		req.checkBody('data_type')
 			.trim()
