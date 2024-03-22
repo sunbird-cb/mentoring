@@ -124,7 +124,12 @@ module.exports = {
 
 			req.checkBody('mentees').optional().isArray({ min: 1 }).withMessage('mentees must be an array')
 
-			req.checkBody('time_zone').optional().isInt().withMessage('time_zone must be an integer')
+			req.checkBody('time_zone')
+				.optional()
+				.isString()
+				.withMessage('time_zone must be a string')
+				.matches(/^[a-zA-Z]+\/[a-zA-Z_]+$/)
+				.withMessage('invalid time_zone ')
 
 			req.checkBody('start_date')
 				.optional()
