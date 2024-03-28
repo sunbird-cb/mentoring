@@ -98,7 +98,7 @@ module.exports = async function (req, res, next) {
 					})
 				} else throw unAuthorizedResponse
 			}
-		} else {
+		} else if (process.env.AUTH_METHOD == common.AUTH_METHOD.USER_SERVICE) {
 			try {
 				const userBaseUrl = process.env.USER_SERVICE_HOST + process.env.USER_SERVICE_BASE_URL
 				const validateSessionEndpoint = userBaseUrl + endpoints.VALIDATE_SESSIONS
