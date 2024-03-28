@@ -86,16 +86,47 @@ module.exports = async function (req, res, next) {
 		const authHeaderArray = authHeader.split(' ')
 		if (authHeaderArray[0] !== 'bearer') throw unAuthorizedResponse
 
-		try {
-			decodedToken = jwt.verify(authHeaderArray[1], process.env.ACCESS_TOKEN_SECRET)
-		} catch (err) {
-			if (err.name === 'TokenExpiredError') {
+		if (process.env.AUTH_METHOD == common.AUTH_METHOD.JWT_ONLY) {
+			try {
+				decodedToken = jwt.verify(authHeaderArray[1], process.env.ACCESS_TOKEN_SECRET)
+			} catch (err) {
+				if (err.name === 'TokenExpiredError') {
+					throw responses.failureResponse({
+						message: 'ACCESS_TOKEN_EXPIRED',
+						statusCode: httpStatusCode.unauthorized,
+						responseCode: 'UNAUTHORIZED',
+					})
+				} else throw unAuthorizedResponse
+			}
+		} else {
+			try {
+				const userBaseUrl = process.env.USER_SERVICE_HOST + process.env.USER_SERVICE_BASE_URL
+				const validateSessionEndpoint = userBaseUrl + endpoints.VALIDATE_SESSIONS
+				const reqBody = {
+					token: authHeaderArray[1],
+				}
+				const isSessionActive = await requests.post(validateSessionEndpoint, reqBody, true)
+
+				if (isSessionActive.data.responseCode == 'UNAUTHORIZED') {
+					const accessTokenExpiredError = new Error('ACCESS_TOKEN_EXPIRED')
+					accessTokenExpiredError.statusCode = httpStatusCode.unauthorized
+					accessTokenExpiredError.responseCode = 'UNAUTHORIZED'
+					throw accessTokenExpiredError
+				}
+			} catch (error) {
+				if (error.message === 'ACCESS_TOKEN_EXPIRED') {
+					throw responses.failureResponse({
+						message: error.message,
+						statusCode: error.statusCode,
+						responseCode: error.responseCode,
+					})
+				}
 				throw responses.failureResponse({
-					message: 'ACCESS_TOKEN_EXPIRED',
-					statusCode: httpStatusCode.unauthorized,
-					responseCode: 'UNAUTHORIZED',
+					message: 'USER_SERVICE_DOWN',
+					statusCode: httpStatusCode.internal_server_error,
+					responseCode: 'SERVER_ERROR',
 				})
-			} else throw unAuthorizedResponse
+			}
 		}
 
 		if (!decodedToken) throw unAuthorizedResponse
