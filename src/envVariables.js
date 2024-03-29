@@ -254,7 +254,7 @@ let enviromentVariables = {
 	},
 	AUTH_METHOD: {
 		message: 'Required authentication method',
-		optional: false,
+		optional: true,
 		default: common.AUTH_METHOD.JWT_ONLY,
 	},
 }
