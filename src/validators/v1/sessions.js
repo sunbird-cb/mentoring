@@ -53,7 +53,7 @@ module.exports = {
 
 			req.checkBody('mentor_id').optional().isInt().withMessage('mentor_id must be an integer')
 
-			req.checkBody('mentees').optional().isArray({ min: 1 }).withMessage('mentees must be an array')
+			req.checkBody('mentees').optional().isArray().withMessage('mentees must be an array')
 
 			req.checkBody('time_zone')
 				.optional()
@@ -122,7 +122,7 @@ module.exports = {
 
 			req.checkBody('mentor_id').optional().isInt().withMessage('mentor_id must be an integer')
 
-			req.checkBody('mentees').optional().isArray({ min: 1 }).withMessage('mentees must be an array')
+			req.checkBody('mentees').optional().isArray().withMessage('mentees must be an array')
 
 			req.checkBody('time_zone')
 				.optional()
