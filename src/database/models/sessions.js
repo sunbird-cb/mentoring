@@ -32,6 +32,7 @@ module.exports = (sequelize, DataTypes) => {
 			image: {
 				type: DataTypes.ARRAY(DataTypes.STRING),
 				allowNull: false,
+				defaultValue: [],
 			},
 			mentor_id: {
 				type: DataTypes.INTEGER,
