@@ -17,8 +17,7 @@ module.exports = {
 				.withMessage('title field is empty')
 				.isString()
 				.withMessage('title must be a string')
-				.not()
-				.matches(/(\b)(on\S+)(\s*)=|javascript:|<(|\/|[^\/>][^>]+|\/[^>][^>]+)>/gi)
+				.matches(/^[a-zA-Z0-9\-.,\s]+$/)
 				.withMessage('invalid title')
 
 			req.checkBody('description')
@@ -27,8 +26,7 @@ module.exports = {
 				.withMessage('description field is empty')
 				.isString()
 				.withMessage('description must be a string')
-				.not()
-				.matches(/(\b)(on\S+)(\s*)=|javascript:|<(|\/|[^\/>][^>]+|\/[^>][^>]+)>/gi)
+				.matches(/^[a-zA-Z0-9\-.,\s]+$/)
 				.withMessage('invalid description')
 
 			req.checkBody('recommended_for')
@@ -83,8 +81,7 @@ module.exports = {
 				.withMessage('title field is empty')
 				.isString()
 				.withMessage('title must be a string')
-				.not()
-				.matches(/(\b)(on\S+)(\s*)=|javascript:|<(|\/|[^\/>][^>]+|\/[^>][^>]+)>/gi)
+				.matches(/^[a-zA-Z0-9\-.,\s]+$/)
 				.withMessage('invalid title')
 
 			req.checkBody('description')
@@ -94,8 +91,7 @@ module.exports = {
 				.withMessage('description field is empty')
 				.isString()
 				.withMessage('description must be a string')
-				.not()
-				.matches(/(\b)(on\S+)(\s*)=|javascript:|<(|\/|[^\/>][^>]+|\/[^>][^>]+)>/gi)
+				.matches(/^[a-zA-Z0-9\-.,\s]+$/)
 				.withMessage('invalid description')
 
 			req.checkBody('recommended_for')
