@@ -6,8 +6,7 @@ module.exports = {
 			.withMessage('description field is empty')
 			.isString()
 			.withMessage('description is invalid')
-			.not()
-			.matches(/(\b)(on\S+)(\s*)=|javascript:|<(|\/|[^\/>][^>]+|\/[^>][^>]+)>/gi)
+			.matches(/^[a-zA-Z0-9\-.,\s]+$/)
 			.withMessage('invalid description')
 	},
 }
