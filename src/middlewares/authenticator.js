@@ -112,6 +112,10 @@ module.exports = async function (req, res, next) {
 					accessTokenExpiredError.responseCode = 'UNAUTHORIZED'
 					throw accessTokenExpiredError
 				}
+
+				if (isSessionActive.data.result.data.user_session_active != true) {
+					throw new Error('USER_SERVICE_DOWN')
+				}
 			} catch (error) {
 				if (error.message === 'ACCESS_TOKEN_EXPIRED') {
 					throw responses.failureResponse({
