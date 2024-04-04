@@ -107,12 +107,13 @@ module.exports = {
 								position: 'floating',
 								errorMessage: {
 									required: 'This field cannot be empty',
+									pattern: 'This field can only contain alphanumeric characters',
 								},
 								placeHolder: 'Please use only 150 characters',
 								validators: {
 									required: true,
 									maxLength: 150,
-									pattern: '^[a-zA-Z0-9-.,s]+$',
+									pattern: '^[a-zA-Z0-9-.,s ]+$',
 								},
 								options: [],
 							},
@@ -204,11 +205,12 @@ module.exports = {
 								position: 'floating',
 								errorMessage: {
 									required: 'Enter session title',
+									pattern: 'This field can only contain alphanumeric characters',
 								},
 								validators: {
 									required: true,
 									maxLength: 255,
-									pattern: '^[a-zA-Z0-9-.,s]+$',
+									pattern: '^[a-zA-Z0-9-.,s ]+$',
 								},
 							},
 							{
@@ -221,11 +223,12 @@ module.exports = {
 								position: 'floating',
 								errorMessage: {
 									required: 'Enter description',
+									pattern: 'This field can only contain alphanumeric characters',
 								},
 								validators: {
 									required: true,
 									maxLength: 255,
-									pattern: '^[a-zA-Z0-9-.,s]+$',
+									pattern: '^[a-zA-Z0-9-.,s ]+$',
 								},
 							},
 							{
@@ -376,11 +379,12 @@ module.exports = {
 								position: 'floating',
 								errorMessage: {
 									required: 'Enter session title',
+									pattern: 'This field can only contain alphanumeric characters',
 								},
 								validators: {
 									required: true,
 									maxLength: 255,
-									pattern: '^[a-zA-Z0-9-.,s]+$',
+									pattern: '^[a-zA-Z0-9-.,s ]+$',
 								},
 							},
 							{
@@ -393,11 +397,12 @@ module.exports = {
 								position: 'floating',
 								errorMessage: {
 									required: 'Enter description',
+									pattern: 'This field can only contain alphanumeric characters',
 								},
 								validators: {
 									required: true,
 									maxLength: 255,
-									pattern: '^[a-zA-Z0-9-.,s]+$',
+									pattern: '^[a-zA-Z0-9-.,s ]+$',
 								},
 							},
 							{
@@ -712,11 +717,12 @@ module.exports = {
 											platformPlaceHolder: 'Tell us more about the problem you faced',
 											errorMessage: {
 												required: 'Enter the issue',
+												pattern: 'This field can only contain alphanumeric characters',
 											},
 											type: 'textarea',
 											validators: {
 												required: true,
-												pattern: '^[a-zA-Z0-9-.,s]+$',
+												pattern: '^[a-zA-Z0-9-.,s ]+$',
 											},
 										},
 									],
@@ -739,11 +745,14 @@ module.exports = {
 											class: 'ion-margin',
 											position: 'floating',
 											platformPlaceHolder: 'Reason for deleting account',
-											errorMessage: '',
+											errorMessage: {
+												required: 'Enter the issue',
+												pattern: 'This field can only contain alphanumeric characters',
+											},
 											type: 'textarea',
 											validators: {
 												required: false,
-												pattern: '^[a-zA-Z0-9-.,s]+$',
+												pattern: '^[a-zA-Z0-9-.,s ]+$',
 											},
 										},
 									],
