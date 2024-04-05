@@ -154,13 +154,13 @@ module.exports = {
 								placeHolder: 'Ex. BA, B.ED',
 								validators: {
 									required: true,
-									maxLength: 150,
-									pattern: '^[a-zA-Z0-9-.,s ]+$',
+									pattern: 'This field can only contain alphanumeric characters',
 								},
 								options: [],
 								meta: {
 									errorLabel: 'Education qualification',
 									maxLength: 255,
+									pattern: '^[a-zA-Z0-9-.,s ]+$',
 								},
 							},
 							{
