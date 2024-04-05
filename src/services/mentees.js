@@ -471,9 +471,11 @@ module.exports = class MenteesHelper {
 				(usersUpcomingSession) => usersUpcomingSession.session_id
 			)
 
+			const attributes = { exclude: ['mentee_password', 'mentor_password'] }
 			let sessionDetails = await sessionQueries.findAndCountAll(
 				{ id: usersUpcomingSessionIds },
-				{ order: [['start_date', 'ASC']] }
+				{ order: [['start_date', 'ASC']] },
+				{ attributes: attributes }
 			)
 			if (sessionDetails.rows.length > 0) {
 				sessionDetails.rows.forEach((session) => {
@@ -900,7 +902,7 @@ module.exports = class MenteesHelper {
 			let organizationIds = []
 			filterType = filterType.toLowerCase()
 			const attributes =
-				filterType == common.MENTEE_ROLE					
+				filterType == common.MENTEE_ROLE
 					? ['organization_id', 'external_mentee_visibility_policy']
 					: ['organization_id', 'external_mentor_visibility_policy']
 

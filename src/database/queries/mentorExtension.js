@@ -279,36 +279,35 @@ module.exports = class MentorExtensionQueries {
 			}
 		)
 	}
-	static async removeVisibleToOrg(organizationId, relatedOrgs, options = {}) {
-		await MentorExtension.update(
-			{
-				visible_to_organizations: sequelize.literal(
-					`ARRAY(SELECT unnest("visible_to_organizations") EXCEPT SELECT unnest(ARRAY[${relatedOrgs}]::integer[]))`
-				),
-			},
-			{
-				where: {
-					organization_id: organizationId,
-				},
-				individualHooks: true,
-				...options,
-			}
-		)
-		return await MentorExtension.update(
-			{
-				visible_to_organizations: sequelize.literal(
-					`ARRAY(SELECT unnest("visible_to_organizations") EXCEPT SELECT unnest(ARRAY[${organizationId}]::integer[]))`
-				),
-			},
-			{
-				where: {
-					organization_id: {
-						[Op.in]: [...relatedOrgs],
-					},
-				},
-				individualHooks: true,
-				...options,
-			}
-		)
+
+	static async removeVisibleToOrg(orgId, elementsToRemove) {
+		const organizationUpdateQuery = `
+		  UPDATE "mentor_extensions"
+		  SET "visible_to_organizations" = (
+			SELECT array_agg(elem)
+			FROM unnest("visible_to_organizations") AS elem
+			WHERE elem NOT IN (${elementsToRemove.join(',')})
+		  )
+		  WHERE organization_id = :orgId
+		`
+
+		await Sequelize.query(organizationUpdateQuery, {
+			replacements: { orgId },
+			type: Sequelize.QueryTypes.UPDATE,
+		})
+		const relatedOrganizationUpdateQuery = `
+		  UPDATE "mentor_extensions"
+		  SET "visible_to_organizations" = (
+			SELECT array_agg(elem)
+			FROM unnest("visible_to_organizations") AS elem
+			WHERE elem NOT IN (${orgId})
+		  )
+		  WHERE organization_id IN (:elementsToRemove)
+		`
+
+		await Sequelize.query(relatedOrganizationUpdateQuery, {
+			replacements: { elementsToRemove },
+			type: Sequelize.QueryTypes.UPDATE,
+		})
 	}
 }

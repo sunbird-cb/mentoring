@@ -1,4 +1,5 @@
 let table = require('cli-table')
+const common = require('@constants/common')
 
 let tableData = new table()
 
@@ -235,6 +236,26 @@ let enviromentVariables = {
 		message: 'Required email template name for session title edited by manager',
 		optional: true,
 		default: 'session_title_edited_by_manager_email_template',
+	},
+	ALLOWED_HOST: {
+		message: 'Required CORS allowed host',
+		optional: true,
+		default: '*',
+	},
+	DOWNLOAD_URL_EXPIRATION_DURATION: {
+		message: 'Required downloadable url expiration time',
+		optional: true,
+		default: 3600000,
+	},
+	SIGNED_URL_EXPIRY_IN_MILLISECONDS: {
+		message: 'Required signed url expiration time in milliseconds',
+		optional: true,
+		default: 3600000,
+	},
+	AUTH_METHOD: {
+		message: 'Required authentication method',
+		optional: true,
+		default: common.AUTH_METHOD.JWT_ONLY,
 	},
 }
 
