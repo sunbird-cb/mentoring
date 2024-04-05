@@ -154,6 +154,8 @@ module.exports = {
 								placeHolder: 'Ex. BA, B.ED',
 								validators: {
 									required: true,
+									maxLength: 150,
+									pattern: '^[a-zA-Z0-9-.,s ]+$',
 								},
 								options: [],
 								meta: {
