@@ -150,17 +150,17 @@ module.exports = {
 								position: 'floating',
 								errorMessage: {
 									required: 'Enter education qualification',
+									pattern: 'This field can only contain alphanumeric characters',
 								},
 								placeHolder: 'Ex. BA, B.ED',
 								validators: {
 									required: true,
-									pattern: 'This field can only contain alphanumeric characters',
+									maxLength: 255,
+									pattern: '^[a-zA-Z0-9-.,s ]+$',
 								},
 								options: [],
 								meta: {
 									errorLabel: 'Education qualification',
-									maxLength: 255,
-									pattern: '^[a-zA-Z0-9-.,s ]+$',
 								},
 							},
 							{
