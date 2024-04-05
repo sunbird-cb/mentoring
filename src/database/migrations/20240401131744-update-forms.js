@@ -764,6 +764,99 @@ module.exports = {
 					},
 				},
 			},
+			{
+				type: 'mentorQuestionnaire',
+				sub_type: 'mentorQuestionnaireForm',
+				data: {
+					fields: {
+						controls: [
+							{
+								name: 'designation',
+								label: 'Your role',
+								class: 'ion-no-margin',
+								value: [{}],
+								type: 'chip',
+								position: '',
+								disabled: false,
+								errorMessage: {
+									required: 'Enter your role',
+								},
+								validators: {
+									required: true,
+								},
+								options: [],
+								meta: {
+									entityType: 'designation',
+									addNewPopupHeader: 'Add a new role',
+									showSelectAll: true,
+									showAddOption: true,
+									errorLabel: 'Designation',
+								},
+							},
+							{
+								name: 'experience',
+								label: 'Your experience in years',
+								value: '',
+								class: 'ion-no-margin',
+								type: 'text',
+								position: 'floating',
+								placeHolder: 'Ex. 5 years',
+								errorMessage: {
+									required: 'Enter your experience in years',
+								},
+								isNumberOnly: true,
+								validators: {
+									required: true,
+									maxLength: 2,
+								},
+								options: [],
+							},
+							{
+								name: 'area_of_expertise',
+								label: 'Your expertise',
+								class: 'ion-no-margin',
+								value: [],
+								type: 'chip',
+								position: '',
+								disabled: false,
+								errorMessage: {
+									required: 'Enter your expertise',
+								},
+								validators: {
+									required: true,
+								},
+								options: [],
+								meta: {
+									entityType: 'area_of_expertise',
+									addNewPopupHeader: 'Add your expertise',
+									showSelectAll: true,
+									showAddOption: true,
+									errorLabel: 'Expertise',
+								},
+							},
+							{
+								name: 'about',
+								label: 'Tell us about yourself',
+								value: '',
+								class: 'ion-no-margin',
+								type: 'textarea',
+								position: 'floating',
+								errorMessage: {
+									required: 'This field cannot be empty',
+									pattern: 'This field can only contain alphanumeric characters',
+								},
+								placeHolder: 'Please use only 150 character',
+								validators: {
+									required: true,
+									maxLength: 150,
+									pattern: '^[a-zA-Z0-9-.,s ]+$',
+								},
+								options: [],
+							},
+						],
+					},
+				},
+			},
 		]
 
 		for (const formData of formsToUpdate) {
