@@ -8,14 +8,34 @@
 module.exports = {
 	roleChange: (req) => {
 		// Validate incoming request body
-		req.checkBody('user_id').notEmpty().withMessage('user_id field is empty')
-		req.checkBody('current_roles').notEmpty().withMessage('current_roles field is empty')
-		req.checkBody('new_roles').notEmpty().withMessage('new_roles field is empty')
+		req.checkBody('user_id')
+			.notEmpty()
+			.withMessage('user_id field is empty')
+			.isInt()
+			.withMessage('user_id must be an integer')
+		req.checkBody('current_roles')
+			.notEmpty()
+			.withMessage('current_roles field is empty')
+			.isArray({ min: 1 })
+			.withMessage('current_roles must be an array')
+		req.checkBody('new_roles')
+			.notEmpty()
+			.withMessage('new_roles field is empty')
+			.isArray({ min: 1 })
+			.withMessage('new_roles must be an array')
 	},
 	inheritEntityType: (req) => {
 		// Validate incoming request body
-		req.checkBody('entity_type_value').notEmpty().withMessage('entity_type_value field is empty')
-		req.checkBody('target_entity_type_label').notEmpty().withMessage('target_entity_type_label field is empty')
+		req.checkBody('entity_type_value')
+			.notEmpty()
+			.withMessage('entity_type_value field is empty')
+			.isString()
+			.withMessage('description must be a string')
+		req.checkBody('target_entity_type_label')
+			.notEmpty()
+			.withMessage('target_entity_type_label field is empty')
+			.isString()
+			.withMessage('description must be a string')
 	},
 
 	setOrgPolicies: (req) => {
@@ -54,8 +74,16 @@ module.exports = {
 	},
 
 	updateOrganization: (req) => {
-		req.checkBody('user_id').notEmpty().withMessage('user_id field is empty')
-		req.checkBody('organization_id').notEmpty().withMessage('organization_id field is empty')
+		req.checkBody('user_id')
+			.notEmpty()
+			.withMessage('user_id field is empty')
+			.isInt()
+			.withMessage('user_id must be an integer')
+		req.checkBody('organization_id')
+			.notEmpty()
+			.withMessage('organization_id field is empty')
+			.isInt()
+			.withMessage('organization_id must be an integer')
 		req.checkBody('roles').notEmpty().withMessage('roles field is empty')
 	},
 	deactivateUpcomingSession: (req) => {
@@ -66,7 +94,12 @@ module.exports = {
 			.withMessage('user_ids must be an array')
 	},
 	updateRelatedOrgs: (req) => {
-		req.checkBody('related_organization_ids').notEmpty().withMessage('related_organization_ids field is empty')
-		req.checkBody('organization_id').notEmpty().withMessage('organization_id field is empty')
+		req.checkBody('delta_organization_ids').notEmpty().withMessage('delta_organization_ids field is empty')
+		req.checkBody('organization_id')
+			.notEmpty()
+			.withMessage('organization_id field is empty')
+			.isInt()
+			.withMessage('organization_id must be an integer')
+		req.checkBody('action').notEmpty().withMessage('action field is empty')
 	},
 }

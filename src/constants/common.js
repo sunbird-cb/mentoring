@@ -129,4 +129,10 @@ module.exports = {
 		CREATOR: 'CREATOR',
 		MENTOR: 'MENTOR',
 	},
+	PUSH: 'PUSH',
+	POP: 'POP',
+	AUTH_METHOD: {
+		JWT_ONLY: 'jwt_only',
+		USER_SERVICE: 'user_service_authenticated',
+	},
 }

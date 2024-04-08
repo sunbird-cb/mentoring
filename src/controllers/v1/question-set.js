@@ -31,7 +31,7 @@ module.exports = class QuestionsSet {
 				})
 			}
 			const createQuestionSet = await questionSetService.create(req.body, req.decodedToken)
-			console.log(createQuestionSet)
+
 			return createQuestionSet
 		} catch (error) {
 			return error
