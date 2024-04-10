@@ -60,10 +60,10 @@ The Mentor building block enables effective mentoring interactions between mento
 # System Requirements
 
 -   **Operating System:** Ubuntu 22
--   **Node.js:** v20
+-   **Node.js®:** v20
 -   **PostgreSQL:** 16
 -   **Citus:** 12.1
--   **Apache Kafka:** 3.5.0
+-   **Apache Kafka®:** 3.5.0
 
 # Setup Options
 
