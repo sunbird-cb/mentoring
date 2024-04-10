@@ -69,7 +69,7 @@ The Mentor building block enables effective mentoring interactions between mento
 
 Elevate services can be setup in local using three methods:
 
-<details><summary>Docker-Compose File (Easiest)</summary>
+<details><summary>Dockerized services & Dependencies using Docker-Compose File (Easiest)</summary>
 
 ## A. Docker-Compose
 
@@ -110,90 +110,6 @@ Elevate services can be setup in local using three methods:
             **Note:** It isn't always necessary to run **down** command. Existing containers and networks can be stopped gracefully by using **Ctrl + C** key combination.
 
             **Warning:** Do not use docker-compose in production.
-
-</details>
-
-<details><summary>Dockerized service with local dependencies(Intermediate)</summary>
-
-## B. Dockerized Service With Local Dependencies
-
-**Expectation**: Run single docker containerized service with existing local (in host) or remote dependencies.
-
-### Local Dependencies Steps
-
-1. Update dependency (Mongo v4.1.4, Kafka etc) IP addresses in .env with "**host.docker.internal**".
-
-    Eg:
-
-    ```
-     #MongoDb Connectivity Url
-     MONGODB_URL = mongodb://host.docker.internal:27017/elevate-mentoring
-
-     #Kafka Host Server URL
-     KAFKA_URL = host.docker.external:9092
-    ```
-
-2. Find **host.docker.internal** IP address and added it to **mongod.conf** file in host.
-
-    Eg: If **host.docker.internal** is **172.17.0.1**,
-    **mongod.conf:**
-
-    ```
-    # network interfaces
-    net:
-        port: 27017
-        bindIp: "127.0.0.1,172.17.0.1"
-    ```
-
-    Note: Steps to find **host.docker.internal** IP address & location of **mongod.conf** is operating system specific. Refer [this](https://stackoverflow.com/questions/22944631/how-to-get-the-ip-address-of-the-docker-host-from-inside-a-docker-container) for more information.
-
-3. Build the docker image.
-    ```
-    /ELEVATE/mentoring$ docker build -t elevate/mentoring:1.0 .
-    ```
-4. Run the docker container.
-
-    - For Mac & Windows with docker v18.03+:
-
-        ```
-        $ docker run --name mentoring elevate/mentoring:1.0
-        ```
-
-    - For Linux:
-        ```
-        $ docker run --name mentoring --add-host=host.docker.internal:host-gateway elevate/mentoring:1.0`
-        ```
-        Refer [this](https://stackoverflow.com/a/24326540) for more information.
-
-### Remote Dependencies Steps
-
-1.  Update dependency (Mongo v4.1.4, Kafka etc) Ip addresses in .env with respective remote server IPs.
-
-    Eg:
-
-    ```
-     #MongoDb Connectivity Url
-     MONGODB_URL = mongodb://10.1.2.34:27017/elevate-mentoring
-
-     #Kafka Host Server URL
-     KAFKA_URL = 11.2.3.45:9092
-    ```
-
-2.  Add Bind IP to **mongod.conf** in host:
-
-    Follow the instructions given [here.](https://www.digitalocean.com/community/tutorials/how-to-configure-remote-access-for-mongodb-on-ubuntu-20-04)
-
-    Note: Instructions might differ based on MongoDB version and operating system.
-
-3.  Build the docker image.
-    ```
-    /ELEVATE/mentoring$ docker build -t elevate/mentoring:1.0 .
-    ```
-4.  Run the docker container.
-
-        ```
-        $ docker run --name mentoring elevate/mentoring:1.0
-        ```
 
 </details>
 
@@ -488,9 +404,6 @@ APPLICATION_ENV=development
 # Route after the base URL
 APPLICATION_BASE_URL=/mentoring/
 APPLICATION_URL=https://dev.mentoring.shikshalokam.org
-
-# Mongo db connectivity URL
-MONGODB_URL=mongodb://localhost:27017/elevate-mentoring
 
 # Token secret to verify the access token
 ACCESS_TOKEN_SECRET='asadsd8as7df9as8df987asdf'
@@ -895,7 +808,6 @@ The frontend/mobile application [repo](https://github.com/ELEVATE-Project/mentor
 Several open source dependencies that have aided Mentoring's development:
 
 ![NodeJS](https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white)
-![MongoDB](https://img.shields.io/badge/MongoDB-%234ea94b.svg?style=for-the-badge&logo=mongodb&logoColor=white)
 ![Apache Kafka](https://img.shields.io/badge/Apache%20Kafka-000?style=for-the-badge&logo=apachekafka)
 ![Redis](https://img.shields.io/badge/redis-%23DD0031.svg?style=for-the-badge&logo=redis&logoColor=white)
 ![Jest](https://img.shields.io/badge/-jest-%23C21325?style=for-the-badge&logo=jest&logoColor=white)
