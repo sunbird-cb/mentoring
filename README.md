@@ -67,9 +67,9 @@ The Mentor building block enables effective mentoring interactions between mento
 
 # Setup Options
 
-Elevate services can be setup in local using three methods:
+Elevate services can be setup in local using two methods:
 
-<details><summary>Dockerized services & Dependencies using Docker-Compose File (Easiest)</summary>
+<details><summary>Dockerized Services & Dependencies Using Docker-Compose File (Easiest)</summary>
 
 ## A. Docker-Compose
 
@@ -113,9 +113,10 @@ Elevate services can be setup in local using three methods:
 
 </details>
 
-<details><summary>Local Service with local dependencies(Hardest)</summary>
+<details>
+<summary>Local Service with local dependencies (Hardest)</summary>
 
-## C. Local Service With Local Dependencies
+## B. Local Service With Local Dependencies
 
 **Expectation**: Run a single service with existing local dependencies in the host (**Non-Docker Implementation**).
 
@@ -405,6 +406,9 @@ APPLICATION_ENV=development
 APPLICATION_BASE_URL=/mentoring/
 APPLICATION_URL=https://dev.mentoring.shikshalokam.org
 
+# Mongo db connectivity URL
+MONGODB_URL=mongodb://localhost:27017/elevate-mentoring
+
 # Token secret to verify the access token
 ACCESS_TOKEN_SECRET='asadsd8as7df9as8df987asdf'
 
@@ -677,6 +681,71 @@ This concludes the services and dependency setup.
 ## Postman Collections
 
 -   [Mentoring Service](https://github.com/ELEVATE-Project/mentoring/tree/develop-2.5/src/api-doc)
+
+</details>
+
+</br>
+
+BigBlueButton™ Service (Optional) can be setup using the following method:
+
+<details><summary>Setting up the BigBlueButton Service (Optional)</summary>
+
+## Setting up the BigBlueButton Service (Optional)
+
+## Installation
+
+**Expectation**: Integrate the BigBlueButton meeting platform with the mentoring application.
+
+1. Before installing, ensure that you meet all the prerequisites required to install BigBlueButton. To learn more, see Administration section in [BigBlueButton Docs](https://docs.bigbluebutton.org).
+
+2. Install BigBlueButton version 2.6 using the hostname and email address, which you want to use. To learn more, see Administration section in [BigBlueButton Docs](https://docs.bigbluebutton.org).
+
+3. After completing the installation, check the status of your server using the following command:
+
+    ```
+    sudo bbb-conf --check
+    ```
+
+    > **Note**: If you encounter any error which is flagged as _Potential problems_, check for installation or configuration errors on your server.
+
+4. Start the service using the following command:
+
+    ```
+    sudo bbb-conf --start
+    ```
+
+5. Check if the BigBlueButton service is running using the following command:
+
+    ```
+    sudo bbb-conf --status
+    ```
+
+6. Restart the BigBlueButton server using the following command:
+
+    ```
+    sudo bbb-conf --restart
+    ```
+
+## Obtaining the Secret Key
+
+If you wish to generate a new secret key, use the following command:
+
+```
+sudo bbb-conf --secret
+```
+
+## Deleting the Demo Meeting
+
+If you want to delete the demo meeting, use the following command:
+
+```
+sudo apt-get purge bbb-demo
+```
+
+> **Tip**:
+>
+> -   To learn more, see the Administration section in <a href="https://docs.bigbluebutton.org">BigBlueButton Docs</a>.
+> -   To automatically delete the metadata of recordings which are converted to mp4 format and uploaded on the cloud storage, see <a href="https://github.com/ELEVATE-Project/elevate-utils/tree/master/BBB-Recordings">ELEVATE-Project on GitHub</a>.
 
 </details>
 
