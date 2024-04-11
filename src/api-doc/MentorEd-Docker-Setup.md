@@ -19,7 +19,7 @@ To set up the Elevate MentorEd application, ensure you have Docker and Docker Co
     └── backend
     ```
 
-> Example Command: `mkdir elevate &&	cd elevate/`
+    > Example Command: `mkdir elevate &&	cd elevate/`
 
 2.  **Download Docker Compose File:** Retrieve the **[docker-compose-mentoring.yml](https://github.com/ELEVATE-Project/mentoring/blob/doc-fix-2.5/src/scripts/setup/docker-compose-mentoring.yml)** file from the Elevate Mentoring repository and save it to the backend directory.
 
@@ -488,20 +488,22 @@ Please refer to the Shikshalokam [Docker Hub repository](https://hub.docker.com/
 
     2.  Follow the steps given below to execute associated Docker-Compose operations.
 
-            -   **To run all services and dependencies, run**:
-                `
+        -   **To run all services and dependencies, run**:
 
-        elevate\backend>docker-compose-up.bat
-        ` - **To gracefully stop all the service and dependency containers**:
+            ```
+            elevate\backend>docker-compose-up.bat
+            ```
 
-                Press `Ctrl + c`
+        -   **To gracefully stop all the service and dependency containers**:
 
-            -   **To stop and remove all the running service and dependency containers, run**:
-                ```
-                elevate\backend>docker-compose-down.bat
-                ```
+            Press `Ctrl + c`
 
-    > **Note:** During the first Docker Compose run, the database, migration seeder files, and the script to establish the default organization will also be executed automatically.
+        -   **To stop and remove all the running service and dependency containers, run**:
+            ```
+            elevate\backend>docker-compose-down.bat
+            ```
+
+> **Note:** During the first Docker Compose run, the database, migration seeder files, and the script to establish the default organization will also be executed automatically.
 
 ## Enable Citus Extension
 
