@@ -88,10 +88,7 @@ To set up the Elevate MentorEd application, ensure you have Docker and Docker Co
         /user$ curl -o setup.sh -L https://github.com/ELEVATE-Project/user/raw/temp_setup/src/setup.sh
         ```
     -   **[distributionColumns.sql](https://github.com/ELEVATE-Project/user/blob/temp_setup/src/distributionColumns.sql)**
-        `
-	/user$ curl -o distributionColumns.sql -L https://github.com/ELEVATE-Project/user/raw/temp_setup/src/distributionColumns.sql
-	`
-        > **Note:** The setup.sh file needs to be set as executable.
+        `/user$ curl -o distributionColumns.sql -L https://github.com/ELEVATE-Project/user/raw/temp_setup/src/distributionColumns.sql` > **Note:** The setup.sh file needs to be set as executable.
 
     Directory Structure:
 
@@ -125,6 +122,75 @@ To set up the Elevate MentorEd application, ensure you have Docker and Docker Co
 
 2. Copy and paste the following environment variables into the **mentoring_env** file:
 
+    File name: **mentoring_env**
+    <details>
+    <summary>mentoring_env content (Click Here)</summary>
+
+    ```
+    ACCESS_TOKEN_SECRET=asadsd8as7df9as8df987asdf
+    API_DOC_URL=/api-doc
+    APPLICATION_BASE_URL=/mentoring/
+    APPLICATION_ENV=development
+    APPLICATION_HOST=mentoring
+    APPLICATION_PORT=3000
+    APPLICATION_URL=https://dev.mentoring.shikshalokam.org
+    AWS_ACCESS_KEY_ID=aws-access-key-id
+    AWS_BUCKET_ENDPOINT=s3.ap-south-1.amazonaws.com
+    AWS_BUCKET_REGION=ap-south-1
+    AWS_SECRET_ACCESS_KEY=aws-secret-access-key
+    AZURE_ACCOUNT_KEY=azure-account-key
+    AZURE_ACCOUNT_NAME=account-name
+    BIG_BLUE_BUTTON_BASE_URL=/bigbluebutton/
+    BIG_BLUE_BUTTON_LAST_USER_TIMEOUT_MINUTES=15
+    BIG_BLUE_BUTTON_SECRET_KEY=s90df8g09sd8fg098sdfg
+    BIG_BLUE_BUTTON_SESSION_END_URL=https%3A%2F%2Fdev.some-mentoring.temp.org%2F
+    BIG_BLUE_BUTTON_URL=https://dev.some.temp.org
+    CLOUD_STORAGE=AWS
+    CLEAR_INTERNAL_CACHE=mentoringInternal
+    DEFAULT_AWS_BUCKET_NAME=aws-bucket-storage-name
+    DEFAULT_GCP_BUCKET_NAME=gcp-bucket-storage-name
+    DEFAULT_MEETING_SERVICE=BBB
+    DEFAULT_ORGANISATION_CODE=default_code
+    DEFAULT_ORG_ID=1
+    DEV_DATABASE_URL=postgres://postgres:postgres@localhost:5432/elevate-mentoring
+    DISABLE_LOG=false
+    ENABLE_EMAIL_FOR_REPORT_ISSUE=true
+    ENABLE_LOG=true
+    ERROR_LOG_LEVEL=silly
+    GCP_PATH=gcp.json
+    GCP_PROJECT_ID=project-id
+    INTERNAL_ACCESS_TOKEN=internal_access_token
+    INTERNAL_CACHE_EXP_TIME=86400
+    KAFKA_GROUP_ID=mentoring
+    KAFKA_MENTORING_TOPIC=mentoringtopic
+    KAFKA_RECORDING_TOPIC=recordingtopic
+    KAFKA_URL=kafka:9092
+    MEETING_END_CALLBACK_EVENTS=https%3A%2F%2Fdev.some-apis.temp.org%2Fmentoring%2Fv1%2Fsessions%2Fcompleted
+    MENTEE_SESSION_ENROLLMENT_EMAIL_TEMPLATE=mentee_session_enrollment
+    MENTOR_SESSION_DELETE_EMAIL_TEMPLATE=mentor_session_delete
+    MENTOR_SESSION_RESCHEDULE_EMAIL_TEMPLATE=mentor_session_reschedule
+    NOTIFICATION_KAFKA_TOPIC=develop.notifications
+    RATING_KAFKA_TOPIC=dev.rate
+    REDIS_HOST=redis://redis:6379
+    REFRESH_VIEW_INTERVAL=30000
+    REPORT_ISSUE_EMAIL_TEMPLATE_CODE=user_issue_reported
+    REQUIRED_PACKAGES=elevate-user@1.1.30 elevate-mentoring@1.1.23 elevate-scheduler@1.0.4
+    SCHEDULER_SERVICE_BASE_URL=/scheduler/
+    SCHEDULER_SERVICE_ERROR_REPORTING_EMAIL_ID=rakesh.k@some.com
+    SCHEDULER_SERVICE_HOST=http://scheduler:4000
+    SCHEDULER_SERVICE_URL=http://scheduler:4000/jobs/scheduleJob
+    SESSION_EDIT_WINDOW_MINUTES=0
+    SESSION_KAFKA_TOPIC=session
+    SESSION_MENTEE_LIMIT=5
+    SUPPORT_EMAIL_ID=support@xyz.com,team@xyz.com
+    USER_SERVICE_BASE_URL=/user/
+    USER_SERVICE_HOST=http://user:3001
+    ```
+
+    </details>
+
+    For Elevate Notification Repository, **[Click Here](https://github.com/ELEVATE-Project/notification)**.
+
 3. Save the changes to the file and exit the text editor.
 
     Directory Structure:
@@ -150,76 +216,73 @@ Following the exact same instructions from the previous section, create the foll
 
 -   File name: **user_env**
     <details>
-      <summary>user_env content</summary>
+      <summary>user_env content (Click Here)</summary>
 
     ```
     ACCESS_TOKEN_EXPIRY=1
     ACCESS_TOKEN_SECRET=asadsd8as7df9as8df987asdf
+    ADMIN_INVITEE_UPLOAD_EMAIL_TEMPLATE_CODE=test
+    ADMIN_SECRET_CODE=a98sd76fasdfasd
     API_DOC_URL=/user/api-doc
-    APP_NAME=MentorED
     APPLICATION_ENV=development
-    APPLICATION_PORT=3001
     APPLICATION_HOST=user
-    AWS_ACCESS_KEY_ID="adsfg98a7sdfg"
-    AWS_BUCKET_ENDPOINT="s3.ap-south-1.amazonaws.com"
-    AWS_BUCKET_REGION="ap-south-1"
-    AWS_SECRET_ACCESS_KEY="asd9786fg9a8sd/asdfg9a8sd7fg"
+    APPLICATION_PORT=3001
+    APP_NAME=MentorED
     AZURE_ACCOUNT_KEY=asd897gfa09sd87f09as8d
     AZURE_ACCOUNT_NAME=mentoring
+    AWS_ACCESS_KEY_ID=adsfg98a7sdfg
+    AWS_BUCKET_ENDPOINT=s3.ap-south-1.amazonaws.com
+    AWS_BUCKET_REGION=ap-south-1
+    AWS_SECRET_ACCESS_KEY=asd9786fg9a8sd/asdfg9a8sd7fg
     CLEAR_INTERNAL_CACHE=userinternal
     CLOUD_STORAGE=AWS
     DEFAULT_AWS_BUCKET_NAME=mentoring-dev-storage
     DEFAULT_AZURE_CONTAINER_NAME=mentoring-images
     DEFAULT_GCP_BUCKET_NAME=mentoring-dev-storage
+    DEFAULT_OCI_BUCKET_NAME=dev-mentoring
+    DEFAULT_ORGANISATION_CODE=default_code
+    DEFAULT_ORG_ID=1
+    DEFAULT_ROLE=mentee
+    DEFAULT_QUEUE=test
+    DEV_DATABASE_URL=postgres://postgres:postgres@localhost:5432/elevate-user
+    DISABLE_LOG=false
     ENABLE_EMAIL_OTP_VERIFICATION=false
     ENABLE_LOG=true
+    ERROR_LOG_LEVEL=silly
     GCP_PATH=gcp.json
     GCP_PROJECT_ID=sl-dev-project
     INTERNAL_ACCESS_TOKEN=internal_access_token
     INTERNAL_CACHE_EXP_TIME=86400
+    INVITEE_EMAIL_TEMPLATE_CODE=test
     IV=09sdf8g098sdf/Q==
     KAFKA_GROUP_ID=mentoring
     KAFKA_TOPIC=
     KAFKA_URL=kafka:9092
     KEY=fasd98fg9a8sydg98a7usd89fg
+    MENTEE_INVITATION_EMAIL_TEMPLATE_CODE=test
+    MENTOR_INVITATION_EMAIL_TEMPLATE_CODE=test
+    MENTOR_REQUEST_ACCEPTED_EMAIL_TEMPLATE_CODE=mentor_request_accepted
+    MENTOR_REQUEST_REJECTED_EMAIL_TEMPLATE_CODE=mentor_request_rejected
+    MENTORING_SERVICE_URL=http://mentoring:3000
     NOTIFICATION_KAFKA_TOPIC=dev.notifications
-    OTP_EMAIL_TEMPLATE_CODE=emailotp
-    OTP_EXP_TIME=86400
-    REDIS_HOST=redis://redis:6379
-    REFRESH_TOKEN_EXPIRY=183
-    REFRESH_TOKEN_SECRET=as9d87fa9s87df98as7d9f87a9sd87f98as7dg987asf
-    REGISTRATION_EMAIL_TEMPLATE_CODE=registration
-    REGISTRATION_OTP_EMAIL_TEMPLATE_CODE=registrationotp
-    DEFAULT_OCI_BUCKET_NAME=dev-mentoring
     OCI_ACCESS_KEY_ID=asdgf6a0s98d76g9a8sasdasd7df987as98df
     OCI_BUCKET_ENDPOINT=https://as98d7asdasdf.compat.objectstorage.ap-hyderabad-1.oraclecloud.com
     OCI_BUCKET_REGION=ap-hyderabad-1
     OCI_SECRET_ACCESS_KEY=as09d7f8/as0d7f09as7d8f=
-    ERROR_LOG_LEVEL=silly
-    DISABLE_LOG=false
-    DEFAULT_ORGANISATION_CODE=default_code
-    DEV_DATABASE_URL=postgres://postgres:postgres@localhost:5432/elevate-user
-    ADMIN_SECRET_CODE=a98sd76fasdfasd
-    MENTORING_SERVICE_URL=test
-    DEFAULT_QUEUE="test"
-    INVITEE_EMAIL_TEMPLATE_CODE='test'
-    ADMIN_INVITEE_UPLOAD_EMAIL_TEMPLATE_CODE='test'
-    MENTOR_INVITATION_EMAIL_TEMPLATE_CODE="test"
-    MENTEE_INVITATION_EMAIL_TEMPLATE_CODE="test"
-    DEFAULT_ROLE="mentee"
-    SAMPLE_CSV_FILE_PATH=sample/bulk_user_creation.csv
-    ORG_ADMIN_INVITATION_EMAIL_TEMPLATE_CODE=invite_org_admin
-    DEFAULT_ORG_ID=1
-    MENTORING_SERVICE_URL=http://mentoring:3000
-    MENTOR_REQUEST_ACCEPTED_EMAIL_TEMPLATE_CODE=mentor_request_accepted
-    MENTOR_REQUEST_REJECTED_EMAIL_TEMPLATE_CODE=mentor_request_rejected
-    DEFAULT_ROLE=mentee
-    PORTAL_URL='https://mentored.some.org/auth/login'
-    SCHEDULER_SERVICE_ERROR_REPORTING_EMAIL_ID="rakesh.k@some.com"
-    SCHEDULER_SERVICE_URL="http://scheduler:4000/jobs/scheduleJob"
-    SCHEDULER_SERVICE_HOST="http://scheduler:4000"
-    SCHEDULER_SERVICE_BASE_URL= '/scheduler/'
+    OTP_EMAIL_TEMPLATE_CODE=emailotp
+    OTP_EXP_TIME=86400
+    PORTAL_URL=https://mentored.some.org/auth/login
+    REFRESH_TOKEN_EXPIRY=183
+    REFRESH_TOKEN_SECRET=as9d87fa9s87df98as7d9f87a9sd87f98as7dg987asf
     REFRESH_VIEW_INTERVAL=540000
+    REDIS_HOST=redis://redis:6379
+    REGISTRATION_EMAIL_TEMPLATE_CODE=registration
+    REGISTRATION_OTP_EMAIL_TEMPLATE_CODE=registrationotp
+    SAMPLE_CSV_FILE_PATH=sample/bulk_user_creation.csv
+    SCHEDULER_SERVICE_BASE_URL= /scheduler/
+    SCHEDULER_SERVICE_ERROR_REPORTING_EMAIL_ID=rakesh.k@some.com
+    SCHEDULER_SERVICE_HOST=http://scheduler:4000
+    SCHEDULER_SERVICE_URL=http://scheduler:4000/jobs/scheduleJob
     ```
 
     </details>
@@ -227,8 +290,74 @@ Following the exact same instructions from the previous section, create the foll
     For Elevate User Repository, **[Click Here](https://github.com/ELEVATE-Project/user)**.
 
 -   File name: **notification_env**
+    <details>
+      <summary>notification_env content</summary>
+
+    ```
+    API_DOC_URL=/api-doc
+    APPLICATION_BASE_URL=/notification/
+    APPLICATION_ENV=development
+    APPLICATION_PORT=3002
+    DEV_DATABASE_URL=postgres://postgres:postgres@localhost:5432/elevate-notification
+    DISABLE_LOG=false
+    ENABLE_LOG=true
+    ERROR_LOG_LEVEL=silly
+    INTERNAL_ACCESS_TOKEN=internal_access_token
+    KAFKA_GROUP_ID=notification
+    KAFKA_HOST=kafka:9092
+    KAFKA_TOPIC=develop.notifications
+    SENDGRID_API_KEY=SG.asd9f87a9s8d7f.
+    SENDGRID_FROM_MAIL=no-reply@some.org
+    ```
+
+    </details>
+
+    For Elevate Notification Repository, **[Click Here](https://github.com/ELEVATE-Project/notification)**.
+
 -   File name: **scheduler_env**
+    <details>
+      <summary>scheduler_env content</summary>
+
+    ```
+    API_DOC_URL=/api-doc
+    APPLICATION_BASE_URL=/scheduler/
+    APPLICATION_ENV=development
+    APPLICATION_PORT=4000
+    DEFAULT_QUEUE=email
+    DISABLE_LOG=false
+    ENABLE_LOG=true
+    ERROR_LOG_LEVEL=silly
+    KAFKA_URL=kafka:9092
+    NOTIFICATION_KAFKA_TOPIC=develop.notifications
+    REDIS_HOST=redis
+    REDIS_PORT=6379
+    ```
+
+    </details>
+
+    For Elevate Scheduler Repository, **[Click Here](https://github.com/ELEVATE-Project/scheduler)**.
+
 -   File name: **interface_env**
+    <details>
+      <summary>interface_env content</summary>
+
+    ```
+    API_DOC_URL=http://localhost:3569/apidoc
+    APPLICATION_ENV=development
+    APPLICATION_PORT=3569
+    INSTALLED_PACKAGES=elevate-user elevate-mentoring elevate-scheduler
+    MENTORING_SERVICE_BASE_URL=http://mentoring:3000
+    NOTIFICATION_SERVICE_BASE_URL=http://notification:3002
+    REQUIRED_PACKAGES=elevate-user@1.1.30 elevate-mentoring@1.1.23 elevate-scheduler@1.0.4
+    SCHEDULER_SERVICE_BASE_URL=http://scheduler:4000
+    SUPPORTED_HTTP_TYPES=GET POST PUT PATCH DELETE
+    USER_SERVICE_BASE_URL=http://user:3001
+
+    ```
+
+    </details>
+
+    For Elevate Scheduler Repository, **[Click Here](https://github.com/ELEVATE-Project/interface-service)**.
 
 ### Create an environment file for the Interface service by following these steps:
 
