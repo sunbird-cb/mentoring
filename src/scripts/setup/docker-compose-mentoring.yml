@@ -36,8 +36,6 @@ services:
       - '6379:6379'
     networks:
       - elevate_net
-    #volumes:
-    #  - redis-data:/data
     logging:
       driver: none
   mentoring:
@@ -170,6 +168,5 @@ services:
 networks:
   elevate_net:
     external: false
-#volumes:
-#  redis-data:
-#  citus-data:
+volumes:
+  citus-data:

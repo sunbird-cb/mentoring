@@ -21,10 +21,10 @@ To set up the Elevate MentorEd application, ensure you have Docker and Docker Co
 
 > Example Command: `mkdir elevate &&	cd elevate/`
 
-2.  **Download Docker Compose File:** Retrieve the **[docker-compose-mentoring.yml](https://github.com/ELEVATE-Project/mentoring/blob/temp_setup/docker-compose-mentoring.yml)** file from the Elevate Mentoring repository and save it to the backend directory.
+2.  **Download Docker Compose File:** Retrieve the **[docker-compose-mentoring.yml](https://github.com/ELEVATE-Project/mentoring/blob/doc-fix-2.5/src/scripts/setup/docker-compose-mentoring.yml)** file from the Elevate Mentoring repository and save it to the backend directory.
 
     ```
-    elevate/backend$ curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/temp_setup/docker-compose-mentoring.yml
+    elevate/backend$ curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/docker-compose-mentoring.yml
     ```
 
     Directory structure:
@@ -503,126 +503,86 @@ Please refer to the Shikshalokam [Docker Hub repository](https://hub.docker.com/
 
     > **Note:** During the first Docker Compose run, the database, migration seeder files, and the script to establish the default organization will also be executed automatically.
 
-### Enable Citus Extension
+## Enable Citus Extension
 
 ### To enable the Citus extension for mentoring and user services, follow these steps:
 
-1. Open a new terminal tab or window.
+1. Create a sub-directory named `mentoring` and download `distributionColumns.sql` into it.
+    ```
+    elevate/backend$ mkdir -p mentoring && curl -o ./mentoring/distributionColumns.sql -L https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/distribution-columns/mentoring/distributionColumns.sql
+    ```
+2. Create a sub-directory named `user` and download `distributionColumns.sql` into it.
+    ```
+    mkdir -p user && curl -o ./user/distributionColumns.sql -JL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/distribution-columns/user/distributionColumns.sql
+    ```
+3. Set up the citus_setup file by following the steps given below.
 
-2. Navigate to the elevate/backend directory:
+    - **Ubuntu/Linux/Mac:**
 
-```
+        1. Navigate to the elevate/backend directory and download the `citus_setup.sh` file:
 
-cd /elevate/backend
+            ```
+            elevate/backend$ curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/citus_setup.sh
+            ```
 
-```
+        2. Make the setup file executable by running the following command:
 
-3. Run the following command to enable the Citus extension for the user service:
+            ```
+            elevate/backend$ chmod +x citus_setup.sh
+            ```
 
-```
+        3. Enable Citus and set distribution columns for `elevate-mentoring` database by running the `citus_setup.sh`with the following arguments:
+            ```
+            elevate/backend$ ./citus_setup.sh mentoring postgres://postgres:postgres@citus_master:5432/elevate-mentoring
+            ```
+        4. Enable Citus and set distribution columns for `elevate-user` database by running the `citus_setup.sh`with the following arguments:
+            ```
+            elevate/backend$ ./citus_setup.sh user postgres://postgres:postgres@citus_master:5432/elevate-user
+            ```
 
-./setup.sh postgres://postgres:postgres@localhost:5432/elevate-user
+    - **Windows:**
+        1. Navigate to the elevate/backend directory and download the `citus_setup.bat` file:
+            ```
+             elevate\backend>curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/citus_setup.bat
+            ```
+        2. Enable Citus and set distribution columns for `elevate-mentoring` database by running the `citus_setup.bat`with the following arguments:
+            ```
+            elevate\backend>citus_setup.bat mentoring postgres://postgres:postgres@citus_master:5432/elevate-mentoring
+            ```
+        3. Enable Citus and set distribution columns for `elevate-user` database by running the `citus_setup.bat`with the following arguments:
+            ```
+            elevate\backend>citus_setup.bat user postgres://postgres:postgres@citus_master:5432/elevate-user
+            ```
 
-```
+## Persistence of Database Data in Docker Container
 
-4. Run the following command to enable the Citus extension for the mentoring service:
+To ensure the persistence of database data when downing database docker container, it is necessary to modify the `docker-compose-mentoring.yml` file according to the steps given below:
 
-```
+1. **Modification of the `docker-compose-mentoring.yml` File:**
 
-./setup.sh postgres://postgres:postgres@localhost:5432/elevate-mentoring
+    Begin by opening the `docker-compose-mentoring.yml` file. Locate the section pertaining to the Citus container and proceed to uncomment the volume specification. This action is demonstrated in the snippet provided below:
 
-```
+    ```yaml
+    citus:
+        image: citusdata/citus:11.2.0
+        container_name: 'citus_master'
+        ports:
+            - 5432:5432
+        volumes:
+            - citus-data:/var/lib/postgresql/data
+    ```
 
-## Stop Docker Containers
+2. **Uncommenting Volume Names Under the Volumes Section:**
 
-To stop the Docker containers, execute the following commands:
+    Next, navigate to the volumes section of the file and proceed to uncomment the volume names as illustrated in the subsequent snippet:
 
-**Ubuntu/Linux/Mac:**
+    ```yaml
+    networks:
+        elevate_net:
+            external: false
 
-notification_env="<exact_path_to_environment_files>/notification_env" \
+    volumes:
+        citus-data:
+    ```
 
-scheduler_env="<exact_path_to_environment_files>/scheduler_env" \
-
-mentoring_env="<exact_path_to_environment_files>/mentoring_env" \
-
-users_env="<exact_path_to_environment_files>/user_env" \
-
-interface_env="<exact_path_to_environment_files>/interface_env" \
-
-docker-compose -f docker-compose-mentoring.yml down
-
-**Windows:**
-
-$env:users_env = ".\user_env.txt";
-
-$env:interface_env = ".\interface_env.txt";
-
-$env:scheduler_env ="./scheduler_env.txt";
-
-$env:notification_env ="./notification_env.txt";
-
-$env:mentoring_env ="./mentoring_env.txt" ; docker-compose -f docker-compose-mentoring.yml down
-
-## View Running Containers
-
-To view the running containers, use the command:
-
-```
-
-docker container ls
-
-```
-
-Login to the container:
-
-```
-
-docker exec -it ${container_id} bash
-
-```
-
-## Persist Database Data
-
-**To persist the database data when bringing down the Docker containers, follow these steps to adjust the `docker-compose-mentoring.yml` file:**
-
-Define a volume for each service in the volumes section of the `docker-compose-mentoring.yml` file. Adjust the path `/path/to/postgres/data` to your desired host machine path where you want to store the data. For example:
-
-```yaml
-
-services:
-
-user:
-
-volumes:
-
-- user_postgres_data:/path/to/postgres/data
-
-mentoring:
-
-volumes:
-
-- mentoring_postgres_data:/path/to/postgres/data
-
-notification:
-
-volumes:
-
-- notification_postgres_data:/path/to/postgres/data
-
-```
-
-List each volume separately under the volumes section:
-
-```yaml
-volumes:
-
-user_postgres_data:
-
-mentoring_postgres_data:
-
-notification_postgres_data:
-```
-
-With this setup, when you run `docker-compose down`, the data will be stored in the volumes, and it will persist even if you bring the containers down and then back up again using `docker-compose up`.
-
-Make sure to replace `user` and `notification` with the actual service names from your `docker-compose-mentoring.yml` file. Adjust the volume names and paths according to your requirements.
+By implementing these adjustments, the configuration ensures that when the `docker-compose down` command is executed, the database data is securely stored within the specified volumes. Consequently, this data will be retained and remain accessible, even after the containers are terminated and subsequently reinstated using the `docker-compose up` command.
