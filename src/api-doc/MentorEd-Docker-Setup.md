@@ -357,41 +357,48 @@ Following the exact same instructions from the previous section, create the foll
 
     For Elevate Scheduler Repository, **[Click Here](https://github.com/ELEVATE-Project/interface-service)**.
 
-### Create an environment file for the Interface service by following these steps:
+    Directory Structure:
 
-1. Navigate to the elevate/backend directory:
+    ```
+    ./elevate/
+    └── backend
+        ├── docker-compose-mentoring.yml
+        ├── interface_env <===
+        ├── mentoring
+        │   ├── distributionColumns.psql
+        │   └── setup.sh
+        ├── mentoring_env <===
+        ├── notification_env <===
+        ├── scheduler_env <===
+        ├── user
+        │   ├── distributionColumns.sql
+        │   └── setup.sh
+        └── user_env <===
+    ```
 
-cd elevate/backend
+### Create an environment file for the mobile-portal-app service by following these steps:
 
-2. Create a new file named `environment.ts`
+1. Navigate to the elevate/backend directory and create a new file named `environment.ts`.
 
-3. Copy and paste the following environment variables into the `environment.ts` file:
+2. Copy and paste the following environment variables into the `environment.ts` file:
+    ```typescript
+    export const environment = {
+    	baseUrl: 'http://localhost:3569',
+    	deepLinkUrl: 'https://mentored.shikshalokam.org',
+    	dev: false,
+    	name: 'debug environment',
+    	privacyPolicyUrl: 'https://shikshalokam.org/mentoring/privacy-policy',
+    	production: true,
+    	sqliteDBName: 'mentoring.db',
+    	staging: false,
+    	termsOfServiceUrl: 'https://shikshalokam.org/mentoring/term-of-use',
+    }
+    ```
+3. Update Docker Compose Configuration
 
-```typescript
-export const environment = {
-	production: true,
+    Open the `docker-compose-mentoring.yml` file and update the path of the `environment.ts` file under the portal docker image (refer to Line 160). Change `/home/priyanka/workspace/docker/environment.ts` to your exact path to the `environment.ts` file.
 
-	name: 'debug environment',
-
-	staging: false,
-
-	dev: false,
-
-	baseUrl: 'http://localhost:3569',
-
-	sqliteDBName: 'mentoring.db',
-
-	deepLinkUrl: 'https://mentored.shikshalokam.org',
-
-	privacyPolicyUrl: 'https://shikshalokam.org/mentoring/privacy-policy',
-
-	termsOfServiceUrl: 'https://shikshalokam.org/mentoring/term-of-use',
-}
-```
-
-4. Update Docker Compose Configuration
-
-Open the `docker-compose-mentoring.yml` file and update the path of the `environment.ts` file under the portal docker image (refer to Line 160). Change `/home/priyanka/workspace/docker/environment.ts` to your exact path to the `environment.ts` file.
+    > Note: Use pwd command to obtain the exact path (Linux).
 
 ### To update all services with the latest image, follow these steps **(Optional)**:
 
