@@ -189,8 +189,6 @@ To set up the Elevate MentorEd application, ensure you have Docker and Docker Co
 
     </details>
 
-    For Elevate Notification Repository, **[Click Here](https://github.com/ELEVATE-Project/notification)**.
-
 3. Save the changes to the file and exit the text editor.
 
     Directory Structure:
