@@ -200,7 +200,7 @@ To set up the Elevate MentorEd application, ensure you have Docker and Docker Co
       ├── mentoring
       │   ├── distributionColumns.psql
       │   └── setup.sh
-      ├── mentoring_env <===
+      ├── mentoring_env ◀️▶
       └── user
           ├── distributionColumns.sql
           └── setup.sh
@@ -363,17 +363,17 @@ Following the exact same instructions from the previous section, create the foll
     ./elevate/
     └── backend
         ├── docker-compose-mentoring.yml
-        ├── interface_env <===
+        ├── interface_env ◀️▶
         ├── mentoring
         │   ├── distributionColumns.psql
         │   └── setup.sh
-        ├── mentoring_env <===
-        ├── notification_env <===
-        ├── scheduler_env <===
+        ├── mentoring_env ◀️▶
+        ├── notification_env ◀️▶
+        ├── scheduler_env ◀️▶
         ├── user
         │   ├── distributionColumns.sql
         │   └── setup.sh
-        └── user_env <===
+        └── user_env ◀️▶
     ```
 
 ### Create an environment file for the mobile-portal-app service by following these steps:
@@ -400,71 +400,108 @@ Following the exact same instructions from the previous section, create the foll
 
     > Note: Use pwd command to obtain the exact path (Linux).
 
+    Directory Structure:
+
+    ```
+    ./elevate/
+    └── backend
+        ├── docker-compose-mentoring.yml
+        ├── environment.ts ◀️▶
+        ├── interface_env
+        ├── mentoring
+        │   ├── distributionColumns.psql
+        │   └── setup.sh
+        ├── mentoring_env
+        ├── notification_env
+        ├── scheduler_env
+        ├── user
+        │   ├── distributionColumns.sql
+        │   └── setup.sh
+        └── user_env
+    ```
+
 ### To update all services with the latest image, follow these steps **(Optional)**:
 
-Check the latest image in the Shikshalokam [Docker hub](https://hub.docker.com/r/shikshalokamqa/elevate-user/tags) repository. Note that the master branch typically has the latest published image.
+Please refer to the Shikshalokam [Docker Hub repository](https://hub.docker.com/r/shikshalokamqa/elevate-user/tags) for the latest available images. Note that the master branch typically hosts the most recent published image.
 
-## Run Docker Compose for Backend Services
-
-1. Navigate to the elevate/backend directory:
-
-```
-
-cd elevate/backend
-
-```
-
-2. Determine the exact location where the environment variables are stored by running the following command:
-
-```
-
-pwd
-
-```
-
-3. Modify the file path before executing the command
+## Run/Stop/Remove Docker Compose Containers
 
 -   **Ubuntu/Linux/Mac:**
 
-Replace `<exact_path_to_environment_files>` with the actual path you obtained.
+    1. Navigate to backend directory and download `docker-compose-up.sh` and `docker-compose-down.sh` files.
+       **docker-compose-up.sh**
 
-```typescript
+        ```
+        elevate/backend$ curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/docker-compose-up.sh
+        ```
 
-notification_env="<exact_path_to_environment_files>/notification_env" \
+        **docker-compose-down.sh**
 
-scheduler_env="<exact_path_to_environment_files>/scheduler_env" \
+        ```
+        elevate/backend$ curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/docker-compose-down.sh
+        ```
 
-mentoring_env="<exact_path_to_environment_files>/mentoring_env" \
+    2. Make the files executable by running the following commands.
 
-users_env="<exact_path_to_environment_files>/user_env" \
+        **docker-compose-up.sh**
 
-interface_env="<exact_path_to_environment_files>/interface_env" \
+        ```
+        elevate/backend$ chmod +x docker-compose-up.sh
+        ```
 
-docker-compose -f  docker-compose-mentoring.yml  up
+        **docker-compose-down.sh**
 
-```
+        ```
+        elevate/backend$ chmod +x docker-compose-down.sh
+        ```
+
+    3. Follow the steps given below to execute associated Docker-Compose operations.
+
+        - **To run all services and dependencies**:
+            ```
+            elevate/backend$ ./docker-compose-up.sh
+            ```
+        - **To gracefully stop all the service and dependency containers**:
+
+            Press `Ctrl + c`
+
+        - **To stop and remove all the running service and dependency containers**:
+            ```
+            elevate/backend$ ./docker-compose-down.sh
+            ```
 
 -   **Windows:**
 
-Use the exact location where the environment variables are stored before executing the command
+    1.  Navigate to backend directory and download `docker-compose-up.bat` and `docker-compose-down.bat` files.
 
-```typescript
+        **docker-compose-up.bat**
 
-$env:users_env = ".\user_env.txt";
+        ```
+        elevate\backend>curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/docker-compose-up.bat
+        ```
 
-$env:interface_env = ".\interface_env.txt";
+        **docker-compose-down.bat**
 
-$env:scheduler_env ="./scheduler_env.txt";
+        ```
+        elevate\backend>curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/docker-compose-down.bat
+        ```
 
-$env:notification_env ="./notification_env.txt";
+    2.  Follow the steps given below to execute associated Docker-Compose operations.
 
-$env:mentoring_env ="./mentoring_env.txt" ;
+            -   **To run all services and dependencies, run**:
+                `
 
-docker-compose -f  docker-compose-mentoring.yml  up
+        elevate\backend>docker-compose-up.bat
+        ` - **To gracefully stop all the service and dependency containers**:
 
-```
+                Press `Ctrl + c`
 
-During the Docker run, the database, migration seeder files, and the script to establish the default organization will also execute automatically.
+            -   **To stop and remove all the running service and dependency containers, run**:
+                ```
+                elevate\backend>docker-compose-down.bat
+                ```
+
+    > **Note:** During the Docker run, the database, migration seeder files, and the script to establish the default organization will also be executed automatically.
 
 ### Enable Citus Extension
 
