@@ -36,8 +36,8 @@ services:
       - '6379:6379'
     networks:
       - elevate_net
-    volumes:
-      - redis-data:/data
+    #volumes:
+    #  - redis-data:/data
     logging:
       driver: none
   mentoring:
@@ -139,8 +139,8 @@ services:
       POSTGRES_LOG_STATEMENT: 'all' # Enable query logging (set to 'all' for all queries)
     networks:
       - elevate_net
-    volumes:
-      - citus-data:/var/lib/postgresql/data
+    #volumes:
+    #  - citus-data:/var/lib/postgresql/data
   pgadmin:
     image: dpage/pgadmin4
     container_name: elevate-pgadmin
@@ -170,7 +170,6 @@ services:
 networks:
   elevate_net:
     external: false
-
-volumes:
-  redis-data:
-  citus-data:
+#volumes:
+#  redis-data:
+#  citus-data:
