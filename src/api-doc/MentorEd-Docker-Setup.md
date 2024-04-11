@@ -501,7 +501,7 @@ Please refer to the Shikshalokam [Docker Hub repository](https://hub.docker.com/
                 elevate\backend>docker-compose-down.bat
                 ```
 
-    > **Note:** During the Docker run, the database, migration seeder files, and the script to establish the default organization will also be executed automatically.
+    > **Note:** During the first Docker Compose run, the database, migration seeder files, and the script to establish the default organization will also be executed automatically.
 
 ### Enable Citus Extension
 
