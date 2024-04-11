@@ -88,216 +88,147 @@ To set up the Elevate MentorEd application, ensure you have Docker and Docker Co
         /user$ curl -o setup.sh -L https://github.com/ELEVATE-Project/user/raw/temp_setup/src/setup.sh
         ```
     -   **[distributionColumns.sql](https://github.com/ELEVATE-Project/user/blob/temp_setup/src/distributionColumns.sql)**
-        `/user$ curl -o distributionColumns.sql -L https://github.com/ELEVATE-Project/user/raw/temp_setup/src/distributionColumns.sql`
+        `
+	/user$ curl -o distributionColumns.sql -L https://github.com/ELEVATE-Project/user/raw/temp_setup/src/distributionColumns.sql
+	`
+        > **Note:** The setup.sh file needs to be set as executable.
 
-    > [!IMPORTANT]
-    > The setup.sh file needs to be set as executable.
+    Directory Structure:
 
-7.  **Download the required files for the user**
-
-Obtain the setup file and distribution column SQL file for the user service and place them in the user folder. - Setup file of user service - distributionColumn.sql file of user service
-
-9.  **Change File Permissions:** Make the setup file executable.
-
--   Ubuntu/Linux/Mac:
-
-```
-
-cd /elevate/backend/user
-
-chmod +x setup.sh
-
-```
-
--   Windows
-
-```
-
-cd /elevate/backend/user
-
-attrib +x setup.sh
-
-```
+    ```
+    ./elevate/
+    └── backend
+        ├── docker-compose-mentoring.yml
+        ├── mentoring
+        │   ├── distributionColumns.psql
+        │   └── setup.sh
+        └── user
+            ├── distributionColumns.sql
+            └── setup.sh
+    ```
 
 ## Environment File Creation
 
 ### Create an environment file for the Mentoring service by following these steps:
 
-1. Navigate to the elevate/backend directory:
-
-```
-
-cd elevate/backend
-
-```
-
-2. Create a new file named mentoring_env using a text editor like nano/notepad:
+1. Navigate to the **backend** directory and create a new file named **mentoring_env** using any text editor like nano/notepad:
 
 -   Ubuntu/Linux/Mac:
-
-```
-
-$ nano mentoring_env
-
-```
-
+    ```
+    $ nano mentoring_env
+    ```
 -   Windows
 
-```
+    ```
+    $ notepad mentoring_env
+    ```
+
+2. Copy and paste the following environment variables into the **mentoring_env** file:
+
+3. Save the changes to the file and exit the text editor.
+
+    Directory Structure:
+
+    ```
+    ./elevate/
+    └── backend
+      ├── docker-compose-mentoring.yml
+      ├── mentoring
+      │   ├── distributionColumns.psql
+      │   └── setup.sh
+      ├── mentoring_env <===
+      └── user
+          ├── distributionColumns.sql
+          └── setup.sh
+    ```
+
+    For Elevate Mentoring Repository, **[Click Here](https://github.com/ELEVATE-Project/mentoring)**.
+
+### Create environment files for other backend services:
+
+Following the exact same instructions from the previous section, create the following env files with the contents given below:
+
+-   File name: **user_env**
+    <details>
+      <summary>user_env content</summary>
+
+    ```
+    ACCESS_TOKEN_EXPIRY=1
+    ACCESS_TOKEN_SECRET=asadsd8as7df9as8df987asdf
+    API_DOC_URL=/user/api-doc
+    APP_NAME=MentorED
+    APPLICATION_ENV=development
+    APPLICATION_PORT=3001
+    APPLICATION_HOST=user
+    AWS_ACCESS_KEY_ID="adsfg98a7sdfg"
+    AWS_BUCKET_ENDPOINT="s3.ap-south-1.amazonaws.com"
+    AWS_BUCKET_REGION="ap-south-1"
+    AWS_SECRET_ACCESS_KEY="asd9786fg9a8sd/asdfg9a8sd7fg"
+    AZURE_ACCOUNT_KEY=asd897gfa09sd87f09as8d
+    AZURE_ACCOUNT_NAME=mentoring
+    CLEAR_INTERNAL_CACHE=userinternal
+    CLOUD_STORAGE=AWS
+    DEFAULT_AWS_BUCKET_NAME=mentoring-dev-storage
+    DEFAULT_AZURE_CONTAINER_NAME=mentoring-images
+    DEFAULT_GCP_BUCKET_NAME=mentoring-dev-storage
+    ENABLE_EMAIL_OTP_VERIFICATION=false
+    ENABLE_LOG=true
+    GCP_PATH=gcp.json
+    GCP_PROJECT_ID=sl-dev-project
+    INTERNAL_ACCESS_TOKEN=internal_access_token
+    INTERNAL_CACHE_EXP_TIME=86400
+    IV=09sdf8g098sdf/Q==
+    KAFKA_GROUP_ID=mentoring
+    KAFKA_TOPIC=
+    KAFKA_URL=kafka:9092
+    KEY=fasd98fg9a8sydg98a7usd89fg
+    NOTIFICATION_KAFKA_TOPIC=dev.notifications
+    OTP_EMAIL_TEMPLATE_CODE=emailotp
+    OTP_EXP_TIME=86400
+    REDIS_HOST=redis://redis:6379
+    REFRESH_TOKEN_EXPIRY=183
+    REFRESH_TOKEN_SECRET=as9d87fa9s87df98as7d9f87a9sd87f98as7dg987asf
+    REGISTRATION_EMAIL_TEMPLATE_CODE=registration
+    REGISTRATION_OTP_EMAIL_TEMPLATE_CODE=registrationotp
+    DEFAULT_OCI_BUCKET_NAME=dev-mentoring
+    OCI_ACCESS_KEY_ID=asdgf6a0s98d76g9a8sasdasd7df987as98df
+    OCI_BUCKET_ENDPOINT=https://as98d7asdasdf.compat.objectstorage.ap-hyderabad-1.oraclecloud.com
+    OCI_BUCKET_REGION=ap-hyderabad-1
+    OCI_SECRET_ACCESS_KEY=as09d7f8/as0d7f09as7d8f=
+    ERROR_LOG_LEVEL=silly
+    DISABLE_LOG=false
+    DEFAULT_ORGANISATION_CODE=default_code
+    DEV_DATABASE_URL=postgres://postgres:postgres@localhost:5432/elevate-user
+    ADMIN_SECRET_CODE=a98sd76fasdfasd
+    MENTORING_SERVICE_URL=test
+    DEFAULT_QUEUE="test"
+    INVITEE_EMAIL_TEMPLATE_CODE='test'
+    ADMIN_INVITEE_UPLOAD_EMAIL_TEMPLATE_CODE='test'
+    MENTOR_INVITATION_EMAIL_TEMPLATE_CODE="test"
+    MENTEE_INVITATION_EMAIL_TEMPLATE_CODE="test"
+    DEFAULT_ROLE="mentee"
+    SAMPLE_CSV_FILE_PATH=sample/bulk_user_creation.csv
+    ORG_ADMIN_INVITATION_EMAIL_TEMPLATE_CODE=invite_org_admin
+    DEFAULT_ORG_ID=1
+    MENTORING_SERVICE_URL=http://mentoring:3000
+    MENTOR_REQUEST_ACCEPTED_EMAIL_TEMPLATE_CODE=mentor_request_accepted
+    MENTOR_REQUEST_REJECTED_EMAIL_TEMPLATE_CODE=mentor_request_rejected
+    DEFAULT_ROLE=mentee
+    PORTAL_URL='https://mentored.some.org/auth/login'
+    SCHEDULER_SERVICE_ERROR_REPORTING_EMAIL_ID="rakesh.k@some.com"
+    SCHEDULER_SERVICE_URL="http://scheduler:4000/jobs/scheduleJob"
+    SCHEDULER_SERVICE_HOST="http://scheduler:4000"
+    SCHEDULER_SERVICE_BASE_URL= '/scheduler/'
+    REFRESH_VIEW_INTERVAL=540000
+    ```
 
-$ notepad mentoring_env
+    </details>
 
-```
+    For Elevate User Repository, **[Click Here](https://github.com/ELEVATE-Project/user)**.
 
-3. Copy and paste the following environment variables into the mentoring_env file:
-
-4. Save the changes to the file and exit the text editor.
-
-We've included a link to the mentoring repository, allowing you to explore the code at your convenience.
-
-### Create an environment file for the User service by following these steps:
-
-1. Navigate to the elevate/backend directory:
-
-```
-
-cd elevate/backend
-
-```
-
-2. Create a new file named user_env using a text editor like nano/notepad:
-
--   Ubuntu/Linux/Mac:
-
-```
-
-$ nano user_env
-
-```
-
--   Windows
-
-```
-
-$ notepad user_env
-
-```
-
-3. Copy and paste the following environment variables into the user_env file:
-
-4. Save the changes to the file and exit the text editor.
-
-You've now created the user_env file with the necessary environment variables for the user service. You can utilize this file during the setup and configuration of the user service.
-
-Additionally, we've provided a link to the user service repository for your exploration.
-
-### Create an environment file for the Notification service by following these steps:
-
-1. Navigate to the elevate/backend directory:
-
-```
-
-cd elevate/backend
-
-```
-
-2. Create a new file named notification_env using a text editor like nano/notepad:
-
--   Ubuntu/Linux/Mac:
-
-```
-
-$ nano notification_env
-
-```
-
--   Windows
-
-```
-
-$ notepad notification_env
-
-```
-
-3. Copy and paste the following environment variables into the notification_env file:
-
-4. Save the changes to the file and exit the text editor.
-
-You've now created the notification_env file with the necessary environment variables for the notification service. You can utilize this file during the setup and configuration of the notification service.
-
-Additionally, we've provided a link to the notification service repository for your exploration.
-
-### Create an environment file for the Scheduler service by following these steps:
-
-1. Navigate to the elevate/backend directory:
-
-```
-
-cd elevate/backend
-
-```
-
-2. Create a new file named scheduler_env using a text editor like nano/notepad:
-
--   Ubuntu/Linux/Mac:
-
-```
-
-$ nano scheduler_env
-
-```
-
--   Windows
-
-```
-
-$ notepad scheduler_env
-
-```
-
-3. Copy and paste the following environment variables into the scheduler_env file:
-
-4. Save the changes to the file and exit the text editor.
-
-You've now created the scheduler_env file with the necessary environment variables for the Scheduler service. You can utilize this file during the setup and configuration of the Scheduler service.
-
-Additionally, we've provided a link to the scheduler service repository so that you can explore the code for yourself.
-
-### Create an environment file for the Interface service by following these steps:
-
-1. Navigate to the elevate/backend directory:
-
-```
-
-cd elevate/backend
-
-```
-
-2. Create a new file named interface_env using a text editor like nano/notepad:
-
--   Ubuntu/Linux/Mac:
-
-```
-
-$ nano interface_env
-
-```
-
--   Windows
-
-```
-
-$ notepad interface_env
-
-```
-
-3. Copy and paste the following environment variables into the interface_env file:
-
-4. Save the changes to the file and exit the text editor.
-
-You've now created the interface_env file with the necessary environment variables for the interface service. You can utilize this file during the setup and configuration of the Interface service.
-
-Additionally, we've provided a [link](https://github.com/ELEVATE-Project/interface-service) to the interface service repository so that you can explore the code for yourself.
+-   File name: **notification_env**
+-   File name: **scheduler_env**
+-   File name: **interface_env**
 
 ### Create an environment file for the Interface service by following these steps:
 
