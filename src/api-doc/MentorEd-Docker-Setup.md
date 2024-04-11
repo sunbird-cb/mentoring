@@ -88,7 +88,10 @@ To set up the Elevate MentorEd application, ensure you have Docker and Docker Co
         /user$ curl -o setup.sh -L https://github.com/ELEVATE-Project/user/raw/temp_setup/src/setup.sh
         ```
     -   **[distributionColumns.sql](https://github.com/ELEVATE-Project/user/blob/temp_setup/src/distributionColumns.sql)**
-        `/user$ curl -o distributionColumns.sql -L https://github.com/ELEVATE-Project/user/raw/temp_setup/src/distributionColumns.sql` > [!IMPORTANT] > The setup.sh file needs to be set as executable.
+        `/user$ curl -o distributionColumns.sql -L https://github.com/ELEVATE-Project/user/raw/temp_setup/src/distributionColumns.sql`
+
+    > [!IMPORTANT]
+    > The setup.sh file needs to be set as executable.
 
 7.  **Download the required files for the user**
 
