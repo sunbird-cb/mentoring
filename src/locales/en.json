@@ -157,5 +157,6 @@
 	"PERMISSIONS_NOT_FOUND": "permissions not found",
 	"SESSION_MENTOR_ADDED_TO_MENTEE_LIST": "You have added the Session Mentor in the Mentee list. Please go back and select another mentee.",
 	"INVALID_DATA_PASSED": "Invalid data passed for creation",
-	"PROFILE_UPDATE_FAILED": "Profile update failed. Please try again."
+	"PROFILE_UPDATE_FAILED": "Profile update failed. Please try again.",
+	"ORG_POLICIES_SET_SUCCESSFULLY": "Org policies set successfully"
 }

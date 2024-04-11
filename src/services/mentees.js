@@ -672,10 +672,13 @@ module.exports = class MenteesHelper {
 			// Remove certain data in case it is getting passed
 			const dataToRemove = [
 				'user_id',
-				'visibility',
+				'mentor_visibility',
 				'visible_to_organizations',
 				'external_session_visibility',
 				'external_mentor_visibility',
+				,
+				'external_mentee_visibility',
+				'mentee_visibility',
 			]
 
 			dataToRemove.forEach((key) => {
@@ -966,25 +969,25 @@ module.exports = class MenteesHelper {
 						}
 					} else {
 						// filter out the organizations
-						// CASE 1 : in case of mentee listing filterout organizations with external_session_visibility_policy = ALL
+						// CASE 1 : in case of mentee listing filterout organizations with external_mentee_visibility_policy = ALL
 						// CASE 2 : in case of mentor listing filterout organizations with mentor_visibility_policy = ALL
 						const filterQuery =
 							filterType == common.MENTEE_ROLE
 								? {
-										external_session_visibility_policy: common.ALL,
+										external_mentee_visibility_policy: common.ALL,
 								  }
 								: {
 										mentor_visibility_policy: common.ALL,
 								  }
 
 						// this filter is applied for the below condition
-						// SM session_visibility_policy (in case of mentee list) or external_mentor_visibility policy (in case of mentor list) = ALL
-						//  and CASE 1 (mentee list) : Mentees is related to the SM org but external_session_visibility is CURRENT (exclude these mentees)
+						// SM mentee_visibility_policy (in case of mentee list) or external_mentor_visibility policy (in case of mentor list) = ALL
+						//  and CASE 1 (mentee list) : Mentees is related to the SM org but external_mentee_visibility is CURRENT (exclude these mentees)
 						//  CASE 2 : (mentor list) : Mentors is related to SM Org but mentor_visibility set to CURRENT  (exclude these mentors)
 						const additionalFilter =
 							filterType == common.MENTEE_ROLE
 								? {
-										external_session_visibility_policy: {
+										external_mentee_visibility_policy: {
 											[Op.ne]: 'CURRENT',
 										},
 								  }
@@ -1221,7 +1224,8 @@ module.exports = class MenteesHelper {
 						const newItem = extensionDataMap.get(user_id)
 						value = { ...value, ...newItem }
 						delete value.user_id
-						delete value.visibility
+						delete value.mentor_visibility
+						delete value.mentee_visibility
 						delete value.organization_id
 						delete value.meta
 						delete value.rating
@@ -1317,7 +1321,7 @@ module.exports = class MenteesHelper {
 					 */
 					filter =
 						additionalFilter +
-						`AND ( (${userPolicyDetails.organization_id} = ANY("visible_to_organizations") AND "external_mentee_visibility_policy" != 'CURRENT')`
+						`AND ( (${userPolicyDetails.organization_id} = ANY("visible_to_organizations") AND "external_mentee_visibility" != 'CURRENT')`
 
 					if (additionalFilter.length === 0)
 						filter += ` OR organization_id = ${userPolicyDetails.organization_id} )`
@@ -1329,7 +1333,7 @@ module.exports = class MenteesHelper {
 					 */
 					filter =
 						additionalFilter +
-						`AND ((${userPolicyDetails.organization_id} = ANY("visible_to_organizations") AND "external_mentee_visibility_policy" != 'CURRENT' ) OR "external_mentee_visibility_policy" = 'ALL' OR "organization_id" = ${userPolicyDetails.organization_id})`
+						`AND ((${userPolicyDetails.organization_id} = ANY("visible_to_organizations") AND "external_mentee_visibility" != 'CURRENT' ) OR "external_mentee_visibility" = 'ALL' OR "organization_id" = ${userPolicyDetails.organization_id})`
 				}
 			}
 

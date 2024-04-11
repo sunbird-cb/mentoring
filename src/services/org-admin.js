@@ -210,13 +210,7 @@ module.exports = class OrgAdminService {
 					responseCode: 'UNAUTHORIZED',
 				})
 			}
-			if (!policies.hasOwnProperty('mentee_visibility_policy')) {
-				policies['mentee_visibility_policy'] = 'CURRENT'
-			}
 
-			if (!policies.hasOwnProperty('external_mentee_visibility_policy')) {
-				policies['external_mentee_visibility_policy'] = 'CURRENT'
-			}
 			const orgPolicies = await organisationExtensionQueries.upsert({
 				organization_id: decodedToken.organization_id,
 				...policies,
@@ -234,7 +228,9 @@ module.exports = class OrgAdminService {
 
 				if (
 					policyData?.external_mentor_visibility == common.ASSOCIATED ||
-					policyData?.mentor_visibility_policy == common.ASSOCIATED
+					policyData?.mentor_visibility_policy == common.ASSOCIATED ||
+					policyData?.external_mentee_visibility == common.ASSOCIATED ||
+					policyData?.mentee_visibility_policy == common.ASSOCIATED
 				) {
 					const organizationDetails = await userRequests.fetchDefaultOrgDetails(decodedToken.organization_id)
 					policyData.visible_to_organizations = organizationDetails.data.result.related_orgs
@@ -494,10 +490,12 @@ module.exports = class OrgAdminService {
 			external_mentor_visibility_policy,
 			organization_id,
 			external_mentee_visibility_policy,
+			mentee_visibility_policy,
 		} = organisationPolicy
 		// create policy object
 		let policyData = {
-			visibility: mentor_visibility_policy,
+			mentee_visibility: mentee_visibility_policy,
+			mentor_visibility: mentor_visibility_policy,
 			external_session_visibility: external_session_visibility_policy,
 			external_mentor_visibility: external_mentor_visibility_policy,
 			external_mentee_visibility: external_mentee_visibility_policy,
