@@ -162,11 +162,11 @@ To enable the Citus extension for mentoring and user services, follow these step
 
 1. Create a sub-directory named `mentoring` and download `distributionColumns.sql` into it.
     ```
-    mkdir -p mentoring && curl -o ./mentoring/distributionColumns.sql -L https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/distribution-columns/mentoring/distributionColumns.sql
+    mkdir mentoring && curl -o ./mentoring/distributionColumns.sql -L https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/distribution-columns/mentoring/distributionColumns.sql
     ```
 2. Create a sub-directory named `user` and download `distributionColumns.sql` into it.
     ```
-    mkdir -p user && curl -o ./user/distributionColumns.sql -JL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/distribution-columns/user/distributionColumns.sql
+    mkdir user && curl -o ./user/distributionColumns.sql -JL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/distribution-columns/user/distributionColumns.sql
     ```
 3. Set up the citus_setup file by following the steps given below.
 
