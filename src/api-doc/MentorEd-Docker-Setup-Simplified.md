@@ -41,15 +41,17 @@ To set up the Elevate MentorEd application, ensure you have Docker and Docker Co
         ```
     -   **Windows**
 
-        ```
-        curl -L ^
-         -O https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/envs/interface_env ^
-         -O https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/envs/mentoring_env ^
-         -O https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/envs/notification_env ^
-         -O https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/envs/scheduler_env ^
-         -O https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/envs/user_env ^
-         -O https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/envs/environment.ts
-        ```
+            ```
+            curl -L ^
+             -O https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/envs/interface_env ^
+             -O https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/envs/mentoring_env ^
+             -O https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/envs/notification_env ^
+             -O https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/envs/scheduler_env ^
+             -O https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/envs/user_env ^
+             -O https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/envs/environment.ts
+            ```
+
+    > **Note:** Modify the environment files as necessary for your deployment using any text editor, ensuring that the values are appropriate for your environment. The default values provided in the current files are functional and serve as a good starting point.
 
 4.  **Download `replace_volume_path` Script File**
 
@@ -155,8 +157,6 @@ To set up the Elevate MentorEd application, ensure you have Docker and Docker Co
         ```
 
         > **Caution**: As per the default configuration in the `docker-compose-mentoring.yml` file, using the `down` command will lead to data loss since the database container does not persist data. To persist data across `down` commands and subsequent container removals, refer to the "Persistence of Database Data in Docker Containers" section of this documentation.
-
-11. **Environment File Modification**: Modify the environment files as necessary for your deployment using any text editor, ensuring the values are appropriate for your environment.
 
 ## Enable Citus Extension
 
