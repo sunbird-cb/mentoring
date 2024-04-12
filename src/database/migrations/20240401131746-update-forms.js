@@ -314,30 +314,6 @@ module.exports = {
 								multiple: true,
 							},
 							{
-								name: 'session',
-								label: 'Session for',
-								class: 'ion-no-margin',
-								value: '',
-								type: 'chip',
-								position: '',
-								disabled: false,
-								errorMessage: {
-									required: 'Enter session for',
-								},
-								validators: {
-									required: true,
-								},
-								options: [],
-								meta: {
-									entityType: 'session',
-									addNewPopupHeader: 'Session for',
-									addNewPopupSubHeader: 'Who is this session for?',
-									showSelectAll: true,
-									showAddOption: true,
-								},
-								multiple: true,
-							},
-							{
 								name: 'medium',
 								label: 'Select medium',
 								alertLabel: 'medium',
@@ -1167,30 +1143,6 @@ module.exports = {
 								meta: {
 									entityType: 'categories',
 									addNewPopupHeader: 'Add a new category',
-									showSelectAll: true,
-									showAddOption: true,
-								},
-								multiple: true,
-							},
-							{
-								name: 'session',
-								label: 'Session for',
-								class: 'ion-no-margin',
-								value: '',
-								type: 'chip',
-								position: '',
-								disabled: false,
-								errorMessage: {
-									required: 'Enter session for',
-								},
-								validators: {
-									required: true,
-								},
-								options: [],
-								meta: {
-									entityType: 'session',
-									addNewPopupHeader: 'Session for',
-									addNewPopupSubHeader: 'Who is this session for?',
 									showSelectAll: true,
 									showAddOption: true,
 								},
