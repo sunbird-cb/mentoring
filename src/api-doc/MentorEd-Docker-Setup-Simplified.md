@@ -70,7 +70,7 @@ To set up the Elevate MentorEd application, ensure you have Docker and Docker Co
     -   **Ubuntu/Linux/Mac**
         1. Make the `replace_volume_path.sh` file an executable.
             ```
-            chmod +x citus_setup.sh
+            chmod +x replace_volume_path.sh
             ```
         2. Run the script file using the following command.
             ```
