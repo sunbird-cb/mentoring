@@ -10,7 +10,7 @@ To set up the Elevate MentorEd application, ensure you have Docker and Docker Co
 
 1.  **Create Elevate Directory:** Create a directory named **elevate**.
 
-    > Example Command: `mkdir elevate &&	cd elevate/`
+    > Example Command: `mkdir elevate && cd elevate/`
 
 2.  **Download Docker Compose File:** Retrieve the **[docker-compose-mentoring.yml](https://github.com/ELEVATE-Project/mentoring/blob/doc-fix-2.5/src/scripts/setup/docker-compose-mentoring.yml)** file from the Elevate Mentoring repository and save it to the elevate directory.
 
@@ -66,6 +66,7 @@ To set up the Elevate MentorEd application, ensure you have Docker and Docker Co
         ```
 
 5.  **Run `replace_volume_path` Script File**
+
     -   **Ubuntu/Linux/Mac**
         1. Make the `replace_volume_path.sh` file an executable.
             ```
@@ -76,8 +77,19 @@ To set up the Elevate MentorEd application, ensure you have Docker and Docker Co
             ./replace_volume_path.sh
             ```
     -   **Windows**
+
         Run the script file either by double clicking it or by executing the following command from the terminal.
-        `   replace_volume_path.bat` > **Note**: The provided script file replaces the host path for the **portal** service container volume in the `docker-compose-mentoring.yml` file with your current directory path. > > volumes: > > - /home/joffin/elevate/backend/environment.ts:/app/src/environments/environment.ts
+
+        ```
+        replace_volume_path.bat
+        ```
+
+        > **Note**: The provided script file replaces the host path for the **portal** service container volume in the `docker-compose-mentoring.yml` file with your current directory path.
+        >
+        > volumes:
+        >
+        > \- /home/joffin/elevate/backend/environment.ts:/app/src/environments/environment.ts
+
 6.  **Download `docker-compose-up` & `docker-compose-down` Script Files**
 
     -   **Ubuntu/Linux/Mac**
