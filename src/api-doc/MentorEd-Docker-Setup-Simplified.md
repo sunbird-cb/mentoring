@@ -140,7 +140,7 @@ To set up the Elevate MentorEd application, ensure you have Docker and Docker Co
 
         > **Note**: During the first Docker Compose run, the database, migration seeder files, and the script to set the default organization will be executed automatically.
 
-8.  **Access the Elevate MentorEd PWA App**: Once the services are up and the front-end app bundle is built successfully, navigate to **[localhost:8100](http://localhost:8100/)** to access the MentorEd app.
+8.  **Access The Elevate MentorEd PWA App**: Once the services are up and the front-end app bundle is built successfully, navigate to **[localhost:8100](http://localhost:8100/)** to access the MentorEd app.
 9.  **Gracefully Stop All Services & Dependencies:** All containers which are part of the docker-compose can be gracefully stopped by pressing `Ctrl + c` in the same terminal where the services are running.
 10. **Remove All Service & Dependency Containers**: All docker containers can be stopped and removed by using the `docker-compose-down` file.
 
@@ -155,6 +155,8 @@ To set up the Elevate MentorEd application, ensure you have Docker and Docker Co
         ```
 
         > **Caution**: As per the default configuration in the `docker-compose-mentoring.yml` file, using the `down` command will lead to data loss since the database container does not persist data. To persist data across `down` commands and subsequent container removals, refer to the "Persistence of Database Data in Docker Containers" section of this documentation.
+
+11. **Environment File Modification**: Modify the environment files as necessary for your deployment using any text editor, ensuring the values are appropriate for your environment.
 
 ## Enable Citus Extension
 
