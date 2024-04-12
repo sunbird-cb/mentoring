@@ -60,6 +60,10 @@ module.exports = (sequelize, DataTypes) => {
 				type: DataTypes.STRING,
 				defaultValue: 'CURRENT',
 			},
+			mentor_visibility: {
+				type: DataTypes.STRING,
+				defaultValue: 'CURRENT',
+			},
 		},
 		{
 			sequelize,
