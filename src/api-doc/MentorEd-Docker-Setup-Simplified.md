@@ -1,6 +1,6 @@
 ## A. Dockerized Services & Dependencies
 
-Expectation: By following the steps provided here, you will have a complete MentorEd application setup, including both the portal and the backend service, up and running.
+Expectation: Upon following the prescribed steps, you will achieve a fully operational MentorEd application setup, complete with both the portal and backend services.
 
 ## Prerequisites
 
