@@ -9,7 +9,7 @@ services:
       - ZOOKEEPER_CLIENT_PORT=2181
       - ZOOKEEPER_TICK_TIME=2000
     networks:
-      - elevate_net
+      - mentored_net
     logging:
       driver: none
   kafka:
@@ -26,7 +26,7 @@ services:
     depends_on:
       - zookeeper
     networks:
-      - elevate_net
+      - mentored_net
     logging:
       driver: none
   redis:
@@ -35,7 +35,7 @@ services:
     ports:
       - '6379:6379'
     networks:
-      - elevate_net
+      - mentored_net
     logging:
       driver: none
   mentoring:
@@ -56,7 +56,7 @@ services:
       - redis
       - citus
     networks:
-      - elevate_net
+      - mentored_net
     env_file:
       - ${mentoring_env}
 
@@ -76,7 +76,7 @@ services:
       - citus
       - redis
     networks:
-      - elevate_net
+      - mentored_net
     env_file:
       - ${users_env}
 
@@ -94,7 +94,7 @@ services:
       - kafka
       - citus
     networks:
-      - elevate_net
+      - mentored_net
     env_file:
       - ${notification_env}
   scheduler:
@@ -109,7 +109,7 @@ services:
       - kafka
       - redis
     networks:
-      - elevate_net
+      - mentored_net
     env_file:
       - ${scheduler_env}
   interface:
@@ -119,7 +119,7 @@ services:
       - '3569:3569'
     command: ['node', 'app.js']
     networks:
-      - elevate_net
+      - mentored_net
     env_file:
       - ${interface_env}
   citus:
@@ -136,7 +136,7 @@ services:
       POSTGRES_HOST_AUTH_METHOD: '${POSTGRES_HOST_AUTH_METHOD:-trust}'
       POSTGRES_LOG_STATEMENT: 'all' # Enable query logging (set to 'all' for all queries)
     networks:
-      - elevate_net
+      - mentored_net
     #volumes:
     #  - citus-data:/var/lib/postgresql/data
   pgadmin:
@@ -149,7 +149,7 @@ services:
       - PGADMIN_DEFAULT_EMAIL=user@shikshalokam.org
       - PGADMIN_DEFAULT_PASSWORD=password
     networks:
-      - elevate_net
+      - mentored_net
     logging:
       driver: none
   portal:
@@ -163,10 +163,10 @@ services:
     command: >
       /bin/bash -c "ionic build --prod && ionic serve --host 0.0.0.0"
     networks:
-      - elevate_net
+      - mentored_net
 
 networks:
-  elevate_net:
+  mentored_net:
     external: false
 #volumes:
 #  citus-data:
