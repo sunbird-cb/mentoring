@@ -364,8 +364,6 @@ module.exports = class MentorsHelper {
 				...data,
 				...saasPolicyData,
 				visible_to_organizations: userOrgDetails.data.result.related_orgs,
-				visibility: organisationPolicy.mentee_visibility_policy,
-				external_mentee_visibility: organisationPolicy.external_mentee_visibility_policy,
 			}
 
 			const response = await mentorQueries.createMentorExtension(data)
@@ -402,10 +400,12 @@ module.exports = class MentorsHelper {
 			// Remove certain data in case it is getting passed
 			const dataToRemove = [
 				'user_id',
-				'visibility',
+				'mentor_visibility',
+				'mentee_visibility',
 				'visible_to_organizations',
 				'external_session_visibility',
 				'external_mentor_visibility',
+				'external_mentee_visibility',
 			]
 
 			dataToRemove.forEach((key) => {
@@ -546,7 +546,8 @@ module.exports = class MentorsHelper {
 			if (userId !== '' && isAMentor !== '') {
 				// Get mentor visibility and org id
 				let requstedMentorExtension = await mentorQueries.getMentorExtension(id, [
-					'visibility',
+					'mentor_visibility',
+					'mentee_visibility',
 					'organization_id',
 					'visible_to_organizations',
 				])
