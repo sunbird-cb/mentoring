@@ -168,5 +168,5 @@ services:
 networks:
   elevate_net:
     external: false
-volumes:
-  citus-data:
+#volumes:
+#  citus-data:
