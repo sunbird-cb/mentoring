@@ -11,6 +11,8 @@ module.exports = class OrgAdmin {
 	 * @param {String} req.body.mentor_visibility_policy - Mentor visibility policy.
 	 * @param {String} req.body.external_session_visibility_policy - External session visibility policy.
 	 * @param {String} req.body.external_mentor_visibility_policy - External mentor visibility policy.
+	 * @param {String} req.body.external_mentee_visibility_policy - External mentee visibility policy.
+	 * @param {String} req.body.mentee_visibility_policy - mentee visibility policy.
 	 * @param {Array} req.body.is_approval_required - List of approvals required (Irrelevant for now).
 	 * @param {Boolean} req.body.allow_mentor_override - Allow mentor override flag.
 	 * @returns {JSON} - Success Response.
