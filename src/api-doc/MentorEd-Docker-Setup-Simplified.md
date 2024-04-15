@@ -1,29 +1,29 @@
 ## A. Dockerized Services & Dependencies
 
-**Expectation**: Run all services and dependencies simultaneously with a common **Docker-Compose** file.
+Expectation: Upon following the prescribed steps, you will achieve a fully operational MentorEd application setup, complete with both the portal and backend services.
 
 ## Prerequisites
 
-To set up the Elevate MentorEd application, ensure you have Docker and Docker Compose installed on your system. For Ubuntu users, detailed installation instructions for both can be found in the documentation here: [How To Install and Use Docker Compose on Ubuntu](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-compose-on-ubuntu-20-04). For Windows users, you can refer to the Docker documentation for installation instructions: [Docker Compose Installation Guide for Windows](https://docs.docker.com/compose/install/). Once these prerequisites are in place, you're all set to get started with setting up the Elevate MentorEd application.
+To set up the MentorEd application, ensure you have Docker and Docker Compose installed on your system. For Ubuntu users, detailed installation instructions for both can be found in the documentation here: [How To Install and Use Docker Compose on Ubuntu](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-compose-on-ubuntu-20-04). For Windows users, you can refer to the Docker documentation for installation instructions: [Docker Compose Installation Guide for Windows](https://docs.docker.com/compose/install/). Once these prerequisites are in place, you're all set to get started with setting up the MentorEd application.
 
 ## Installation
 
-1.  **Create Elevate Directory:** Create a directory named **elevate**.
+1.  **Create mentoring Directory:** Create a directory named **mentoring**.
 
-    > Example Command: `mkdir elevate && cd elevate/`
+    > Example Command: `mkdir mentoring && cd mentoring/`
 
-2.  **Download Docker Compose File:** Retrieve the **[docker-compose-mentoring.yml](https://github.com/ELEVATE-Project/mentoring/blob/doc-fix-2.5/src/scripts/setup/docker-compose-mentoring.yml)** file from the Elevate Mentoring repository and save it to the elevate directory.
+2.  **Download Docker Compose File:** Retrieve the **[docker-compose-mentoring.yml](https://github.com/ELEVATE-Project/mentoring/blob/doc-fix-2.5/src/scripts/setup/docker-compose-mentoring.yml)** file from the Mentoring repository and save it to the mentoring directory.
 
     ```
     curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/docker-compose-mentoring.yml
     ```
 
-    > Note: All commands are run from the elevate directory.
+    > Note: All commands are run from the mentoring directory.
 
     Directory structure:
 
     ```
-    ./elevate
+    ./mentoring
     └── docker-compose-mentoring.yml
     ```
 
@@ -142,7 +142,7 @@ To set up the Elevate MentorEd application, ensure you have Docker and Docker Co
 
         > **Note**: During the first Docker Compose run, the database, migration seeder files, and the script to set the default organization will be executed automatically.
 
-8.  **Access The Elevate MentorEd PWA App**: Once the services are up and the front-end app bundle is built successfully, navigate to **[localhost:8100](http://localhost:8100/)** to access the MentorEd app.
+8.  **Access The MentorEd Application**: Once the services are up and the front-end app bundle is built successfully, navigate to **[localhost:8100](http://localhost:8100/)** to access the MentorEd app.
 9.  **Gracefully Stop All Services & Dependencies:** All containers which are part of the docker-compose can be gracefully stopped by pressing `Ctrl + c` in the same terminal where the services are running.
 10. **Remove All Service & Dependency Containers**: All docker containers can be stopped and removed by using the `docker-compose-down` file.
 
@@ -186,13 +186,13 @@ To enable the Citus extension for mentoring and user services, follow these step
             chmod +x citus_setup.sh
             ```
 
-        3. Enable Citus and set distribution columns for `elevate-mentoring` database by running the `citus_setup.sh`with the following arguments.
+        3. Enable Citus and set distribution columns for `mentoring` database by running the `citus_setup.sh`with the following arguments.
             ```
-            ./citus_setup.sh mentoring postgres://postgres:postgres@citus_master:5432/elevate-mentoring
+            ./citus_setup.sh mentoring postgres://postgres:postgres@citus_master:5432/mentoring
             ```
-        4. Enable Citus and set distribution columns for `elevate-user` database by running the `citus_setup.sh`with the following arguments.
+        4. Enable Citus and set distribution columns for `user` database by running the `citus_setup.sh`with the following arguments.
             ```
-            ./citus_setup.sh user postgres://postgres:postgres@citus_master:5432/elevate-user
+            ./citus_setup.sh user postgres://postgres:postgres@citus_master:5432/user
             ```
 
     - **Windows**
@@ -200,13 +200,13 @@ To enable the Citus extension for mentoring and user services, follow these step
             ```
              curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/citus_setup.bat
             ```
-        2. Enable Citus and set distribution columns for `elevate-mentoring` database by running the `citus_setup.bat`with the following arguments.
+        2. Enable Citus and set distribution columns for `mentoring` database by running the `citus_setup.bat`with the following arguments.
             ```
-            citus_setup.bat mentoring postgres://postgres:postgres@citus_master:5432/elevate-mentoring
+            citus_setup.bat mentoring postgres://postgres:postgres@citus_master:5432/mentoring
             ```
-        3. Enable Citus and set distribution columns for `elevate-user` database by running the `citus_setup.bat`with the following arguments.
+        3. Enable Citus and set distribution columns for `user` database by running the `citus_setup.bat`with the following arguments.
             ```
-            citus_setup.bat user postgres://postgres:postgres@citus_master:5432/elevate-user
+            citus_setup.bat user postgres://postgres:postgres@citus_master:5432/user
             ```
             > **Note:** Since the `citus_setup.bat` file requires arguments, it must be run from a terminal.
 
