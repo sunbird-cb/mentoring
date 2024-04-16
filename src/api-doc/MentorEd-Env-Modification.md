@@ -32,7 +32,8 @@ This document acts as a reference for such functionalities/features and their re
     1. [Twilio SendGrid](https://sendgrid.com/en-us)
 
 2. **File Upload**
-   MentorEd utilises file upload functionality to implement several features like profile and session image upload, bulk user creation and bulk session creation. Therefore it is expected that you have a bucket configured with a cloud provider of your choosing (AWS, GCP, AZURE or OCI). And relevant environment fields are set in the following services.
+
+    MentorEd utilises file upload functionality to implement several features like profile and session image upload, bulk user creation and bulk session creation. Therefore it is expected that you have a bucket configured with a cloud provider of your choosing (AWS, GCP, AZURE or OCI). And relevant environment fields are set in the following services.
 
     ### Mentoring & User Services
 
