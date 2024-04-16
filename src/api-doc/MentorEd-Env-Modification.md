@@ -77,3 +77,22 @@ This document acts as a reference for such functionalities/features and their re
     2. [Create GCP Bucket](https://cloud.google.com/storage/docs/creating-buckets)
     3. [Create Azure Blob Storage](https://learn.microsoft.com/en-us/azure/storage/blobs/storage-quickstart-blobs-portal)
     4. [Create OCI Object Storage Bucket](https://docs.oracle.com/en-us/iaas/Content/Object/Tasks/managingbuckets_topic-To_create_a_bucket.htm)
+
+3. **Support Emails**
+
+    MentorEd provides a mechanism for users to generate request emails that are sent to a support team overseeing user requests. For example, if a user wants to delete their account or report an issue, they can trigger an email with their request message from the portal. For this feature to function, support email IDs must be set in the mentoring service as shown below.
+
+    ### Mentoring Service
+
+    **Docker Setup:** `mentoring_env`
+
+    **Manual Setup:** `mentoring/src/.env`
+
+    **Variables:**
+
+    ```
+    SUPPORT_EMAIL_ID
+    ENABLE_EMAIL_FOR_REPORT_ISSUE			-> Already enabled in default/sample env files
+    ```
+
+    > **IMPORTANT:** As a prerequisite, the notification service must be configured with the proper SendGrid environment variables, as shown in the User SignUp section.
