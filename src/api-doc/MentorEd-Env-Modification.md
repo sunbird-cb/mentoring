@@ -88,7 +88,7 @@ This document acts as a reference for such functionalities/features and their re
             style="max-width: 100%; height: auto; width: auto; max-height: 500px;">
     </div>
 
-    For this feature to function, support email IDs must be set in the mentoring service as shown below.
+    For this feature to function, support email IDs and other values must be set in the mentoring service as listed below.
 
     ### Mentoring Service
 
