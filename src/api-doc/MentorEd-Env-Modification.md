@@ -85,7 +85,7 @@ This document acts as a reference for such functionalities/features and their re
     <div style="text-align: left; width: 100%;">
         <h4 style="text-align: left;">MentorEd Report Issue Help Page</h4>
         <img src="../../public/images/help_report_issue.png" alt="MentorEd Report Issue Help Page" 
-            style="max-width: 100%; height: auto; width: auto; max-height: 500px;">
+            style="max-width: 100%; height: auto; width: auto; max-height: 300px;">
     </div>
 
     For this feature to function, support email IDs and other values must be set in the mentoring service as listed below.
