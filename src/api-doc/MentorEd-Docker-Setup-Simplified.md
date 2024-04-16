@@ -53,10 +53,9 @@ To set up the MentorEd application, ensure you have Docker and Docker Compose in
 
     > **Note:** Modify the environment files as necessary for your deployment using any text editor, ensuring that the values are appropriate for your environment. The default values provided in the current files are functional and serve as a good starting point. Refer to the sample env files provided at the [Mentoring](https://github.com/ELEVATE-Project/mentoring/blob/master/src/.env.sample), [User](https://github.com/ELEVATE-Project/user/blob/master/src/.env.sample), [Notification](https://github.com/ELEVATE-Project/notification/blob/master/src/.env.sample), [Scheduler](https://github.com/ELEVATE-Project/scheduler/blob/master/src/.env.sample), and [Interface](https://github.com/ELEVATE-Project/interface-service/blob/main/src/.env.sample) repositories for reference.
 
-    > **Caution:** Although the default values in the downloaded env files enable the MentorEd Application to function, certain features may be impaired or may not work as expected without the correct settings for specific environment variables. For example:
+    > **Caution:** While the default values in the downloaded environment files enable the MentorEd Application to operate, certain features may not function correctly or could be impaired unless the adopter-specific environment variables are properly configured.
     >
-    > 1. User SignUp: Since an email OTP is used to verify the email ID provided during the signup process, notification service environment variables such as SENDGRID_API_KEY and SENDGRID_FROM_EMAIL must be set with appropriate values to ensure that emails containing OTPs are successfully sent.
-    > 2. File Upload: For this functionality to work, it is expected that you have a S3 bucket configured with a cloud provider of your choosing (AWS, GCP, AZURE etc).
+    > For detailed instructions on adjusting these values, please consult the **[MentorEd Environment Variable Modification Guide](./MentorEd-Env-Modification.md)**.
 
 4.  **Download `replace_volume_path` Script File**
 
