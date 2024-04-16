@@ -80,7 +80,15 @@ This document acts as a reference for such functionalities/features and their re
 
 3. **Support Emails**
 
-    MentorEd provides a mechanism for users to generate request emails that are sent to a support team overseeing user requests. For example, if a user wants to delete their account or report an issue, they can trigger an email with their request message from the portal. For this feature to function, support email IDs must be set in the mentoring service as shown below.
+    MentorEd provides a mechanism for users to generate request emails that are sent to a support team overseeing user requests. For example, if a user wants to delete their account or report an issue, they can trigger an email with their request message from the portal.
+
+    <div style="text-align: left; width: 100%;">
+        <h4 style="text-align: left;">MentorEd Report Issue Help Page</h4>
+        <img src="../../public/images/help_report_issue.png" alt="MentorEd Report Issue Help Page" 
+            style="max-width: 100%; height: auto; width: auto; max-height: 500px; border-radius: 10px;">
+    </div>
+
+    For this feature to function, support email IDs must be set in the mentoring service as shown below.
 
     ### Mentoring Service
 
