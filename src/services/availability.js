@@ -207,6 +207,26 @@ module.exports = class availabilityHelper {
 			return diffInMinutes >= minimumDurationForAvailability
 		})
 	}
+	static mergeMentoringSessionsWithAvailability(availability, mentoringData) {
+		const mergedData = new Map()
+
+		// Transform original data into desired structure with "availability" and "sessions" keys
+		Object.entries(availability).forEach(([key, value]) => {
+			mergedData.set(key, { availability: value, sessions: [] })
+		})
+
+		// Merge mentoring sessions into transformed data under "sessions" key
+		mentoringData.forEach((mentoringSession) => {
+			const startDate = mentoringSession.start_date
+			if (mergedData.has(startDate)) {
+				mergedData.get(startDate).sessions.push(mentoringSession)
+			}
+		})
+
+		// Convert mergedData back to object before returning (if necessary)
+		return Object.fromEntries(mergedData)
+	}
+
 	/**
 	 * Read availabilities.
 	 * @method
@@ -234,14 +254,20 @@ module.exports = class availabilityHelper {
 				user_id: userId,
 			}
 			let userAvailabilities = await availabilityQueries.findAvailability(filter)
+
+			const sessionOptions = {
+				attributes: ['id', 'title', 'description', 'start_date', 'end_date', 'mentor_id', 'created_by'],
+			}
 			const sessions = await sessionQueries.findAll(
 				{
 					start_date: {
 						[Op.between]: [query.startEpoch, query.endEpoch],
 					},
+					mentor_id: userId,
 				},
-				{}
+				sessionOptions
 			)
+
 			if (userAvailabilities.length === 0 && sessions.length === 0) {
 				const availabilitiesByDay = getAvailabilitiesByDay({
 					startEpoch: query.startEpoch,
@@ -280,14 +306,14 @@ module.exports = class availabilityHelper {
 			if (!availabilitiesByDay) {
 				return responses.successResponse({
 					statusCode: httpStatusCode.internal_server_error,
-					message: 'Events fetched',
-					result: flag,
 				})
 			}
+			const mergedDataWithSessions = this.mergeMentoringSessionsWithAvailability(availabilitiesByDay, sessions)
+
 			return responses.successResponse({
 				statusCode: httpStatusCode.ok,
 				message: 'Events fetched',
-				result: availabilitiesByDay,
+				result: mergedDataWithSessions,
 			})
 		} catch (error) {
 			console.log(error)
