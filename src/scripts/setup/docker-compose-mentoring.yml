@@ -41,64 +41,93 @@ services:
     logging:
       driver: none
   mentoring:
-    # update image url with latest one:
     image: shikshalokamqa/elevate-mentoring:2.5.6
     ports:
       - '3000:3000'
     command: >
-      bash -c "npm run db:init && npm run db:seed:all && (echo 'Running nodeee' && nodemon app.js &); (while ! curl -sSf http://mentoring:3000 > /dev/null; do sleep 1; done && echo 'Service is up' && /bin/bash -c 'cd scripts && echo Running script && node psqlFunction.js && node viewsScript.js'); tail -f /dev/null"
+      bash -c "echo 'Waiting for PostgreSQL on citus_master:5432 to accept connections...' &&
+      while ! timeout 1 bash -c 'cat < /dev/null > /dev/tcp/citus_master/5432' 2> /dev/null; do
+        echo 'Waiting for citus_master to be ready...';
+        sleep 1;
+      done;
+      echo 'Database is ready.';
+      npm run db:init && npm run db:seed:all &&
+      (echo 'Running nodeee' && nodemon app.js &) &&
+      (while ! curl -sSf http://mentoring:3000 > /dev/null; do
+        sleep 1;
+      done && echo 'Service is up' &&
+      /bin/bash -c 'cd scripts && echo Running script && node psqlFunction.js && node viewsScript.js');
+      tail -f /dev/null"
+    depends_on:
+      - kafka
+      - redis
+      - citus
     environment:
       - KAFKA_URL=kafka:9092
       - USER_SERIVCE_HOST=http://user:3001
       - REDIS_HOST=redis://redis:6379
       - DEV_DATABASE_URL=postgres://postgres:postgres@citus_master:5432/mentoring
       - SCHEDULER_SERVICE_HOST=http://scheduler:4000
-    depends_on:
-      - kafka
-      - redis
-      - citus
     networks:
       - mentored_net
     env_file:
       - ${mentoring_env}
 
   user:
-    # Update with latest image
     image: shikshalokamqa/elevate-user:2.5.5
     ports:
       - '3001:3001'
     command: >
-      bash -c "npm run db:init && npm run db:seed:all && (echo 'Running nodeee' && nodemon app.js &); (while ! curl -sSf http://user:3001 > /dev/null; do sleep 1; done && echo 'Service is up' && /bin/bash -c 'cd scripts && echo Running user service scripts && node insertDefaultOrg.js && node viewsScript.js && node -r module-alias/register uploadSampleCSV.js'); tail -f /dev/null"
-    environment:
-      - DEV_DATABASE_URL=postgres://postgres:postgres@citus_master:5432/user
-      - KAFKA_URL=kafka:9092
-      - REDIS_HOST=redis://redis:6379
+      bash -c "echo 'Waiting for PostgreSQL on citus_master:5432 to accept connections...' &&
+      while ! timeout 1 bash -c 'cat < /dev/null > /dev/tcp/citus_master/5432' 2> /dev/null; do
+        echo 'Waiting for citus_master to be ready...';
+        sleep 1;
+      done;
+      echo 'Database is ready.';
+      npm run db:init && npm run db:seed:all &&
+      (echo 'Running nodeee' && nodemon app.js &) &&
+      (while ! curl -sSf http://user:3001 > /dev/null; do
+        sleep 1;
+      done && echo 'Service is up' &&
+      /bin/bash -c 'cd scripts && echo Running user service scripts && node insertDefaultOrg.js && node viewsScript.js && node -r module-alias/register uploadSampleCSV.js');
+      tail -f /dev/null"
     depends_on:
       - kafka
       - citus
       - redis
+      - scheduler
+    environment:
+      - DEV_DATABASE_URL=postgres://postgres:postgres@citus_master:5432/user
+      - KAFKA_URL=kafka:9092
+      - REDIS_HOST=redis://redis:6379
     networks:
       - mentored_net
     env_file:
       - ${users_env}
 
   notification:
-    # Update with latest image
     image: shikshalokamqa/elevate-notification:2.5
     ports:
       - '3002:3002'
     command: >
-      bash -c "npm run db:init && nodemon app.js"
-    environment:
-      - KAFKA_HOST=kafka:9092
-      - DEV_DATABASE_URL=postgres://postgres:postgres@citus_master:5432/notification
+      bash -c "echo 'Waiting for PostgreSQL on citus_master:5432 to accept connections...' &&
+      while ! timeout 1 bash -c 'cat < /dev/null > /dev/tcp/citus_master/5432' 2> /dev/null; do
+        echo 'Waiting for citus_master to be ready...';
+        sleep 1;
+      done;
+      echo 'Database is ready.';
+      npm run db:init && nodemon app.js"
     depends_on:
       - kafka
       - citus
+    environment:
+      - KAFKA_HOST=kafka:9092
+      - DEV_DATABASE_URL=postgres://postgres:postgres@citus_master:5432/notification
     networks:
       - mentored_net
     env_file:
       - ${notification_env}
+
   scheduler:
     # Update with latest image
     image: shikshalokamqa/elevate-scheduler:2.5.2
@@ -163,7 +192,7 @@ services:
     ports:
       - '8100:8100'
     volumes:
-      - /home/priyanka/workspace/docker/environment.ts:/app/src/environments/environment.ts
+      - /home/joffin/elevate/single-click/linux/environment.ts:/app/src/environments/environment.ts
     command: >
       /bin/bash -c "ionic build --prod && ionic serve --host 0.0.0.0"
     networks:
