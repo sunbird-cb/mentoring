@@ -164,6 +164,10 @@ To set up the MentorEd application, ensure you have Docker and Docker Compose in
 
 ## Enable Citus Extension
 
+MentorEd relies on PostgreSQL as its core database system. To boost performance and scalability, users can opt to enable the Citus extension. This transforms PostgreSQL into a distributed database, spreading data across multiple nodes to handle large datasets more efficiently as demand grows.
+
+For more information about **Citus Data**, [click here.](https://www.citusdata.com/)
+
 To enable the Citus extension for mentoring and user services, follow these steps.
 
 1. Create a sub-directory named `mentoring` and download `distributionColumns.sql` into it.
