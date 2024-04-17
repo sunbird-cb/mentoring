@@ -10,6 +10,7 @@
 			"@constants/*": ["./constants/*"],
 			"@controllers/*": ["./controllers/*"],
 			"@db/*": ["./db/*"],
+			"@dtos/*": ["./dtos/*"],
 			"@database/*": ["./database/*"],
 			"@generics/*": ["./generics/*"],
 			"@health-checks/*": ["./health-checks/*"],
