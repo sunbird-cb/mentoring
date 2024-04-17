@@ -1,10 +1,9 @@
-const Question = require('../models/index').Availability
+const Availability = require('../models/index').Availability
 
 module.exports = class QuestionsData {
 	static async createAvailability(data) {
 		try {
-			const question = await Question.create(data, { returning: true })
-			return question
+			return await Availability.create(data, { returning: true })
 		} catch (error) {
 			console.log(error)
 			return error
@@ -13,13 +12,12 @@ module.exports = class QuestionsData {
 
 	static async findAvailability(filter, projection = {}) {
 		try {
-			const questionData = await Question.findAll({
+			return await Availability.findAll({
 				where: filter,
 				attributes: projection,
 				raw: true,
 				order: [['start_time', 'ASC']],
 			})
-			return questionData
 		} catch (error) {
 			console.log(error)
 			return error
@@ -28,12 +26,22 @@ module.exports = class QuestionsData {
 
 	static async updateAvailability(filter, update, options = {}) {
 		try {
-			return await Question.update(update, {
+			return await Availability.update(update, {
 				where: filter,
 				...options,
 			})
 		} catch (error) {
 			throw error
+		}
+	}
+
+	static async deleteAvailability(filter) {
+		try {
+			return await Availability.destroy({
+				where: filter,
+			})
+		} catch (error) {
+			return error
 		}
 	}
 }

@@ -1,21 +1,23 @@
 // Dependencies
-const questionsService = require('@services/availability')
+const availabilityService = require('@services/availability')
 
-module.exports = class Questions {
+/**
+ * A class representing Availability and its related operations.
+ */
+module.exports = class Availability {
 	/**
-	 * create questions
+	 * Create availability.
 	 * @method
 	 * @name create
-	 * @param {Object} req -request data.
-	 * @returns {JSON} - Question creation object.
+	 * @param {Object} req - The request object containing the request body and decoded token.
+	 * @returns {Promise<Object>} - The created availability object.
 	 */
-
 	async create(req) {
 		try {
 			req.decodedToken = {
 				id: 133,
 			}
-			const createdQuestion = await questionsService.create(req.body, req.decodedToken)
+			const createdQuestion = await availabilityService.create(req.body, req.decodedToken)
 			return createdQuestion
 		} catch (error) {
 			return error
@@ -23,46 +25,80 @@ module.exports = class Questions {
 	}
 
 	/**
-	 * updates question
+	 * Update availability.
 	 * @method
 	 * @name update
-	 * @param {Object} req - request data.
-	 * @returns {JSON} - Question updated response.
+	 * @param {Object} req - The request object containing the request parameters, body, and decoded token.
+	 * @returns {Promise<Object>} - The updated availability object.
 	 */
-
 	async update(req) {
 		try {
-			return await questionsService.update(req.params.id, req.body, req.decodedToken)
+			req.decodedToken = {
+				id: 133,
+			}
+			return await availabilityService.update(req.params.id, req.body, req.decodedToken)
+		} catch (error) {
+			return error
+		}
+	}
+	/**
+	 * delete availability.
+	 * @method
+	 * @name delete
+	 * @param {Object} req - The request object containing the request parameters, body, and decoded token.
+	 * @returns {Promise<Object>} - The updated availability object.
+	 */
+	async delete(req) {
+		try {
+			req.decodedToken = {
+				id: 133,
+			}
+			return await availabilityService.delete(req.params.id, req.decodedToken)
 		} catch (error) {
 			return error
 		}
 	}
 
 	/**
-	 * reads question
+	 * Read availability.
 	 * @method
 	 * @name read
-	 * @param {Object} req -request data.
-	 * @returns {JSON} - question object.
+	 * @param {Object} req - The request object containing the request query and parameters.
+	 * @returns {Promise<Object>} - The availability object.
 	 */
-
 	async read(req) {
 		try {
-			return await questionsService.read(req.query, req.params.id)
+			return await availabilityService.read(req.query, req.params.id)
 		} catch (error) {
 			return error
 		}
 	}
+
+	/**
+	 * Check availability.
+	 * @method
+	 * @name isAvailable
+	 * @param {Object} req - The request object containing the request query and parameters.
+	 * @returns {Promise<Object>} - The availability status.
+	 */
 	async isAvailable(req) {
 		try {
-			return await questionsService.isAvailable(req.query, req.params.id)
+			return await availabilityService.isAvailable(req.query, req.params.id)
 		} catch (error) {
 			return error
 		}
 	}
+
+	/**
+	 * Get available users.
+	 * @method
+	 * @name availableUsers
+	 * @param {Object} req - The request object containing the request query and parameters.
+	 * @returns {Promise<Object>} - The list of available users.
+	 */
 	async availableUsers(req) {
 		try {
-			return await questionsService.availableUsers(req.query, req.params.id)
+			return await availabilityService.availableUsers(req.query, req.params.id)
 		} catch (error) {
 			return error
 		}

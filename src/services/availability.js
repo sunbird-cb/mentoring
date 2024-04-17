@@ -6,12 +6,23 @@ const { Op } = require('sequelize')
 const moment = require('moment')
 const { performance, PerformanceObserver } = require('perf_hooks')
 const { getAvailabilitiesByDay, buildUserAvailabilities } = require('@dtos/availability')
+const userRequests = require('@requests/user')
+const _ = require('lodash')
 
-module.exports = class questionsHelper {
+module.exports = class availabilityHelper {
+	/**
+	 * Create availability.
+	 * @method
+	 * @name create
+	 * @param {Object} bodyData - The data for creating the availability.
+	 * @param {Object} decodedToken - The decoded token object.
+	 * @returns {Promise<Object>} - The response object.
+	 */
 	static async create(bodyData, decodedToken) {
 		try {
 			bodyData['created_by'] = decodedToken.id
 			bodyData['updated_by'] = decodedToken.id
+			bodyData['user_id'] = decodedToken.id
 
 			const minimumDurationForAvailability = parseInt(process.env.MINIMUM_DURATION_FOR_AVAILABILITY, 10)
 			if (minimumDurationForAvailability !== 0) {
@@ -29,7 +40,7 @@ module.exports = class questionsHelper {
 			let availability = await availabilityQueries.createAvailability(bodyData)
 			return responses.successResponse({
 				statusCode: httpStatusCode.created,
-				message: 'availability_CREATED_SUCCESSFULLY',
+				message: 'AVAILABILITY_CREATED_SUCCESSFULLY',
 				result: availability,
 			})
 		} catch (error) {
@@ -37,7 +48,15 @@ module.exports = class questionsHelper {
 			throw error
 		}
 	}
-
+	/**
+	 * Update availability.
+	 * @method
+	 * @name update
+	 * @param {number} id - The ID of the availability to be updated.
+	 * @param {Object} bodyData - The data for updating the availability.
+	 * @param {Object} decodedToken - The decoded token object.
+	 * @returns {Promise<Object>} - The response object.
+	 */
 	static async update(id, bodyData, decodedToken) {
 		try {
 			const filter = { id, created_by: decodedToken.id }
@@ -45,54 +64,57 @@ module.exports = class questionsHelper {
 
 			if (rowsAffected === 0) {
 				return responses.failureResponse({
-					message: 'QUESTION_NOT_FOUND',
+					message: 'AVAILABILITY_NOT_FOUND',
 					statusCode: httpStatusCode.bad_request,
 					responseCode: 'CLIENT_ERROR',
 				})
 			}
 			return responses.successResponse({
 				statusCode: httpStatusCode.accepted,
-				message: 'QUESTION_UPDATED_SUCCESSFULLY',
+				message: 'AVAILABILITY_UPDATED_SUCCESSFULLY',
 			})
 		} catch (error) {
 			console.log(error)
 			throw error
 		}
 	}
-
-	/* 	static getEventsByDay(startEpoch, endEpoch, events) {
+	/**
+	 * delete availability.
+	 * @method
+	 * @name delete
+	 * @param {number} id - The ID of the availability to be updated.
+	 * @param {Object} decodedToken - The decoded token object.
+	 * @returns {Promise<Object>} - The response object.
+	 */
+	static async delete(id, decodedToken) {
 		try {
-			const startDate = moment.unix(startEpoch).startOf('day')
-			const endDate = moment.unix(endEpoch).endOf('day')
-
-			const dates = []
-			let currentDate = startDate.clone()
-
-			while (currentDate <= endDate) {
-				const epochStartOfDay = currentDate.startOf('day').unix()
-				const epochEndOfDay = currentDate.endOf('day').unix()
-				dates.push({ date: currentDate.format('YYYY-MM-DD'), epochStartOfDay, epochEndOfDay })
-				currentDate.add(1, 'day')
+			const filter = { id, created_by: decodedToken.id }
+			const rowsAffected = await availabilityQueries.deleteAvailability(filter)
+			console.log(rowsAffected)
+			if (rowsAffected === 0) {
+				return responses.failureResponse({
+					message: 'AVAILABILITY_NOT_FOUND',
+					statusCode: httpStatusCode.bad_request,
+					responseCode: 'CLIENT_ERROR',
+				})
 			}
-
-			const arrayOfDays = new Map()
-
-			dates.forEach((date) => {
-				arrayOfDays.set(
-					date.epochStartOfDay,
-					events.filter(
-						(event) => event.start_time >= date.epochStartOfDay && event.start_time <= date.epochEndOfDay
-					)
-				)
+			return responses.successResponse({
+				statusCode: httpStatusCode.accepted,
+				message: 'AVAILABILITY_DELETED_SUCCESSFULLY',
 			})
-
-			return arrayOfDays
 		} catch (error) {
 			console.log(error)
-			return null
+			throw error
 		}
-	} */
-
+	}
+	/**
+	 * Update availabilities based on sessions.
+	 * @method
+	 * @name updateAvailabilities
+	 * @param {Object[]} sessions - The sessions data.
+	 * @param {Object[]} availabilities - The availabilities data.
+	 * @returns {Object[]} - The updated availabilities data.
+	 */
 	static updateAvailabilities(sessions, availabilities) {
 		//Return the availabilities as it is if sessions is empty
 		if (sessions.length === 0 || Object.keys(sessions[0]).length === 0) {
@@ -163,6 +185,13 @@ module.exports = class questionsHelper {
 
 		return updatedAvailabilities
 	}
+	/**
+	 * Filter availabilities based on minimum duration.
+	 * @method
+	 * @name filterAvailabilitiesByMinimumDuration
+	 * @param {Object[]} availabilities - The availabilities data.
+	 * @returns {Object[]} - The filtered availabilities data.
+	 */
 	static filterAvailabilitiesByMinimumDuration(availabilities) {
 		const minimumDurationForAvailability = parseInt(process.env.MINIMUM_DURATION_FOR_AVAILABILITY, 10)
 
@@ -179,13 +208,13 @@ module.exports = class questionsHelper {
 		})
 	}
 	/**
-	 * Read question.
+	 * Read availabilities.
 	 * @method
 	 * @name read
-	 * @param {String} questionId - question id.
-	 * @returns {JSON} - Read question.
+	 * @param {Object} query - The query parameters.
+	 * @param {number} userId - The user ID.
+	 * @returns {Promise<Object>} - The response object.
 	 */
-
 	static async read(query, userId) {
 		try {
 			const filter = {
@@ -233,76 +262,7 @@ module.exports = class questionsHelper {
 				endEpoch: query.endEpoch,
 				userAvailabilities: userAvailabilities,
 			})
-			/* 			userAvailabilities.forEach((userAvailability) => {
-				if (userAvailability.repeat_unit == null) {
-					// if its a onetime event include it
-					allEvents.push(userAvailability)
-				} else {
-					// if its a recurring event generate events in the date range
-					const start = moment(startDate * 1000).startOf('day') // Convert start date to milliseconds and set time to start of day
-					const end = moment(endDate * 1000).endOf('day') // Convert end date to milliseconds and set time to end of day
-					let occurrenceDate = moment(userAvailability.start_time * 1000) // Convert event start time to milliseconds and set time to start of day
-					let occurrenceEndDate = moment(userAvailability.end_time * 1000) // Convert event start time to milliseconds and set time to start of day
 
-					while (occurrenceDate.isSameOrBefore(end)) {
-						const occurrenceDateClone = moment(occurrenceDate) //clone of occurrenceDate
-
-						if (
-							occurrenceDate.isSameOrAfter(start) &&
-							(userAvailability.repeat_on == null ||
-								userAvailability.repeat_on.includes(moment.weekdays()[occurrenceDate.day()])) &&
-							(userAvailability.expiration_date == null ||
-								occurrenceDate.isSameOrBefore(moment.unix(userAvailability.expiration_date))) &&
-							(userAvailability.exceptions == null ||
-								userAvailability.exceptions[occurrenceDateClone.startOf('day').unix()] == undefined)
-						) {
-							allEvents.push({
-								...userAvailability,
-								start_time: occurrenceDate.unix(),
-								end_time: occurrenceEndDate.unix(),
-								start_time_date: occurrenceDate.utcOffset('+05:30').format('YYYY-MMM-DD hh:mm A'),
-								end_time_date: occurrenceEndDate.utcOffset('+05:30').format('YYYY-MMM-DD hh:mm A'),
-							})
-						} else if (
-							userAvailability?.exceptions !== null &&
-							userAvailability?.exceptions[occurrenceDateClone.startOf('day').unix()] !== undefined &&
-							userAvailability?.exceptions[occurrenceDateClone.startOf('day').unix()]?.start_time !==
-								undefined
-						) {
-							// if an exception exists for the occurrence date use the updated time from the exception
-							const { start_time, end_time } =
-								userAvailability.exceptions[occurrenceDate.startOf('day').unix()]
-
-							allEvents.push({ ...userAvailability, start_time: start_time, end_time: end_time })
-						}
-						occurrenceDate.add(
-							userAvailability.repeat_increment || 1,
-							userAvailability.repeat_unit.toLowerCase()
-						)
-						occurrenceEndDate.add(
-							userAvailability.repeat_increment || 1,
-							userAvailability.repeat_unit.toLowerCase()
-						)
-						if (
-							userAvailability.repeat_unit === 'MONTH' &&
-							userAvailability.repeat_on &&
-							userAvailability.occurrence_in_month
-						) {
-							//console.log('inside IF 189')
-							// If repeat_on is specified for monthly events, adjust the occurrenceDate to match the specified occurrence within the month
-							const dayOfWeek = moment.weekdays().indexOf(userAvailability.repeat_on[0])
-							//console.log('dayOfWeek::', dayOfWeek)
-							occurrenceDate = occurrenceDate.clone().startOf('month').day(dayOfWeek)
-							//console.log('occurrenceDate::', occurrenceDate)
-
-							const occurrenceWeek = userAvailability.occurrence_in_month // Adjust occurrence_in_month to array index
-							//console.log('occurrenceWeek::', occurrenceWeek)
-
-							occurrenceDate.add(occurrenceWeek, 'weeks')
-						}
-					}
-				}
-			}) */
 			const end = performance.now()
 			console.log(`Elapsed time: ${end - start} milliseconds`)
 
@@ -311,7 +271,6 @@ module.exports = class questionsHelper {
 				updatedAvailabilities = this.updateAvailabilities(sessions, userAvailabilities)
 				updatedAvailabilities = this.filterAvailabilitiesByMinimumDuration(userAvailabilities)
 			}
-			console.log('After split::', updatedAvailabilities)
 
 			const availabilitiesByDay = getAvailabilitiesByDay({
 				startEpoch: query.startEpoch,
@@ -335,7 +294,14 @@ module.exports = class questionsHelper {
 			throw error
 		}
 	}
-
+	/**
+	 * Check availability.
+	 * @method
+	 * @name isAvailable
+	 * @param {Object} query - The query parameters.
+	 * @param {number} userId - The user ID.
+	 * @returns {Promise<Object>} - The response object.
+	 */
 	static async isAvailable(query, userId) {
 		try {
 			const filter = {
@@ -380,81 +346,12 @@ module.exports = class questionsHelper {
 				endEpoch: query.endEpoch,
 				userAvailabilities: userAvailabilities,
 			})
-			/* 			userAvailabilities.forEach((userAvailability) => {
-				if (userAvailability.repeat_unit == null) {
-					// if its a onetime event include it
-					allEvents.push(userAvailability)
-				} else {
-					// if its a recurring event generate events in the date range
-					const start = moment(startDate * 1000).startOf('day') // Convert start date to milliseconds and set time to start of day
-					const end = moment(endDate * 1000).endOf('day') // Convert end date to milliseconds and set time to end of day
-					let occurrenceDate = moment(userAvailability.start_time * 1000) // Convert event start time to milliseconds and set time to start of day
-					let occurrenceEndDate = moment(userAvailability.end_time * 1000) // Convert event start time to milliseconds and set time to start of day
 
-					while (occurrenceDate.isSameOrBefore(end)) {
-						const occurrenceDateClone = moment(occurrenceDate) //clone of occurrenceDate
-
-						if (
-							occurrenceDate.isSameOrAfter(start) &&
-							(userAvailability.repeat_on == null ||
-								userAvailability.repeat_on.includes(moment.weekdays()[occurrenceDate.day()])) &&
-							(userAvailability.expiration_date == null ||
-								occurrenceDate.isSameOrBefore(moment.unix(userAvailability.expiration_date))) &&
-							(userAvailability.exceptions == null ||
-								userAvailability.exceptions[occurrenceDateClone.startOf('day').unix()] == undefined)
-						) {
-							allEvents.push({
-								...userAvailability,
-								start_time: occurrenceDate.unix(),
-								end_time: occurrenceEndDate.unix(),
-								start_time_date: occurrenceDate.utcOffset('+05:30').format('YYYY-MMM-DD hh:mm A'),
-								end_time_date: occurrenceEndDate.utcOffset('+05:30').format('YYYY-MMM-DD hh:mm A'),
-							})
-						} else if (
-							userAvailability?.exceptions !== null &&
-							userAvailability?.exceptions[occurrenceDateClone.startOf('day').unix()] !== undefined &&
-							userAvailability?.exceptions[occurrenceDateClone.startOf('day').unix()]?.start_time !==
-								undefined
-						) {
-							// if an exception exists for the occurrence date use the updated time from the exception
-							const { start_time, end_time } =
-								userAvailability.exceptions[occurrenceDate.startOf('day').unix()]
-
-							allEvents.push({ ...userAvailability, start_time: start_time, end_time: end_time })
-						}
-						occurrenceDate.add(
-							userAvailability.repeat_increment || 1,
-							userAvailability.repeat_unit.toLowerCase()
-						)
-						occurrenceEndDate.add(
-							userAvailability.repeat_increment || 1,
-							userAvailability.repeat_unit.toLowerCase()
-						)
-						if (
-							userAvailability.repeat_unit === 'MONTH' &&
-							userAvailability.repeat_on &&
-							userAvailability.occurrence_in_month
-						) {
-							//console.log('inside IF 189')
-							// If repeat_on is specified for monthly events, adjust the occurrenceDate to match the specified occurrence within the month
-							const dayOfWeek = moment.weekdays().indexOf(userAvailability.repeat_on[0])
-							//console.log('dayOfWeek::', dayOfWeek)
-							occurrenceDate = occurrenceDate.clone().startOf('month').day(dayOfWeek)
-							//console.log('occurrenceDate::', occurrenceDate)
-
-							const occurrenceWeek = userAvailability.occurrence_in_month // Adjust occurrence_in_month to array index
-							//console.log('occurrenceWeek::', occurrenceWeek)
-
-							occurrenceDate.add(occurrenceWeek, 'weeks')
-						}
-					}
-				}
-			}) */
 			const end = performance.now()
 			console.log(`Elapsed time: ${end - start} milliseconds`)
 
 			let updatedAvailabilities = userAvailabilities
-			if (sessions) {
+			if (sessions && process.env.MULTIPLE_BOOKING == false) {
 				updatedAvailabilities = this.updateAvailabilities(sessions, userAvailabilities)
 				updatedAvailabilities = this.filterAvailabilitiesByMinimumDuration(userAvailabilities)
 			}
@@ -476,7 +373,13 @@ module.exports = class questionsHelper {
 			throw error
 		}
 	}
-
+	/**
+	 * Get available users.
+	 * @method
+	 * @name availableUsers
+	 * @param {Object} query - The query parameters.
+	 * @returns {Promise<Object>} - The response object.
+	 */
 	static async availableUsers(query) {
 		try {
 			const filter = {
@@ -520,76 +423,7 @@ module.exports = class questionsHelper {
 				endEpoch: query.endEpoch,
 				userAvailabilities: userAvailabilities,
 			})
-			/* 			userAvailabilities.forEach((userAvailability) => {
-				if (userAvailability.repeat_unit == null) {
-					// if its a onetime event include it
-					allEvents.push(userAvailability)
-				} else {
-					// if its a recurring event generate events in the date range
-					const start = moment(startDate * 1000).startOf('day') // Convert start date to milliseconds and set time to start of day
-					const end = moment(endDate * 1000).endOf('day') // Convert end date to milliseconds and set time to end of day
-					let occurrenceDate = moment(userAvailability.start_time * 1000) // Convert event start time to milliseconds and set time to start of day
-					let occurrenceEndDate = moment(userAvailability.end_time * 1000) // Convert event start time to milliseconds and set time to start of day
 
-					while (occurrenceDate.isSameOrBefore(end)) {
-						const occurrenceDateClone = moment(occurrenceDate) //clone of occurrenceDate
-
-						if (
-							occurrenceDate.isSameOrAfter(start) &&
-							(userAvailability.repeat_on == null ||
-								userAvailability.repeat_on.includes(moment.weekdays()[occurrenceDate.day()])) &&
-							(userAvailability.expiration_date == null ||
-								occurrenceDate.isSameOrBefore(moment.unix(userAvailability.expiration_date))) &&
-							(userAvailability.exceptions == null ||
-								userAvailability.exceptions[occurrenceDateClone.startOf('day').unix()] == undefined)
-						) {
-							allEvents.push({
-								...userAvailability,
-								start_time: occurrenceDate.unix(),
-								end_time: occurrenceEndDate.unix(),
-								start_time_date: occurrenceDate.utcOffset('+05:30').format('YYYY-MMM-DD hh:mm A'),
-								end_time_date: occurrenceEndDate.utcOffset('+05:30').format('YYYY-MMM-DD hh:mm A'),
-							})
-						} else if (
-							userAvailability?.exceptions !== null &&
-							userAvailability?.exceptions[occurrenceDateClone.startOf('day').unix()] !== undefined &&
-							userAvailability?.exceptions[occurrenceDateClone.startOf('day').unix()]?.start_time !==
-								undefined
-						) {
-							// if an exception exists for the occurrence date use the updated time from the exception
-							const { start_time, end_time } =
-								userAvailability.exceptions[occurrenceDate.startOf('day').unix()]
-
-							allEvents.push({ ...userAvailability, start_time: start_time, end_time: end_time })
-						}
-						occurrenceDate.add(
-							userAvailability.repeat_increment || 1,
-							userAvailability.repeat_unit.toLowerCase()
-						)
-						occurrenceEndDate.add(
-							userAvailability.repeat_increment || 1,
-							userAvailability.repeat_unit.toLowerCase()
-						)
-						if (
-							userAvailability.repeat_unit === 'MONTH' &&
-							userAvailability.repeat_on &&
-							userAvailability.occurrence_in_month
-						) {
-							//console.log('inside IF 189')
-							// If repeat_on is specified for monthly events, adjust the occurrenceDate to match the specified occurrence within the month
-							const dayOfWeek = moment.weekdays().indexOf(userAvailability.repeat_on[0])
-							//console.log('dayOfWeek::', dayOfWeek)
-							occurrenceDate = occurrenceDate.clone().startOf('month').day(dayOfWeek)
-							//console.log('occurrenceDate::', occurrenceDate)
-
-							const occurrenceWeek = userAvailability.occurrence_in_month // Adjust occurrence_in_month to array index
-							//console.log('occurrenceWeek::', occurrenceWeek)
-
-							occurrenceDate.add(occurrenceWeek, 'weeks')
-						}
-					}
-				}
-			}) */
 			const end = performance.now()
 			console.log(`Elapsed time: ${end - start} milliseconds`)
 
@@ -600,13 +434,13 @@ module.exports = class questionsHelper {
 			}
 
 			const available_users = updatedAvailabilities.map(({ user_id }) => user_id)
+			let userDetails = (await userRequests.getListOfUserDetails(available_users)).result
+			userDetails = _.map(userDetails, (userDetail) => _.pick(userDetail, ['id', 'name']))
 
 			return responses.successResponse({
 				statusCode: httpStatusCode.ok,
 				message: 'Events fetched',
-				result: {
-					available_users,
-				},
+				result: userDetails,
 			})
 		} catch (error) {
 			console.log(error)

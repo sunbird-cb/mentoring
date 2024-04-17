@@ -68,20 +68,22 @@ exports.buildUserAvailabilities = ({ startEpoch, endEpoch, userAvailabilities })
 							...userAvailability,
 							start_time: occurrenceDate.unix(),
 							end_time: occurrenceEndDate.unix(),
-							start_time_date: occurrenceDate.utcOffset('+05:30').format('YYYY-MMM-DD hh:mm A'),
-							end_time_date: occurrenceEndDate.utcOffset('+05:30').format('YYYY-MMM-DD hh:mm A'),
+							/* start_time_date: occurrenceDate.utcOffset('+05:30').format('YYYY-MMM-DD hh:mm A'),
+							end_time_date: occurrenceEndDate.utcOffset('+05:30').format('YYYY-MMM-DD hh:mm A'), */
 						})
 					} else if (
 						userAvailability?.exceptions !== null &&
-						userAvailability?.exceptions[occurrenceDateClone.startOf('day').unix()] !== undefined &&
+						userAvailability?.exceptions[occurrenceDateClone.startOf('day').unix()] !== undefined /* &&
 						userAvailability?.exceptions[occurrenceDateClone.startOf('day').unix()]?.start_time !==
-							undefined
+							undefined */
 					) {
 						// if an exception exists for the occurrence date use the updated time from the exception
 						const { start_time, end_time } =
 							userAvailability.exceptions[occurrenceDate.startOf('day').unix()]
 
-						allEvents.push({ ...userAvailability, start_time: start_time, end_time: end_time })
+						if (start_time !== undefined && end_time !== undefined) {
+							allEvents.push({ ...userAvailability, start_time: start_time, end_time: end_time })
+						}
 					}
 					occurrenceDate.add(
 						userAvailability.repeat_increment || 1,
@@ -105,7 +107,6 @@ exports.buildUserAvailabilities = ({ startEpoch, endEpoch, userAvailabilities })
 				}
 			}
 		})
-
 		return allEvents
 	} catch (error) {
 		console.error(error)
