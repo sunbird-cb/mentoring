@@ -21,12 +21,12 @@ fi
 # Use the provided database URL
 DEV_DATABASE_URL="$2"
 
-# Extract database credentials and connection details
-DB_USER=$(echo $DEV_DATABASE_URL | grep -oP '(?<=://)([^:]+)')
-DB_PASSWORD=$(echo $DEV_DATABASE_URL | grep -oP '(?<=://)[^:]+:\K[^@]+')
-DB_HOST=$(echo $DEV_DATABASE_URL | grep -oP '(?<=@)([^:/]+)')
-DB_PORT=$(echo $DEV_DATABASE_URL | grep -oP '(?<=:)([0-9]+)(?=/)')
-DB_NAME=$(echo $DEV_DATABASE_URL | grep -oP '(?<=/)[^/]+$')
+# Extract database credentials and connection details using awk for portability
+DB_USER=$(echo $DEV_DATABASE_URL | awk -F '[:@/]' '{print $4}')
+DB_PASSWORD=$(echo $DEV_DATABASE_URL | awk -F '[:@/]' '{print $5}')
+DB_HOST=$(echo $DEV_DATABASE_URL | awk -F '[:@/]' '{print $6}')
+DB_PORT=$(echo $DEV_DATABASE_URL | awk -F '[:@/]' '{split($7,a,"/"); print a[1]}')
+DB_NAME=$(echo $DEV_DATABASE_URL | awk -F '/' '{print $NF}')
 
 # Log database variables
 echo "Extracted Database Variables:"
