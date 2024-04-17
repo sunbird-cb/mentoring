@@ -1,6 +1,6 @@
 const Availability = require('../models/index').Availability
 
-module.exports = class QuestionsData {
+module.exports = class AvailabilityData {
 	static async createAvailability(data) {
 		try {
 			return await Availability.create(data, { returning: true })
