@@ -11,6 +11,7 @@ const momentTimeZone = require('moment-timezone')
 const moment = require('moment')
 const path = require('path')
 const md5 = require('md5')
+const fs = require('fs')
 const { RedisCache, InternalCache } = require('elevate-node-cache')
 const startCase = require('lodash/startCase')
 const common = require('@constants/common')
@@ -575,6 +576,108 @@ function validateFilters(input, validationData, modelName) {
 	return input
 }
 
+const algorithm = process.env.EMAIL_ID_ENCRYPTION_ALGORITHM
+const secretKey = Buffer.from(process.env.EMAIL_ID_ENCRYPTION_KEY, 'hex')
+const fixedIV = Buffer.from(process.env.EMAIL_ID_ENCRYPTION_IV, 'hex')
+
+const encrypt = (plainTextEmail) => {
+	try {
+		const cipher = crypto.createCipheriv(algorithm, secretKey, fixedIV)
+		return cipher.update(plainTextEmail, 'utf-8', 'hex') + cipher.final('hex')
+	} catch (err) {
+		console.log(err)
+		throw err
+	}
+}
+
+const decrypt = (encryptedEmail) => {
+	try {
+		const decipher = crypto.createDecipheriv(algorithm, secretKey, fixedIV)
+		return decipher.update(encryptedEmail, 'hex', 'utf-8') + decipher.final('utf-8')
+	} catch (err) {
+		console.log(err)
+		throw err
+	}
+}
+
+function extractFilename(fileString) {
+	const match = fileString.match(/([^/]+)(?=\.\w+$)/)
+	return match ? match[0] : null
+}
+
+const generateRedisConfigForQueue = () => {
+	const parseURL = new URL(process.env.REDIS_HOST)
+	return {
+		connection: {
+			host: parseURL.hostname,
+			port: parseURL.port,
+		},
+	}
+}
+
+const generateFileName = (name, extension) => {
+	const currentDate = new Date()
+	const fileExtensionWithTime = moment(currentDate).tz('Asia/Kolkata').format('YYYY_MM_DD_HH_mm') + extension
+	return name + fileExtensionWithTime
+}
+
+function generateCSVContent(data) {
+	// If data is empty
+	if (data.length === 0) {
+		return 'No Data Found'
+	}
+	const headers = Object.keys(data[0])
+	return [
+		headers.join(','),
+		...data.map((row) => headers.map((fieldName) => JSON.stringify(row[fieldName])).join(',')),
+	].join('\n')
+}
+
+const addDurationToTime = (timeString, durationMinutes) => {
+	// Parse the time string
+	const trimmedTimeString = timeString.replace(' Hrs', '')
+	const [hoursStr, minutesStr] = trimmedTimeString.split(':')
+	let hours = parseInt(hoursStr, 10)
+	let minutes = parseInt(minutesStr, 10)
+	// Add the duration to the hours and minutes
+	hours += Math.floor(durationMinutes / 60)
+	minutes += durationMinutes % 60 // Remainder gives updated minutes
+	// Format the updated time
+	const updatedTimeString = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`
+	return updatedTimeString
+}
+
+function convertToEpochTime(dateString, timeString, timeZone) {
+	const trimmedTimeString = timeString.replace(' Hrs', '')
+	const offsets = { IST: '+05:30', UTC: '+00:00' }
+	const timezoneOffset = offsets[timeZone] || '+00:00'
+	const dateTimeString = `${dateString}T${trimmedTimeString}:00${timezoneOffset}`
+	const [datePart, timePart] = dateTimeString.split('T')
+	const dateParts = datePart.split('-')
+	const timeParts = timePart.split(':')
+	const utcDate = new Date(
+		Date.UTC(
+			parseInt(dateParts[2], 10), // Year
+			parseInt(dateParts[1], 10) - 1, // Month (0-indexed)
+			parseInt(dateParts[0], 10), // Day
+			parseInt(timeParts[0], 10), // Hours
+			parseInt(timeParts[1], 10), // Minutes
+			parseInt(timeParts[2], 10) // Seconds
+		)
+	)
+	utcDate.setHours(utcDate.getHours() - 5) // Subtract 5 hours for IST
+	utcDate.setMinutes(utcDate.getMinutes() - 30) // Subtract 30 minutes for IST
+
+	const epochTime = utcDate.getTime() / 1000
+	return epochTime
+}
+
+const clearFile = (filePath) => {
+	fs.unlink(filePath, (err) => {
+		if (err) logger.error(err)
+	})
+}
+
 module.exports = {
 	hash: hash,
 	getCurrentMonthRange,
@@ -610,4 +713,13 @@ module.exports = {
 	generateWhereClause,
 	validateFilters,
 	processQueryParametersWithExclusions,
+	encrypt,
+	decrypt,
+	extractFilename,
+	generateRedisConfigForQueue,
+	generateFileName,
+	generateCSVContent,
+	convertToEpochTime,
+	addDurationToTime,
+	clearFile,
 }

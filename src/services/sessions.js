@@ -176,14 +176,16 @@ module.exports = class SessionsHelper {
 			let sessionModel = await sessionQueries.getColumns()
 			bodyData = utils.restructureBody(bodyData, validationData, sessionModel)
 
-			bodyData.meeting_info = {
-				platform: process.env.DEFAULT_MEETING_SERVICE,
-				value: process.env.DEFAULT_MEETING_SERVICE,
-			}
-			if (process.env.DEFAULT_MEETING_SERVICE === common.BBB_VALUE) {
+			if (!bodyData.meeting_info.link) {
 				bodyData.meeting_info = {
-					platform: common.BBB_PLATFORM,
-					value: common.BBB_VALUE,
+					platform: process.env.DEFAULT_MEETING_SERVICE,
+					value: process.env.DEFAULT_MEETING_SERVICE,
+				}
+				if (process.env.DEFAULT_MEETING_SERVICE === common.BBB_VALUE) {
+					bodyData.meeting_info = {
+						platform: common.BBB_PLATFORM,
+						value: common.BBB_VALUE,
+					}
 				}
 			}
 

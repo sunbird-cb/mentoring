@@ -15,6 +15,9 @@ const questionSetQueries = require('../database/queries/question-set')
 const { Op } = require('sequelize')
 const user = require('@health-checks/user')
 const responses = require('@helpers/responses')
+const { Queue } = require('bullmq')
+const fileUploadQueries = require('@database/queries/fileUpload')
+const { email } = require('oci-sdk')
 
 module.exports = class OrgAdminService {
 	/**
@@ -578,6 +581,71 @@ module.exports = class OrgAdminService {
 			})
 		} catch (error) {
 			console.log(error)
+		}
+	}
+
+	/**
+	 * Bulk create users
+	 * @method
+	 * @name bulkUserCreate
+	 * @param {Array} users - user details.
+	 * @param {Object} tokenInformation - token details.
+	 * @returns {CSV} - created users.
+	 */
+
+	static async bulkSessionCreate(filePath, tokenInformation) {
+		try {
+			const { id, organization_id } = tokenInformation
+			const userDetail = await userRequests.details('', id)
+
+			const creationData = {
+				name: utils.extractFilename(filePath),
+				input_path: filePath,
+				type: common.fileTypeCSV,
+				organization_id,
+				created_by: id,
+			}
+			const result = await fileUploadQueries.create(creationData)
+			if (!result?.id) {
+				return responses.successResponse({
+					responseCode: 'CLIENT_ERROR',
+					statusCode: httpStatusCode.bad_request,
+					message: 'SESSION_CSV_UPLOADED_FAILED',
+				})
+			}
+
+			//push to queue
+			const redisConfiguration = utils.generateRedisConfigForQueue()
+			const sessionQueue = new Queue(process.env.DEFAULT_QUEUE, redisConfiguration)
+			const session = await sessionQueue.add(
+				'upload_sessions',
+				{
+					fileDetails: result,
+					user: {
+						id,
+						name: userDetail.data.result.name,
+						email: userDetail.data.result.email,
+						organization_id,
+						org_name: userDetail.data.result.organization.name,
+					},
+				},
+				{
+					removeOnComplete: true,
+					attempts: common.NO_OF_ATTEMPTS,
+					backoff: {
+						type: 'fixed',
+						delay: common.BACK_OFF_RETRY_QUEUE, // Wait 10 min between attempts
+					},
+				}
+			)
+			return responses.successResponse({
+				statusCode: httpStatusCode.ok,
+				message: 'SESSION_CSV_UPLOADED',
+				result: result,
+			})
+		} catch (error) {
+			console.log(error)
+			throw error
 		}
 	}
 }

@@ -251,6 +251,20 @@ let enviromentVariables = {
 		optional: true,
 		default: 3600000,
 	},
+	SESSION_UPLOAD_EMAIL_TEMPLATE_CODE: {
+		message: 'Required email template name for bulk session upload by session manager',
+		optional: true,
+		default: 'bulk_session_upload_by_session_manager_email_template',
+	},
+	DEFAULT_QUEUE: {
+		message: 'Required default queue',
+		optional: false,
+	},
+	SAMPLE_CSV_FILE_PATH: {
+		message: 'Required sample csv file path',
+		optional: false,
+		default: 'sample/bulk_session_creation.csv',
+	},
 }
 
 let success = true

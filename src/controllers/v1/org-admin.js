@@ -1,4 +1,5 @@
 const orgAdminService = require('@services/org-admin')
+const common = require('@constants/common')
 
 module.exports = class OrgAdmin {
 	/**
@@ -138,6 +139,22 @@ module.exports = class OrgAdmin {
 	async setDefaultQuestionSets(req) {
 		try {
 			return await orgAdminService.setDefaultQuestionSets(req.body, req.decodedToken)
+		} catch (error) {
+			return error
+		}
+	}
+
+	/**
+	 * Bulk create session
+	 * @method
+	 * @name bulkSessionCreate
+	 * @param {String} req.body.file_path -Uploaded filr path .
+	 * @returns {Object} - uploaded file response.
+	 */
+	async bulkSessionCreate(req) {
+		try {
+			const sessionUploadRes = await orgAdminService.bulkSessionCreate(req.body.file_path, req.decodedToken)
+			return sessionUploadRes
 		} catch (error) {
 			return error
 		}
