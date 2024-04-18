@@ -6,14 +6,56 @@ Expectation: Upon following the prescribed steps, you will achieve a fully opera
 
 Before setting up the following MentorEd application, dependencies given below should be installed and verified to be running. Refer to the installation guides given below to set up each dependency.
 
-    1. Node.js v20 (LTS)
-        Refer [NodeSource distributions installation scripts](https://github.com/nodesource/distributions#installation-scripts).
+1. Node.js v20 (LTS)
+   Refer [NodeSource distributions installation scripts](https://github.com/nodesource/distributions#installation-scripts).
 
-    2. Build Essential (Linux Only)
-        ```bash
+2. Build Essential (Linux Only)
+    ```bash
+    $ sudo apt-get install build-essential
+    ```
 
-$ sudo apt-get install build-essential
+## Installation
 
-```
+1. Create Mentoring Directory: Create a directory named **mentoring**.
 
-```
+    > Example Command: `mkdir mentoring && cd mentoring/`
+
+2. Git Clone Services/Portal Repositories
+
+    - **Ubuntu/Linux/Mac**
+
+        ```
+        git clone https://github.com/ELEVATE-Project/mentoring.git && \
+        git clone https://github.com/ELEVATE-Project/user.git && \
+        git clone https://github.com/ELEVATE-Project/notification.git && \
+        git clone https://github.com/ELEVATE-Project/interface-service.git && \
+        git clone https://github.com/ELEVATE-Project/scheduler.git && \
+        git clone -b release-2.6.1 https://github.com/ELEVATE-Project/mentoring-mobile-app.git
+        ```
+
+3. Install NPM Packages
+
+    - **Ubuntu/Linux/Mac**
+
+        ```
+        cd mentoring/src && npm install && cd ../.. && \
+        cd user/src && npm install && cd ../.. && \
+        cd notification/src && npm install && cd ../.. && \
+        cd interface-service/src && npm install && cd ../.. && \
+        cd scheduler/src && npm install && cd ../.. && \
+        cd mentoring-mobile-app && npm install && cd ..
+        ```
+
+4. Download Environment Files
+
+    - **Ubuntu/Linux/Mac**
+
+        ```
+        curl -L -o mentoring/src/.env https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/envs/mentoring_env && \
+        curl -L -o user/src/.env https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/envs/user_env && \
+        curl -L -o notification/src/.env https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/envs/notification_env && \
+        curl -L -o interface-service/src/.env https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/envs/interface_env && \
+        curl -L -o scheduler/src/.env https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/envs/scheduler_env && \
+        curl -L -o mentoring-mobile-app/src/environments/environment.ts https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/envs/environment.ts
+
+        ```
