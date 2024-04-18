@@ -1,4 +1,5 @@
 let table = require('cli-table')
+const common = require('@constants/common')
 
 let tableData = new table()
 
@@ -264,6 +265,11 @@ let enviromentVariables = {
 		message: 'Required sample csv file path',
 		optional: false,
 		default: 'sample/bulk_session_creation.csv',
+	},
+	AUTH_METHOD: {
+		message: 'Required authentication method',
+		optional: true,
+		default: common.AUTH_METHOD.JWT_ONLY,
 	},
 }
 
