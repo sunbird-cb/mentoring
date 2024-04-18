@@ -57,5 +57,20 @@ Before setting up the following MentorEd application, dependencies given below s
         curl -L -o interface-service/src/.env https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/envs/interface_env && \
         curl -L -o scheduler/src/.env https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/envs/scheduler_env && \
         curl -L -o mentoring-mobile-app/src/environments/environment.ts https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/envs/environment.ts
-
         ```
+
+5. Create Databases
+
+    - **Ubuntu/Linux/Mac**
+        1. Download `create-databases.sh` Script File:
+            ```
+            curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/create-databases.sh
+            ```
+        2. Make the executable by running the following command:
+            ```
+            chmod +x create-databases.sh
+            ```
+        3. Run the script file:
+            ```
+            ./create-databases.sh
+            ```
