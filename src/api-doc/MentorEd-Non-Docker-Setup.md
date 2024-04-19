@@ -16,9 +16,9 @@ Before setting up the following MentorEd application, dependencies given below s
 
 ## Installation
 
-1. Create Mentoring Directory: Create a directory named **mentoring**.
+1. Create Mentoring Directory: Create a directory named **mentorEd**.
 
-    > Example Command: `mkdir mentoring && cd mentoring/`
+    > Example Command: `mkdir mentorEd && cd mentorEd/`
 
 2. Git Clone Services/Portal Repositories
 
@@ -30,7 +30,7 @@ Before setting up the following MentorEd application, dependencies given below s
         git clone https://github.com/ELEVATE-Project/notification.git && \
         git clone https://github.com/ELEVATE-Project/interface-service.git && \
         git clone https://github.com/ELEVATE-Project/scheduler.git && \
-        git clone -b release-2.6.1 https://github.com/ELEVATE-Project/mentoring-mobile-app.git
+        git clone -b release-2.5.0 https://github.com/ELEVATE-Project/mentoring-mobile-app.git
         ```
 
 3. Install NPM Packages
@@ -43,7 +43,7 @@ Before setting up the following MentorEd application, dependencies given below s
         cd notification/src && npm install && cd ../.. && \
         cd interface-service/src && npm install && cd ../.. && \
         cd scheduler/src && npm install && cd ../.. && \
-        cd mentoring-mobile-app && npm install && cd ..
+        cd mentoring-mobile-app && npm install --force && cd ..
         ```
 
 4. Download Environment Files
@@ -95,17 +95,89 @@ Before setting up the following MentorEd application, dependencies given below s
 
     1. Download mentoring `distributionColumns.sql` file.
 
-    ```
-    curl -o ./mentoring/distributionColumns.sql -L https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/distribution-columns/mentoring/distributionColumns.sql
-    ```
+        ```
+        curl -o ./mentoring/distributionColumns.sql -L https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/distribution-columns/mentoring/distributionColumns.sql
+        ```
 
     2. Download user `distributionColumns.sql` file.
 
-    ```
-    curl -o ./user/distributionColumns.sql -JL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/distribution-columns/user/distributionColumns.sql
-
-    ```
+        ```
+        curl -o ./user/distributionColumns.sql -JL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/distribution-columns/user/distributionColumns.sql
+        ```
 
     3. Set up the citus_setup_local file by following the steps given below.
 
         - **Ubuntu/Linux/Mac**
+
+            1. Download the `citus_setup_local.sh` file:
+
+                ```
+                curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/citus_setup_local.sh
+                ```
+
+            2. Make the setup file executable by running the following command:
+
+                ```
+                chmod +x citus_setup_local.sh
+                ```
+
+            3. Enable Citus and set distribution columns for `mentoring` database by running the `citus_setup_local.sh` with the following arguments.
+                ```
+                ./citus_setup_local.sh mentoring postgres://postgres:postgres@localhost:9700/mentoring
+                ```
+            4. Enable Citus and set distribution columns for `user` database by running the `citus_setup_local.sh`with the following arguments.
+                ```
+                ./citus_setup_local.sh user postgres://postgres:postgres@localhost:9700/users
+                ```
+
+8. Insert Initial Data
+   Use MentorEd in-build seeders to insert the initial data.
+
+    ```
+    cd mentoring/src && npm run db:seed:all && cd ../.. && \
+    cd user/src && npm run db:seed:all && cd ../.. && cd ../..
+    ```
+
+9. Start The Services
+
+    Following the steps given below, 2 instances of each MentorEd backend service will be deployed and be managed by PM2 process manager.
+
+    ```
+    cd mentoring/src && pm2 start app.js -i 2 --name mentored-mentoring && cd ../.. && \
+    cd user/src && pm2 start app.js -i 2 --name mentored-user && cd ../.. && \
+    cd notification/src && pm2 start app.js -i 2 --name mentored-notification && cd ../.. && \
+    cd interface-service/src && pm2 start app.js -i 2 --name mentored-interface && cd ../.. && \
+    cd scheduler/src && pm2 start app.js -i 2 --name mentored-scheduler && cd ../..
+    ```
+
+10. Start The Portal
+
+    MentorEd portal utilizes Ionic and Angular CLI for building the browser bundle, follow the steps given below to install them and start the portal.
+
+    - **Ubuntu/Linux/Mac**
+
+        1. Install Ionic CLI globally:
+
+            ```
+            cd sudo npm install -g @ionic/cli
+            ```
+
+        2. Install Angular CLI globally:
+
+            ```
+            sudo npm install -g @angular/cli
+            ```
+
+        3. Build the portal
+           Navigate to mentoring-mobile-app directory and run:
+
+            ```
+            ionic build
+            ```
+
+        4. Start the portal:
+            ```
+            pm2 start pm2.config.json
+            ```
+
+    Navigate to http://localhost:7601 to access the MentorEd Portal.
