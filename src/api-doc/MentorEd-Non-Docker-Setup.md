@@ -76,14 +76,36 @@ Before setting up the following MentorEd application, dependencies given below s
             ```
 
 6. Run Migrations To Create Tables
+
     - **Ubuntu/Linux/Mac**
         1. Install Sequelize-cli globally:
             ```
             sudo npm i sequelize-cli -g
             ```
+            // The bit about changing env variables
         2. Run Migrations:
             ```
             cd mentoring/src && npx sequelize-cli db:migrate && cd ../.. && \
             cd user/src && npx sequelize-cli db:migrate && cd ../.. && \
             cd notification/src && npx sequelize-cli db:migrate && cd ../..
             ```
+
+7. Enabling Citus And Setting Distribution Columns (Optional)
+   MentorEd relies on PostgreSQL as its core database system. To boost performance and scalability, users can opt to enable the Citus extension. This transforms PostgreSQL into a distributed database, spreading data across multiple nodes to handle large datasets more efficiently as demand grows.
+
+    1. Download mentoring `distributionColumns.sql` file.
+
+    ```
+    curl -o ./mentoring/distributionColumns.sql -L https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/distribution-columns/mentoring/distributionColumns.sql
+    ```
+
+    2. Download user `distributionColumns.sql` file.
+
+    ```
+    curl -o ./user/distributionColumns.sql -JL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/distribution-columns/user/distributionColumns.sql
+
+    ```
+
+    3. Set up the citus_setup_local file by following the steps given below.
+
+        - **Ubuntu/Linux/Mac**
