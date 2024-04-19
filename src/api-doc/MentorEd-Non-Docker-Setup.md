@@ -74,3 +74,16 @@ Before setting up the following MentorEd application, dependencies given below s
             ```
             ./create-databases.sh
             ```
+
+6. Run Migrations To Create Tables
+    - **Ubuntu/Linux/Mac**
+        1. Install Sequelize-cli globally:
+            ```
+            sudo npm i sequelize-cli -g
+            ```
+        2. Run Migrations:
+            ```
+            cd mentoring/src && npx sequelize-cli db:migrate && cd ../.. && \
+            cd user/src && npx sequelize-cli db:migrate && cd ../.. && \
+            cd notification/src && npx sequelize-cli db:migrate && cd ../..
+            ```
