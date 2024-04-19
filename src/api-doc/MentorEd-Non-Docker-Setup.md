@@ -148,7 +148,19 @@ Before setting up the following MentorEd application, dependencies given below s
     cd ../..
     ```
 
-9. Run Service Scripts
+9. Start The Services
+
+    Following the steps given below, 2 instances of each MentorEd backend service will be deployed and be managed by PM2 process manager.
+
+    ```
+    cd mentoring/src && pm2 start app.js -i 2 --name mentored-mentoring && cd ../.. && \
+    cd user/src && pm2 start app.js -i 2 --name mentored-user && cd ../.. && \
+    cd notification/src && pm2 start app.js -i 2 --name mentored-notification && cd ../.. && \
+    cd interface-service/src && pm2 start app.js -i 2 --name mentored-interface && cd ../.. && \
+    cd scheduler/src && pm2 start app.js -i 2 --name mentored-scheduler && cd ../..
+    ```
+
+10. Run Service Scripts
 
     ```
     cd mentoring/src/scripts && \
@@ -160,18 +172,6 @@ Before setting up the following MentorEd application, dependencies given below s
     node viewsScript.js && \
     node -r module-alias/register uploadSampleCSV.js && \
     cd ../../..
-    ```
-
-10. Start The Services
-
-    Following the steps given below, 2 instances of each MentorEd backend service will be deployed and be managed by PM2 process manager.
-
-    ```
-    cd mentoring/src && pm2 start app.js -i 2 --name mentored-mentoring && cd ../.. && \
-    cd user/src && pm2 start app.js -i 2 --name mentored-user && cd ../.. && \
-    cd notification/src && pm2 start app.js -i 2 --name mentored-notification && cd ../.. && \
-    cd interface-service/src && pm2 start app.js -i 2 --name mentored-interface && cd ../.. && \
-    cd scheduler/src && pm2 start app.js -i 2 --name mentored-scheduler && cd ../..
     ```
 
 11. Start The Portal
