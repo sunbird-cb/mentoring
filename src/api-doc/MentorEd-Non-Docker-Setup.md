@@ -193,7 +193,7 @@ Before setting up the following MentorEd application, dependencies given below s
         1. Install Ionic CLI globally:
 
             ```
-            cd sudo npm install -g @ionic/cli
+            sudo npm install -g @ionic/cli
             ```
 
         2. Install Angular CLI globally:
