@@ -51,11 +51,11 @@ Before setting up the following MentorEd application, dependencies given below s
     - **Ubuntu/Linux/Mac**
 
         ```
-        curl -L -o mentoring/src/.env https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/envs/mentoring_env && \
-        curl -L -o user/src/.env https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/envs/user_env && \
-        curl -L -o notification/src/.env https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/envs/notification_env && \
-        curl -L -o interface-service/src/.env https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/envs/interface_env && \
-        curl -L -o scheduler/src/.env https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/envs/scheduler_env && \
+        curl -L -o mentoring/src/.env https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/envs/local/mentoring_env && \
+        curl -L -o user/src/.env https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/envs/local/user_env && \
+        curl -L -o notification/src/.env https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/envs/local/notification_env && \
+        curl -L -o interface-service/src/.env https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/envs/local/interface_env && \
+        curl -L -o scheduler/src/.env https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/envs/local/scheduler_env && \
         curl -L -o mentoring-mobile-app/src/environments/environment.ts https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/envs/environment.ts
         ```
 
@@ -85,9 +85,15 @@ Before setting up the following MentorEd application, dependencies given below s
             // The bit about changing env variables
         2. Run Migrations:
             ```
-            cd mentoring/src && npx sequelize-cli db:migrate && cd ../.. && \
-            cd user/src && npx sequelize-cli db:migrate && cd ../.. && \
-            cd notification/src && npx sequelize-cli db:migrate && cd ../..
+            cd mentoring/src && \
+            npx sequelize-cli db:migrate && \
+            cd ../.. && \
+            cd user/src && \
+            npx sequelize-cli db:migrate && \
+            cd ../.. && \
+            cd notification/src && \
+            npx sequelize-cli db:migrate && \
+            cd ../..
             ```
 
 7. Enabling Citus And Setting Distribution Columns (Optional)
@@ -134,11 +140,29 @@ Before setting up the following MentorEd application, dependencies given below s
    Use MentorEd in-build seeders to insert the initial data.
 
     ```
-    cd mentoring/src && npm run db:seed:all && cd ../.. && \
-    cd user/src && npm run db:seed:all && cd ../.. && cd ../..
+    cd mentoring/src && \
+    npm run db:seed:all && \
+    cd ../.. && \
+    cd user/src && \
+    npm run db:seed:all && \
+    cd ../..
     ```
 
-9. Start The Services
+9. Run Service Scripts
+
+    ```
+    cd mentoring/src/scripts && \
+    node psqlFunction.js && \
+    node viewsScript.js && \
+    cd ../../.. && \
+    cd user/src/scripts && \
+    node insertDefaultOrg.js && \
+    node viewsScript.js && \
+    node -r module-alias/register uploadSampleCSV.js && \
+    cd ../../..
+    ```
+
+10. Start The Services
 
     Following the steps given below, 2 instances of each MentorEd backend service will be deployed and be managed by PM2 process manager.
 
@@ -150,7 +174,7 @@ Before setting up the following MentorEd application, dependencies given below s
     cd scheduler/src && pm2 start app.js -i 2 --name mentored-scheduler && cd ../..
     ```
 
-10. Start The Portal
+11. Start The Portal
 
     MentorEd portal utilizes Ionic and Angular CLI for building the browser bundle, follow the steps given below to install them and start the portal.
 
