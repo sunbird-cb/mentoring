@@ -194,7 +194,6 @@ module.exports = class availabilityHelper {
 	 */
 	static filterAvailabilitiesByMinimumDuration(availabilities) {
 		const minimumDurationForAvailability = parseInt(process.env.MINIMUM_DURATION_FOR_AVAILABILITY, 10)
-
 		// Return the availabilities as it is based on env config
 		if (minimumDurationForAvailability === 0) {
 			return availabilities
@@ -209,7 +208,6 @@ module.exports = class availabilityHelper {
 	}
 	static mergeMentoringSessionsWithAvailability(availability, mentoringData) {
 		const mergedData = new Map()
-
 		// Transform original data into desired structure with "availability" and "sessions" keys
 		Object.entries(availability).forEach(([key, value]) => {
 			mergedData.set(key, { availability: value, sessions: [] })
@@ -217,9 +215,11 @@ module.exports = class availabilityHelper {
 
 		// Merge mentoring sessions into transformed data under "sessions" key
 		mentoringData.forEach((mentoringSession) => {
-			const startDate = mentoringSession.start_date
-			if (mergedData.has(startDate)) {
-				mergedData.get(startDate).sessions.push(mentoringSession)
+			const startDate = moment(mentoringSession.start_date * 1000)
+				.startOf('day')
+				.unix()
+			if (mergedData.has(startDate.toString())) {
+				mergedData.get(startDate.toString()).sessions.push(mentoringSession)
 			}
 		})
 
@@ -276,7 +276,7 @@ module.exports = class availabilityHelper {
 				})
 				return responses.successResponse({
 					statusCode: httpStatusCode.ok,
-					message: 'Events fetchedDD',
+					message: 'AVAILABILITIES_FETCHED',
 					result: availabilitiesByDay,
 				})
 			}
@@ -293,9 +293,10 @@ module.exports = class availabilityHelper {
 			console.log(`Elapsed time: ${end - start} milliseconds`)
 
 			let updatedAvailabilities = userAvailabilities
-			if (sessions) {
+
+			if (sessions && process.env.MULTIPLE_BOOKING === 'false') {
 				updatedAvailabilities = this.updateAvailabilities(sessions, userAvailabilities)
-				updatedAvailabilities = this.filterAvailabilitiesByMinimumDuration(userAvailabilities)
+				updatedAvailabilities = this.filterAvailabilitiesByMinimumDuration(updatedAvailabilities)
 			}
 
 			const availabilitiesByDay = getAvailabilitiesByDay({
@@ -358,7 +359,7 @@ module.exports = class availabilityHelper {
 			if (userAvailabilities.length === 0) {
 				return responses.successResponse({
 					statusCode: httpStatusCode.ok,
-					message: 'Events fetched',
+					message: 'AVAILABILITIES_FETCHED',
 					result: {
 						is_available: false,
 					},
@@ -366,20 +367,17 @@ module.exports = class availabilityHelper {
 			}
 
 			// Filter out recurring events and generate instances within the date range
-			const start = performance.now()
 			userAvailabilities = buildUserAvailabilities({
 				startEpoch: query.startEpoch,
 				endEpoch: query.endEpoch,
 				userAvailabilities: userAvailabilities,
 			})
 
-			const end = performance.now()
-			console.log(`Elapsed time: ${end - start} milliseconds`)
-
 			let updatedAvailabilities = userAvailabilities
-			if (sessions && process.env.MULTIPLE_BOOKING == false) {
+
+			if (sessions && process.env.MULTIPLE_BOOKING === 'false') {
 				updatedAvailabilities = this.updateAvailabilities(sessions, userAvailabilities)
-				updatedAvailabilities = this.filterAvailabilitiesByMinimumDuration(userAvailabilities)
+				updatedAvailabilities = this.filterAvailabilitiesByMinimumDuration(updatedAvailabilities)
 			}
 
 			const isInAnyAvailability = updatedAvailabilities
@@ -389,7 +387,7 @@ module.exports = class availabilityHelper {
 				.includes(true)
 			return responses.successResponse({
 				statusCode: httpStatusCode.ok,
-				message: 'Events fetched',
+				message: 'AVAILABILITIES_FETCHED',
 				result: {
 					is_available: isInAnyAvailability,
 				},
@@ -406,7 +404,7 @@ module.exports = class availabilityHelper {
 	 * @param {Object} query - The query parameters.
 	 * @returns {Promise<Object>} - The response object.
 	 */
-	static async availableUsers(query) {
+	static async users(query) {
 		try {
 			const filter = {
 				[Op.or]: [
@@ -435,7 +433,7 @@ module.exports = class availabilityHelper {
 			if (userAvailabilities.length === 0) {
 				return responses.successResponse({
 					statusCode: httpStatusCode.ok,
-					message: 'Events fetched',
+					message: 'AVAILABILITIES_FETCHED',
 					result: {
 						is_available: false,
 					},
@@ -454,9 +452,9 @@ module.exports = class availabilityHelper {
 			console.log(`Elapsed time: ${end - start} milliseconds`)
 
 			let updatedAvailabilities = userAvailabilities
-			if (sessions) {
+			if (sessions && process.env.MULTIPLE_BOOKING === 'false') {
 				updatedAvailabilities = this.updateAvailabilities(sessions, userAvailabilities)
-				updatedAvailabilities = this.filterAvailabilitiesByMinimumDuration(userAvailabilities)
+				updatedAvailabilities = this.filterAvailabilitiesByMinimumDuration(updatedAvailabilities)
 			}
 
 			const available_users = updatedAvailabilities.map(({ user_id }) => user_id)
@@ -465,7 +463,7 @@ module.exports = class availabilityHelper {
 
 			return responses.successResponse({
 				statusCode: httpStatusCode.ok,
-				message: 'Events fetched',
+				message: 'AVAILABILITIES_FETCHED',
 				result: userDetails,
 			})
 		} catch (error) {

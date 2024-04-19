@@ -14,9 +14,6 @@ module.exports = class Availability {
 	 */
 	async create(req) {
 		try {
-			req.decodedToken = {
-				id: 133,
-			}
 			const createdQuestion = await availabilityService.create(req.body, req.decodedToken)
 			return createdQuestion
 		} catch (error) {
@@ -33,9 +30,6 @@ module.exports = class Availability {
 	 */
 	async update(req) {
 		try {
-			req.decodedToken = {
-				id: 133,
-			}
 			return await availabilityService.update(req.params.id, req.body, req.decodedToken)
 		} catch (error) {
 			return error
@@ -50,9 +44,6 @@ module.exports = class Availability {
 	 */
 	async delete(req) {
 		try {
-			req.decodedToken = {
-				id: 133,
-			}
 			return await availabilityService.delete(req.params.id, req.decodedToken)
 		} catch (error) {
 			return error
@@ -96,9 +87,9 @@ module.exports = class Availability {
 	 * @param {Object} req - The request object containing the request query and parameters.
 	 * @returns {Promise<Object>} - The list of available users.
 	 */
-	async availableUsers(req) {
+	async users(req) {
 		try {
-			return await availabilityService.availableUsers(req.query, req.params.id)
+			return await availabilityService.users(req.query, req.params.id)
 		} catch (error) {
 			return error
 		}
