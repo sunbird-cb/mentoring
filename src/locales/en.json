@@ -163,5 +163,6 @@
 	"AVAILABILITY_NOT_FOUND": "Availability not found",
 	"AVAILABILITY_UPDATED_SUCCESSFULLY": "Availability updated successfully",
 	"AVAILABILITY_DELETED_SUCCESSFULLY": "Availability deleted successfully",
-	"AVAILABILITIES_FETCHED": "Availability fetched successfully"
+	"AVAILABILITIES_FETCHED": "Availability fetched successfully",
+	"ORG_POLICIES_SET_SUCCESSFULLY": "Org policies set successfully"
 }
