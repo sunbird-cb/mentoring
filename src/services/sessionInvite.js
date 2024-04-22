@@ -75,7 +75,7 @@ module.exports = class UserInviteHelper {
 
 					if (templateData) {
 						const sessionUploadURL = await utils.getDownloadableUrl(output_path)
-						await this.sendInviteeEmail(templateData, data.user, sessionUploadURL) //Rename this to function to generic name since this function is used for both Invitee & Org-admin.
+						await this.sendSessionManagerEmail(templateData, data.user, sessionUploadURL) //Rename this to function to generic name since this function is used for both Invitee & Org-admin.
 					}
 				}
 
@@ -141,34 +141,25 @@ module.exports = class UserInviteHelper {
 			const parsedCSVData = []
 			const csvToJsonData = await csv().fromFile(csvFilePath)
 			if (csvToJsonData.length > 0) {
-				csvToJsonData.forEach((row) => {
-					const {
-						'Session Title': title,
-						Description: description,
-						'Session Type': type,
-						'Mentor(Email/Mobile Num)': mentor_id,
-						'Mentees(Email/Mobile Num)': mentees,
-						'Date(DD-MM-YYYY)': date,
-						'Time Zone(IST/UTC)': time_zone,
-						'Time (24 hrs)': time24hrs,
-						'Duration(Min)': duration,
-						'Recommended For(Not Mandatory)': recommended_for,
-						'Categories(Not Mandatory)': categories,
-						Medium: medium,
-						'Meeting Link': meetingLinkValue,
-					} = row
-					// Check if the required fields exist in the row
-					if (
-						title &&
-						description &&
-						type &&
-						mentor_id &&
-						date &&
-						time_zone &&
-						time24hrs &&
-						duration &&
-						medium
-					) {
+				csvToJsonData.forEach(
+					(row) => {
+						const {
+							'Session Title': title,
+							Description: description,
+							'Session Type': type,
+							'Mentor(Email/Mobile Num)': mentor_id,
+							'Mentees(Email/Mobile Num)': mentees,
+							'Date(DD-MM-YYYY)': date,
+							'Time Zone(IST/UTC)': time_zone,
+							'Time (24 hrs)': time24hrs,
+							'Duration(Min)': duration,
+							'Recommended For': recommended_for,
+							Categories: categories,
+							Medium: medium,
+							'Meeting Link': meetingLinkValue,
+							'Meeting Passcode': meetingPasscode,
+						} = row
+
 						const menteesList = mentees
 							? mentees
 									.replace(/"/g, '')
@@ -200,11 +191,41 @@ module.exports = class UserInviteHelper {
 							duration,
 							recommended_for: recommendedList,
 							categories: categoriesList,
-							medium: [medium],
-							meeting_info: { link: meetingLinkValue },
+							medium: medium,
+							meeting_info: {
+								link: meetingLinkValue,
+								meta: {},
+								value: '',
+								platform: '',
+							},
 						})
+						if (meetingLinkValue.includes('zoom.us/j/')) {
+							const zoomMeetingId = meetingLinkValue.split('zoom.us/j/')[1].split('?')[0]
+							parsedCSVData[parsedCSVData.length - 1].meeting_info.value = 'Zoom'
+							parsedCSVData[parsedCSVData.length - 1].meeting_info.platform = 'Zoom'
+							parsedCSVData[parsedCSVData.length - 1].meeting_info.meta.meetingId = `"${zoomMeetingId}"`
+							parsedCSVData[parsedCSVData.length - 1].meeting_info.meta.meetingId = `"${meetingPasscode}"`
+						} else if (meetingLinkValue.includes('whatsapp.com/video/')) {
+							// Check if WhatsApp link
+							parsedCSVData[parsedCSVData.length - 1].meeting_info.value = 'WhatsApp'
+							parsedCSVData[parsedCSVData.length - 1].meeting_info.platform = 'WhatsApp'
+						} else if (meetingLinkValue.includes('meet.google.com/')) {
+							// Check if Google Meet link
+							parsedCSVData[parsedCSVData.length - 1].meeting_info.value = 'Google Meet'
+							parsedCSVData[parsedCSVData.length - 1].meeting_info.platform = 'Gmeet'
+						} else if (meetingLinkValue == '{}') {
+							// Other platform or invalid link
+							parsedCSVData[parsedCSVData.length - 1].meeting_info.value = ''
+							parsedCSVData[parsedCSVData.length - 1].meeting_info.platform = ''
+							parsedCSVData[parsedCSVData.length - 1].meeting_info.link = ''
+						} else {
+							// Handle empty or invalid meetingLinkValue
+							parsedCSVData[parsedCSVData.length - 1].status = 'Invalid'
+							parsedCSVData[parsedCSVData.length - 1].statusMessage = 'Invlaid Meeting Link'
+						}
 					}
-				})
+					//	}
+				)
 			}
 			return {
 				success: true,
@@ -227,74 +248,81 @@ module.exports = class UserInviteHelper {
 			// Process each session detail from CSV data
 			for (const session of csvData) {
 				// Check compulsory fields
-				if (
-					!session.title &&
-					!session.description &&
-					!session.date &&
-					!session.time24hrs &&
-					!session.medium &&
-					!session.type &&
-					!session.mentor_id &&
-					!session.duration &&
-					!session.time_zone
-				) {
-					session.status = 'Invalid data: Compulsory field(s) missing'
-					rowsWithStatus.push(session)
-					invalidRowsCount++
+				const requiredFields = [
+					'title',
+					'description',
+					'date',
+					'type',
+					'mentor_id',
+					'time_zone',
+					'time24hrs',
+					'duration',
+					'medium',
+					'recommended_for',
+					'categories',
+				]
+				const missingFields = requiredFields.filter((field) => !session[field])
+				if (missingFields.length > 0) {
+					session.status = 'Invlaid'
+					session.statusMessage = `Mandatory fields ${missingFields.join(', ')} not filled `
 				} else {
-					session.status = 'Valid'
 					validRowsCount++
 					session.start_date = utils.convertToEpochTime(session.date, session.time24hrs, session.time_zone)
 					const durationTime = utils.addDurationToTime(session.time24hrs, session.duration)
 					session.end_date = utils.convertToEpochTime(session.date, durationTime, session.time_zone)
-					if (session.mentees.length === 0 || session.mentees === '[]') {
-						return
-					} else {
-						if (session.mentees && Array.isArray(session.mentees)) {
-							for (let i = 0; i < session.mentees.length; i++) {
-								const menteeEmail = session.mentees[i].toLowerCase()
-								const encryptedMenteeEmail = utils.encrypt(menteeEmail)
-								const menteeId = await userRequests.getListOfUserDetailsByEmail(encryptedMenteeEmail)
-								if (menteeId.result != {}) {
-									session.mentees[i] = menteeId.result.id
-								} else {
-									session.mentees[i] = ''
-									session.status = 'Invalid Mentee Email'
-									validRowsCount--
-									invalidRowsCount++
-								}
+					if (session.mentees && Array.isArray(session.mentees)) {
+						for (let i = 0; i < session.mentees.length; i++) {
+							const menteeEmail = session.mentees[i].toLowerCase()
+							const encryptedMenteeEmail = utils.encrypt(menteeEmail)
+							const menteeId = await userRequests.getListOfUserDetailsByEmail(encryptedMenteeEmail)
+							if (!menteeId.result.id) {
+								session.mentees[i] = menteeEmail
+								session.status = 'Invalid'
+								session.statusMessage = 'Invalid Mentee Email'
+								invalidRowsCount++
+							} else {
+								session.status = 'Valid'
+								session.mentees[i] = menteeId.result.id
 							}
 						}
 					}
 					const mentorEmail = session.mentor_id.toLowerCase()
 					const encryptedMentorEmail = utils.encrypt(mentorEmail)
 					const mentorId = await userRequests.getListOfUserDetailsByEmail(encryptedMentorEmail)
-					if (mentorId.result != {}) {
-						session.mentor_id = mentorId.result.id
-					} else {
-						session.status = 'Invalid Mentor Email'
-						validRowsCount--
+					if (Array.isArray(mentorId.result) && mentorId.result.length === 0) {
+						session.status = 'Invalid'
+						session.statusMessage = 'Invalid Mentor Email'
 						invalidRowsCount++
+					} else {
+						session.status = 'Valid'
+						session.mentor_id = mentorId.result.id
 					}
-
-					rowsWithStatus.push(session)
+					if (session.meeting_info.link === '{}') {
+						session.meeting_info.link = ''
+					}
 				}
+				rowsWithStatus.push(session)
 			}
-			const outputArray = rowsWithStatus.map((item) => ({
-				type: item.type,
-				mentor_id: item.mentor_id,
+			const BodyDataArray = rowsWithStatus.map((item) => ({
 				title: item.title,
 				description: item.description,
-				start_date: item.start_date,
-				end_date: item.end_date,
+				type: item.type,
+				mentor_id: item.mentor_id,
+				mentees: item.mentees,
+				date: item.date,
+				time_zone: item.time_zone,
+				time24hrs: item.time24hrs,
+				duration: item.duration,
 				recommended_for: item.recommended_for,
 				categories: item.categories,
 				medium: item.medium,
-				time_zone: item.time_zone,
 				meeting_info: item.meeting_info,
+				status: item.status,
+				start_date: item.start_date,
+				end_date: item.end_date,
+				statusMessage: item.statusMessage,
 			}))
-
-			const sessionCreationOutput = await this.processCsvData(outputArray, userId, orgId, isMentor, notifyUser)
+			const sessionCreationOutput = await this.processCsvData(BodyDataArray, userId, orgId, isMentor, notifyUser)
 			const csvContent = utils.generateCSVContent(sessionCreationOutput)
 			const outputFilePath = path.join(sessionFileDir, outputFileName)
 			fs.writeFileSync(outputFilePath, csvContent)
@@ -322,19 +350,24 @@ module.exports = class UserInviteHelper {
 			}
 		}
 	}
+
 	static async processCsvData(dataArray, userId, orgId, isMentor, notifyUser) {
 		const output = []
 		for (const data of dataArray) {
-			const sessionCreation = await sessionService.create(data, userId, orgId, isMentor, notifyUser)
-			if (
-				sessionCreation.responseCode === 'OK' &&
-				sessionCreation.statusCode === common.STATUSCODE &&
-				sessionCreation.message === common.STATUSMESSAGE
-			) {
-				data.status = sessionCreation.message
-				output.push(data)
+			if (data.status != 'Invalid') {
+				const sessionCreation = await sessionService.create(data, userId, orgId, isMentor, notifyUser)
+				if (
+					sessionCreation.responseCode === common.CREATEDRESPONSECODE &&
+					sessionCreation.statusCode === common.STATUSCODE &&
+					sessionCreation.message === common.STATUSMESSAGE
+				) {
+					data.status = sessionCreation.message
+					output.push(data)
+				} else {
+					data.status = sessionCreation.message
+					output.push(data)
+				}
 			} else {
-				data.status = sessionCreation.message
 				output.push(data)
 			}
 		}
@@ -388,7 +421,7 @@ module.exports = class UserInviteHelper {
 		}
 	}
 
-	static async sendInviteeEmail(templateData, userData, inviteeUploadURL = null, subjectComposeData = {}) {
+	static async sendSessionManagerEmail(templateData, userData, sessionUploadURL = null, subjectComposeData = {}) {
 		try {
 			const payload = {
 				type: common.notificationEmailType,
@@ -400,12 +433,7 @@ module.exports = class UserInviteHelper {
 							: templateData.subject,
 					body: utils.composeEmailBody(templateData.body, {
 						name: userData.name,
-						role: userData.role || '',
-						orgName: userData.org_name || '',
-						appName: process.env.APP_NAME,
-						inviteeUploadURL,
-						portalURL: process.env.PORTAL_URL,
-						roles: userData.roles || '',
+						sessionUploadURL,
 					}),
 				},
 			}

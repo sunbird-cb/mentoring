@@ -622,15 +622,30 @@ const generateFileName = (name, extension) => {
 }
 
 function generateCSVContent(data) {
-	// If data is empty
 	if (data.length === 0) {
 		return 'No Data Found'
 	}
+
 	const headers = Object.keys(data[0])
-	return [
-		headers.join(','),
-		...data.map((row) => headers.map((fieldName) => JSON.stringify(row[fieldName])).join(',')),
-	].join('\n')
+
+	const csvRows = data.map((row) => {
+		return headers
+			.map((fieldName) => {
+				const value = row[fieldName]
+				if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+					// Stringify object values and enclose them in double quotes
+					return JSON.stringify(value)
+				} else if (Array.isArray(value)) {
+					// Join array values with comma and space, and enclose them in double quotes
+					return '"' + value.join(', ') + '"'
+				} else {
+					return JSON.stringify(value)
+				}
+			})
+			.join(',')
+	})
+
+	return [headers.join(','), ...csvRows].join('\n')
 }
 
 const addDurationToTime = (timeString, durationMinutes) => {

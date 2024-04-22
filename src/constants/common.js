@@ -124,7 +124,7 @@ module.exports = {
 	fileTypeCSV: 'text/csv',
 	NO_OF_ATTEMPTS: 3,
 	BACK_OFF_RETRY_QUEUE: 600000,
-	tempFolderForBulkUpload: '/public/invites',
+	tempFolderForBulkUpload: 'public/invites',
 	sessionOutputFile: 'output-session-creation',
 	csvExtension: '.csv',
 	responseType: 'stream',
@@ -133,7 +133,8 @@ module.exports = {
 	FAILED_STATUS: 'FAILED',
 	PROCESSED_STATUS: 'PROCESSED',
 	notificationEmailType: 'email',
-	STATUSCODE: 'OK',
+	STATUSCODE: 201,
+	CREATEDRESPONSECODE: 'OK',
 	STATUSMESSAGE: 'SESSION_CREATED_SUCCESSFULLY',
 	SESSION_TYPE: {
 		PUBLIC: 'PUBLIC',

@@ -596,8 +596,6 @@ module.exports = class OrgAdminService {
 	static async bulkSessionCreate(filePath, tokenInformation) {
 		try {
 			const { id, organization_id } = tokenInformation
-			const userDetail = await userRequests.details('', id)
-
 			const creationData = {
 				name: utils.extractFilename(filePath),
 				input_path: filePath,
@@ -614,6 +612,7 @@ module.exports = class OrgAdminService {
 				})
 			}
 
+			const userDetail = await userRequests.details('', id)
 			//push to queue
 			const redisConfiguration = utils.generateRedisConfigForQueue()
 			const sessionQueue = new Queue(process.env.DEFAULT_QUEUE, redisConfiguration)
