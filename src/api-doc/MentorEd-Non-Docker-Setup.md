@@ -179,8 +179,8 @@ Before setting up the following MentorEd application, dependencies given below s
 10. **Run Service Scripts**
 
     ```
-    cd mentoring/src/scripts && node psqlFunction.js && node viewsScript.js && cd ../../.. && \
     cd user/src/scripts && node insertDefaultOrg.js && node viewsScript.js && \
+    cd mentoring/src/scripts && node psqlFunction.js && node viewsScript.js && cd ../../.. && \
     node -r module-alias/register uploadSampleCSV.js && cd ../../..
     ```
 
