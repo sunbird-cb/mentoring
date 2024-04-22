@@ -257,6 +257,16 @@ let enviromentVariables = {
 		optional: true,
 		default: common.AUTH_METHOD.JWT_ONLY,
 	},
+	MINIMUM_DURATION_FOR_AVAILABILITY: {
+		message: 'Required minimum duration for availability',
+		optional: true,
+		default: 30,
+	},
+	MULTIPLE_BOOKING: {
+		message: 'Required value for multiple booking',
+		optional: true,
+		default: true,
+	},
 }
 
 let success = true
