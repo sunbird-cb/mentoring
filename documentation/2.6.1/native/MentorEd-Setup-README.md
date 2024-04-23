@@ -10,9 +10,9 @@ Before setting up the following MentorEd application, dependencies given below s
 
     1. Download dependency management scripts:
         ```
-        curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/check-dependencies.sh && \
-        curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/install-dependencies.sh && \
-        curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/uninstall-dependencies.sh && \
+        curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/native/scripts/linux/check-dependencies.sh && \
+        curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/native/scripts/linux/install-dependencies.sh && \
+        curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/native/scripts/linux/uninstall-dependencies.sh && \
         chmod +x check-dependencies.sh && \
         chmod +x install-dependencies.sh && \
         chmod +x uninstall-dependencies.sh
@@ -51,11 +51,11 @@ Before setting up the following MentorEd application, dependencies given below s
     - **Ubuntu/Linux/Mac**
 
         ```
-        git clone https://github.com/ELEVATE-Project/mentoring.git && \
-        git clone https://github.com/ELEVATE-Project/user.git && \
-        git clone https://github.com/ELEVATE-Project/notification.git && \
-        git clone https://github.com/ELEVATE-Project/interface-service.git && \
-        git clone https://github.com/ELEVATE-Project/scheduler.git && \
+        git clone -b release-2.5.0 https://github.com/ELEVATE-Project/mentoring.git && \
+        git clone -b release-2.5.0 https://github.com/ELEVATE-Project/user.git && \
+        git clone -b release-2.5.0 https://github.com/ELEVATE-Project/notification.git && \
+        git clone -b release-2.5.0 https://github.com/ELEVATE-Project/interface-service.git && \
+        git clone -b release-2.5.0 https://github.com/ELEVATE-Project/scheduler.git && \
         git clone -b release-2.5.0 https://github.com/ELEVATE-Project/mentoring-mobile-app.git
         ```
 
@@ -77,12 +77,12 @@ Before setting up the following MentorEd application, dependencies given below s
     - **Ubuntu/Linux/Mac**
 
         ```
-        curl -L -o mentoring/src/.env https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/envs/local/mentoring_env && \
-        curl -L -o user/src/.env https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/envs/local/user_env && \
-        curl -L -o notification/src/.env https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/envs/local/notification_env && \
-        curl -L -o interface-service/src/.env https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/envs/local/interface_env && \
-        curl -L -o scheduler/src/.env https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/envs/local/scheduler_env && \
-        curl -L -o mentoring-mobile-app/src/environments/environment.ts https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/envs/environment.ts
+        curl -L -o mentoring/src/.env https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/native/envs/mentoring_env && \
+        curl -L -o user/src/.env https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/native/envs/user_env && \
+        curl -L -o notification/src/.env https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/native/envs/notification_env && \
+        curl -L -o interface-service/src/.env https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/native/envs/local/interface_env && \
+        curl -L -o scheduler/src/.env https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/native/envs/scheduler_env && \
+        curl -L -o mentoring-mobile-app/src/environments/environment.ts https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/native/envs/environment.ts
         ```
 
 5. **Create Databases**
@@ -90,7 +90,7 @@ Before setting up the following MentorEd application, dependencies given below s
     - **Ubuntu/Linux/Mac**
         1. Download `create-databases.sh` Script File:
             ```
-            curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/create-databases.sh
+            curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/native/scripts/linux/create-databases.sh
             ```
         2. Make the executable by running the following command:
             ```
@@ -122,13 +122,13 @@ Before setting up the following MentorEd application, dependencies given below s
     1. Download mentoring `distributionColumns.sql` file.
 
         ```
-        curl -o ./mentoring/distributionColumns.sql -L https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/distribution-columns/mentoring/distributionColumns.sql
+        curl -o ./mentoring/distributionColumns.sql -JL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/distribution-columns/mentoring/distributionColumns.sql
         ```
 
     2. Download user `distributionColumns.sql` file.
 
         ```
-        curl -o ./user/distributionColumns.sql -JL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/distribution-columns/user/distributionColumns.sql
+        curl -o ./user/distributionColumns.sql -JL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/distribution-columns/user/distributionColumns.sql
         ```
 
     3. Set up the citus_setup_local file by following the steps given below.
@@ -138,7 +138,7 @@ Before setting up the following MentorEd application, dependencies given below s
             1. Download the `citus_setup_local.sh` file:
 
                 ```
-                curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/citus_setup_local.sh
+                curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/native/scripts/linux/citus_setup.sh
                 ```
 
             2. Make the setup file executable by running the following command:
@@ -180,8 +180,8 @@ Before setting up the following MentorEd application, dependencies given below s
 
     ```
     cd user/src/scripts && node insertDefaultOrg.js && node viewsScript.js && \
-    cd mentoring/src/scripts && node psqlFunction.js && node viewsScript.js && cd ../../.. && \
     node -r module-alias/register uploadSampleCSV.js && cd ../../..
+    cd mentoring/src/scripts && node psqlFunction.js && node viewsScript.js && cd ../../.. && \
     ```
 
 11. **Start The Portal**
@@ -206,12 +206,12 @@ Before setting up the following MentorEd application, dependencies given below s
            Navigate to mentoring-mobile-app directory and run:
 
             ```
-            ionic build
+            cd /mentoring-mobile-app && ionic build && cd ..
             ```
 
         4. Start the portal:
             ```
-            pm2 start pm2.config.json
+            cd /mentoring-mobile-app && pm2 start pm2.config.json && cd ..
             ```
 
     Navigate to http://localhost:7601 to access the MentorEd Portal.
