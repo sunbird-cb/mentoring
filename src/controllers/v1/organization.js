@@ -8,13 +8,4 @@ module.exports = class Organization {
 			return error
 		}
 	}
-
-	async eventListener(req) {
-		try {
-			console.log('CONTROLLER REQUEST BODY: ', req.body)
-			return await organizationService.createOrgExtension(req.body)
-		} catch (error) {
-			throw error
-		}
-	}
 }

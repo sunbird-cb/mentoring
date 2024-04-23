@@ -1,7 +1,7 @@
 const EntityType = require('../models/index').EntityType
 const Entity = require('../models/index').Entity
 const { Op } = require('sequelize')
-//const Sequelize = require('../models/index').sequelize
+//const Sequelize = require('../database/models/index').sequelize
 
 module.exports = class UserEntityData {
 	static async createEntityType(data) {
@@ -24,11 +24,18 @@ module.exports = class UserEntityData {
 		}
 	}
 
-	static async findAllEntityTypes(orgIds, attributes, filter = {}) {
+	static async findAllEntityTypes(orgId, attributes, filter = {}) {
 		try {
 			const entityData = await EntityType.findAll({
 				where: {
-					organization_id: orgIds,
+					[Op.or]: [
+						{
+							created_by: 0,
+						},
+						{
+							organization_id: orgId,
+						},
+					],
 					...filter,
 				},
 				attributes,
@@ -43,24 +50,21 @@ module.exports = class UserEntityData {
 		try {
 			const entityTypes = await EntityType.findAll({
 				where: filter,
-				raw: true,
 			})
 
-			const entityTypeIds = entityTypes.map((entityType) => entityType.id)
+			const result = await Promise.all(
+				entityTypes.map(async (entityType) => {
+					const entities = await Entity.findAll({
+						where: { entity_type_id: entityType.id },
+						//attributes: { exclude: ['entity_type_id'] },
+					})
 
-			const entities = await Entity.findAll({
-				where: { entity_type_id: entityTypeIds, status: 'ACTIVE' },
-				raw: true,
-				//attributes: { exclude: ['entity_type_id'] },
-			})
-
-			const result = entityTypes.map((entityType) => {
-				const matchingEntities = entities.filter((entity) => entity.entity_type_id === entityType.id)
-				return {
-					...entityType,
-					entities: matchingEntities,
-				}
-			})
+					return {
+						...entityType.toJSON(),
+						entities: entities.map((entity) => entity.toJSON()),
+					}
+				})
+			)
 
 			return result
 		} catch (error) {
@@ -95,12 +99,11 @@ module.exports = class UserEntityData {
 		}
 	} */
 
-	static async updateOneEntityType(id, orgId, update, options = {}) {
+	static async updateOneEntityType(id, update, options = {}) {
 		try {
 			return await EntityType.update(update, {
 				where: {
 					id: id,
-					organization_id: orgId,
 				},
 				...options,
 			})
@@ -109,12 +112,11 @@ module.exports = class UserEntityData {
 		}
 	}
 
-	static async deleteOneEntityType(id, organizationId) {
+	static async deleteOneEntityType(id) {
 		try {
 			return await EntityType.destroy({
 				where: {
 					id: id,
-					organization_id: organizationId,
 				},
 				individualHooks: true,
 			})
@@ -135,25 +137,22 @@ module.exports = class UserEntityData {
 		try {
 			const entityTypes = await EntityType.findAll({
 				where: filter,
-				raw: true,
 			})
 
-			const entityTypeIds = entityTypes.map((entityType) => entityType.id)
+			const result = await Promise.all(
+				entityTypes.map(async (entityType) => {
+					const entities = await Entity.findAll({
+						where: { entity_type_id: entityType.id, status: 'ACTIVE' },
+						//attributes: { exclude: ['entity_type_id'] },
+					})
 
-			// Fetch all matching entities using the IDs
-			const entities = await Entity.findAll({
-				where: { entity_type_id: entityTypeIds, status: 'ACTIVE' },
-				raw: true,
-				//attributes: { exclude: ['entity_type_id'] },
-			})
+					return {
+						...entityType.toJSON(),
+						entities: entities.map((entity) => entity.toJSON()),
+					}
+				})
+			)
 
-			const result = entityTypes.map((entityType) => {
-				const matchingEntities = entities.filter((entity) => entity.entity_type_id === entityType.id)
-				return {
-					...entityType,
-					entities: matchingEntities,
-				}
-			})
 			return result
 		} catch (error) {
 			return error

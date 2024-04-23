@@ -1,7 +1,7 @@
 const httpStatusCode = require('@generics/http-status')
+const common = require('@constants/common')
 const notificationTemplateQueries = require('@database/queries/notificationTemplate')
 const utils = require('@generics/utils')
-const responses = require('@helpers/responses')
 
 module.exports = class NotificationTemplateHelper {
 	/**
@@ -16,7 +16,7 @@ module.exports = class NotificationTemplateHelper {
 		try {
 			const template = await notificationTemplateQueries.findOne({ code: bodyData.code })
 			if (template) {
-				return responses.failureResponse({
+				return common.failureResponse({
 					message: 'NOTIFICATION_TEMPLATE_ALREADY_EXISTS',
 					statusCode: httpStatusCode.bad_request,
 					responseCode: 'CLIENT_ERROR',
@@ -27,7 +27,7 @@ module.exports = class NotificationTemplateHelper {
 			bodyData['created_by'] = tokenInformation.id
 
 			const createdNotification = await notificationTemplateQueries.create(bodyData)
-			return responses.successResponse({
+			return common.successResponse({
 				statusCode: httpStatusCode.created,
 				message: 'NOTIFICATION_TEMPLATE_CREATED_SUCCESSFULLY',
 				result: createdNotification,
@@ -62,14 +62,14 @@ module.exports = class NotificationTemplateHelper {
 
 			const result = await notificationTemplateQueries.updateTemplate(filter, bodyData)
 			if (result == 0) {
-				return responses.failureResponse({
+				return common.failureResponse({
 					message: 'NOTIFICATION_TEMPLATE_NOT_FOUND',
 					statusCode: httpStatusCode.bad_request,
 					responseCode: 'CLIENT_ERROR',
 				})
 			}
 
-			return responses.successResponse({
+			return common.successResponse({
 				statusCode: httpStatusCode.accepted,
 				message: 'NOTIFICATION_TEMPLATE_UPDATED_SUCCESSFULLY',
 			})
@@ -98,13 +98,13 @@ module.exports = class NotificationTemplateHelper {
 
 			const notificationTemplates = await notificationTemplateQueries.findAllNotificationTemplates(filter)
 			if (!notificationTemplates) {
-				return responses.failureResponse({
+				return common.failureResponse({
 					message: 'NOTIFICATION_TEMPLATE_NOT_FOUND',
 					statusCode: httpStatusCode.bad_request,
 					responseCode: 'CLIENT_ERROR',
 				})
 			}
-			return responses.successResponse({
+			return common.successResponse({
 				statusCode: httpStatusCode.ok,
 				message: 'NOTIFICATION_TEMPLATE_FETCHED_SUCCESSFULLY',
 				result: notificationTemplates ? notificationTemplates : {},
@@ -119,7 +119,7 @@ module.exports = class NotificationTemplateHelper {
 				organization_id: organizationId,
 			})
 
-			return responses.successResponse({
+			return common.successResponse({
 				statusCode: httpStatusCode.ok,
 				message: 'NOTIFICATION_TEMPLATE_FETCHED_SUCCESSFULLY',
 				result: notificationTemplates,

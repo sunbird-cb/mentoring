@@ -1,38 +1,41 @@
-const { Client } = require('pg')
+const mongoose = require('mongoose')
+const mongoose_autopopulate = require('mongoose-autopopulate')
+const mongoose_timestamp = require('mongoose-timestamp')
 const { matchers } = require('jest-json-schema')
-const { Pool } = require('pg')
-const pool = new Pool()
-
 expect.extend(matchers)
 
-//PostgreSQL connection string
-const connectionString = 'postgres://postgres:postgres@localhost:5432/mentoring-local'
+//Connect to database
 
-// Connect to the PostgreSQL database using the connection string
-const db = new Client({
-	connectionString: connectionString,
+const db = mongoose.createConnection('mongodb://127.0.0.1:27017/elevate-mentoring', {
+	useNewUrlParser: true,
 })
 
-db.connect((err) => {
-	if (err) {
-		console.error('Database connection error:', err)
-	} else {
-		console.log('Connected to DB')
-	}
+db.on('error', function () {
+	console.log('Database connection error:')
 })
+
+db.once('open', function () {
+	//console.log('Connected to DB')
+})
+
+mongoose.plugin(mongoose_timestamp, {
+	createdAt: 'createdAt',
+	updatedAt: 'updatedAt',
+})
+
+mongoose.plugin(mongoose_autopopulate)
 
 global.db = db
 
-beforeAll(async () => {
-	// You can add any setup code you need here
-})
+beforeAll(async () => {})
 
 afterAll(async () => {
 	try {
-		// Add any cleanup code you need, such as dropping tables, here
+		//await db.dropDatabase()
+		await db.close()
+		mongoose.disconnect()
 	} catch (error) {
-		console.error(error)
-	} finally {
-		db.end() // Close the PostgreSQL connection
+		console.log(error)
 	}
+	//mongoose.disconnect()
 })

@@ -1,5 +1,4 @@
 let table = require('cli-table')
-const common = require('@constants/common')
 
 let tableData = new table()
 
@@ -201,61 +200,6 @@ let enviromentVariables = {
 	DEFAULT_ORG_ID: {
 		message: 'Default organization ID',
 		optional: false,
-	},
-	MENTEE_SESSION_EDITED_BY_MANAGER_EMAIL_TEMPLATE: {
-		message: 'Required email template name for mentee session edited by manager',
-		optional: true,
-		default: 'mentee_session_edited_by_manager_email_template',
-	},
-	MENTEE_SESSION_ENROLLMENT_BY_MANAGER_EMAIL_TEMPLATE: {
-		message: 'Required email template name for mentee session enrollment by manager',
-		optional: true,
-		default: 'mentee_session_enrollment_by_manager',
-	},
-	MENTOR_PRIVATE_SESSION_INVITE_BY_MANAGER_EMAIL_TEMPLATE: {
-		message: 'Required email template name for mentor private session invite by manager',
-		optional: true,
-		default: 'mentor_invite_private_session_by_manager',
-	},
-	MENTOR_PUBLIC_SESSION_INVITE_BY_MANAGER_EMAIL_TEMPLATE: {
-		message: 'Required email template name for mentor public session invite by manager',
-		optional: true,
-		default: 'mentor_invite_public_session_by_manager',
-	},
-	MENTOR_SESSION_EDITED_BY_MANAGER_EMAIL_TEMPLATE: {
-		message: 'Required email template name for mentor session edited by manager',
-		optional: true,
-		default: 'mentor_session_edited_by_manager_email_template',
-	},
-	MENTOR_SESSION_DELETE_BY_MANAGER_EMAIL_TEMPLATE: {
-		message: 'Required email template name for mentor session deleted by manager',
-		optional: true,
-		default: 'session_deleted_by_manager',
-	},
-	SESSION_TITLE_EDITED_BY_MANAGER_EMAIL_TEMPLATE: {
-		message: 'Required email template name for session title edited by manager',
-		optional: true,
-		default: 'session_title_edited_by_manager_email_template',
-	},
-	ALLOWED_HOST: {
-		message: 'Required CORS allowed host',
-		optional: true,
-		default: '*',
-	},
-	DOWNLOAD_URL_EXPIRATION_DURATION: {
-		message: 'Required downloadable url expiration time',
-		optional: true,
-		default: 3600000,
-	},
-	SIGNED_URL_EXPIRY_IN_MILLISECONDS: {
-		message: 'Required signed url expiration time in milliseconds',
-		optional: true,
-		default: 3600000,
-	},
-	AUTH_METHOD: {
-		message: 'Required authentication method',
-		optional: true,
-		default: common.AUTH_METHOD.JWT_ONLY,
 	},
 }
 

@@ -306,7 +306,7 @@ paths:
         - in: path
           name: formId
           description: Please append a valid form Id to the Request URL.
-          schema:
+          schema: &ref_0
             type: number
           required: true
       requestBody:
@@ -478,8 +478,7 @@ paths:
         - in: path
           name: formId
           description: Please append a valid form Id to the Request URL.
-          schema:
-            type: number
+          schema: *ref_0
           required: false
       requestBody:
         content:
@@ -657,7 +656,7 @@ paths:
          - The API Endpoint for creating a user entity is `/mentoring/v1/entity/create` 
          - It is mandatory to provide values for parameters which are marked as `required` 
          - This is a mandatory parameter and cannot be empty or null.
-      parameters:
+      parameters: &ref_6
         - name: X-auth-token
           in: header
           description: >-
@@ -755,7 +754,7 @@ paths:
                       formsVersion: []
                       correlation: 6191e4d4-438b-4609-8de6-da3694b506b1
                       meeting_platform: BBB
-        '400':
+        '400': &ref_7
           description: Bad Request. User Entity already exists.
           content:
             application.json:
@@ -1065,7 +1064,8 @@ paths:
   /mentoring/v1/sessions/list?page={page}&limit={limit}&status={status}&search={search}:
     get:
       summary: Get list of sessions
-      tags: []
+      tags:
+        - Session APIs
       description: >-
         You can use this API to get a list of session based on certain
         conditions 
@@ -1113,7 +1113,7 @@ paths:
         - in: path
           name: recommended_for
           description: Filters to be applied should be passed like this
-          schema:
+          schema: &ref_19
             type: string
       responses:
         '200':
@@ -2884,7 +2884,8 @@ paths:
          - It is mandatory to provide values for parameters marked with `required` 
          - Mandatory parameter cannot be empty or null
       parameters:
-        - name: X-auth-token
+        - &ref_2
+          name: X-auth-token
           required: true
           in: header
           description: >-
@@ -2999,7 +3000,7 @@ paths:
             application.json:
               schema:
                 $ref: '#/components/schemas/mentors/upcomingSession400Response'
-    parameters: []
+    parameters: &ref_3 []
   /mentoring/v1/questions/create:
     post:
       summary: Create questions
@@ -3624,7 +3625,7 @@ paths:
         - in: path
           name: QuestionSetId
           description: ''
-          schema:
+          schema: &ref_1
             type: number
           required: true
       requestBody:
@@ -3738,8 +3739,7 @@ paths:
         - in: path
           name: QuestionSetId
           description: ''
-          schema:
-            type: number
+          schema: *ref_1
           required: true
       responses:
         '200':
@@ -4261,14 +4261,16 @@ paths:
   /mentoring/v1/mentors/share/{mentorId}:
     get:
       summary: Share mentor profile
-      tags: []
+      tags: &ref_16
+        - Mentor APIs
       description: |-
         This API is associated with mentor profile 
          - Endpoint for share mentor profile is `/mentoring/v1/mentors/share` 
          - It is mandatory to provide values for parameters marked with `required` 
          - Mandatory parameter cannot be empty or null
-      parameters:
-        - name: X-auth-token
+      parameters: &ref_17
+        - &ref_20
+          name: X-auth-token
           in: header
           description: >-
             To make use of the API, you require X-auth-token. This is Available
@@ -4280,7 +4282,7 @@ paths:
           name: mentorId
           required: true
           description: Please append a valid mentorId
-          schema:
+          schema: &ref_21
             type: string
           example: 21
       responses:
@@ -4315,7 +4317,7 @@ paths:
                       share_link: 07fc31acad0de174f940fc39c3718d93
                     meta:
                       correlation: 59a1e835-6786-4e99-98f5-2987229f8e4d
-        '400':
+        '400': &ref_18
           description: Bad request
           content:
             application.json:
@@ -4547,15 +4549,8 @@ paths:
          - Endpoint for listing session `/mentoring/v1/profile/create/` 
          - It is mandatory to provide values for parameters marked with `required` 
          - Mandatory parameter cannot be empty or null
-      parameters:
-        - name: X-auth-token
-          required: true
-          in: header
-          description: >-
-            To make use of the API, you require X-auth-token. This is Available
-            in login API Response.
-          schema:
-            type: string
+      parameters: &ref_4
+        - *ref_2
       responses:
         '200':
           description: ok
@@ -4723,7 +4718,7 @@ paths:
                       formsVersion: []
                       correlation: 4bc32289-a646-40c5-8229-adfa3a92faa6
                       meeting_platform: BBB
-        '400':
+        '400': &ref_5
           description: Bad Request. Mentor Not Found
           content:
             application.json:
@@ -4817,7 +4812,7 @@ paths:
                   configs:
                     notification: true
                     visibility: public
-    parameters: []
+    parameters: *ref_3
   /mentoring/v1/profile/update:
     post:
       summary: Update details
@@ -4828,15 +4823,7 @@ paths:
          - Endpoint for listing session `/mentoring/v1/profile/update` 
          - It is mandatory to provide values for parameters marked with `required` 
          - Mandatory parameter cannot be empty or null
-      parameters:
-        - name: X-auth-token
-          required: true
-          in: header
-          description: >-
-            To make use of the API, you require X-auth-token. This is Available
-            in login API Response.
-          schema:
-            type: string
+      parameters: *ref_4
       responses:
         '200':
           description: ok
@@ -5004,35 +4991,7 @@ paths:
                       formsVersion: []
                       correlation: 4bc32289-a646-40c5-8229-adfa3a92faa6
                       meeting_platform: BBB
-        '400':
-          description: Bad Request. Mentor Not Found
-          content:
-            application.json:
-              schema:
-                $schema: http://json-schema.org/draft-04/schema#
-                type: object
-                properties:
-                  responseCode:
-                    type: string
-                  error:
-                    type: array
-                    items:
-                      type: string
-                  meta:
-                    type: object
-                    properties:
-                      correlation:
-                        type: string
-                  message:
-                    type: string
-              examples:
-                example1:
-                  value:
-                    responseCode: CLIENT_ERROR
-                    error: []
-                    meta:
-                      correlation: e511136d-1383-4f91-aa28-178c96778a68
-                    message: Failed to create mentor extension.
+        '400': *ref_5
       requestBody:
         description: ''
         content:
@@ -5081,45 +5040,7 @@ paths:
                   configs:
                     notification: true
                     visibility: public
-    parameters: []
-  /mentoring/v1/profile/filterList?entity_types={entity_types}:
-    get:
-      summary: Get entity type and organization filter
-      tags:
-        - Profile APIs
-      description: |-
-        To obtain the list of filters used in the mentee/mentor list, use this API.
-         - The API Endpoint for get the filter is `/mentoring/v1/profile/filterList` 
-         - It is mandatory to provide values for parameters which are marked as `required` 
-         - This is a mandatory parameter and cannot be empty or null.
-      parameters:
-        - name: X-auth-token
-          in: header
-          description: >-
-            To use this API, you require an X-auth-token. This is available in
-            the login API Response.
-          required: true
-          schema:
-            type: string
-        - in: path
-          name: entity_types
-          description: Please add the entity type. example designation
-          schema:
-            type: string
-          example: designation
-      responses:
-        '200':
-          description: OK
-          content:
-            application.json:
-              schema:
-                $ref: '#/components/schemas/users/filterList200Response'
-        '400':
-          description: Bad Request. User Entity already exists.
-          content:
-            application.json:
-              schema:
-                $ref: '#/components/schemas/entity/createUserEntity400Response'
+    parameters: *ref_3
   /mentoring/v1/entity-type/create:
     post:
       summary: Create entity type
@@ -5130,15 +5051,7 @@ paths:
          - The API Endpoint for creating a user entity is `/mentoring/v1/entity-type/create` 
          - It is mandatory to provide values for parameters which are marked as `required` 
          - This is a mandatory parameter and cannot be empty or null.
-      parameters:
-        - name: X-auth-token
-          in: header
-          description: >-
-            To use this API, you require an X-auth-token. This is available in
-            the login API Response.
-          required: true
-          schema:
-            type: string
+      parameters: *ref_6
       requestBody:
         content:
           application.json:
@@ -5237,12 +5150,7 @@ paths:
                     meta:
                       correlation: 3babe76b-d277-4073-8a59-8dfb94face9b
                       meeting_platform: BBB
-        '400':
-          description: Bad Request. User Entity already exists.
-          content:
-            application.json:
-              schema:
-                $ref: '#/components/schemas/entity/createUserEntity400Response'
+        '400': *ref_7
     parameters:
       - in: path
         name: ''
@@ -5259,15 +5167,7 @@ paths:
          - The API Endpoint for creating a user entity is `/mentoring/v1/entity-type/read` 
          - It is mandatory to provide values for parameters which are marked as `required` 
          - This is a mandatory parameter and cannot be empty or null.
-      parameters:
-        - name: X-auth-token
-          in: header
-          description: >-
-            To use this API, you require an X-auth-token. This is available in
-            the login API Response.
-          required: true
-          schema:
-            type: string
+      parameters: *ref_6
       requestBody:
         content:
           application/json:
@@ -5388,30 +5288,18 @@ paths:
                     meta:
                       correlation: 64cd08ba-cc87-4172-9633-2146dabe0b78
                       meeting_platform: BBB
-        '400':
-          description: Bad Request. User Entity already exists.
-          content:
-            application.json:
-              schema:
-                $ref: '#/components/schemas/entity/createUserEntity400Response'
+        '400': *ref_7
   /mentoring/v1/entity-type/update/{id}:
     post:
       summary: Update entity type
-      tags: []
+      tags:
+        - Entity Type
       description: |-
         You can use this API to create a user entity  
          - The API Endpoint for creating a user entity is `/mentoring/v1/entity-type/update` 
          - It is mandatory to provide values for parameters that are marked as `required` 
          - This is a mandatory parameter and cannot be empty or null.
-      parameters:
-        - name: X-auth-token
-          in: header
-          description: >-
-            To use this API, you require an X-auth-token. This is available in
-            the login API Response.
-          required: true
-          schema:
-            type: string
+      parameters: *ref_6
       requestBody:
         content:
           application/json:
@@ -5511,30 +5399,18 @@ paths:
                     meta:
                       correlation: 5f384234-cd5a-467e-a5ac-b43365d2a7a3
                       meeting_platform: BBB
-        '400':
-          description: Bad Request. User Entity already exists.
-          content:
-            application.json:
-              schema:
-                $ref: '#/components/schemas/entity/createUserEntity400Response'
+        '400': *ref_7
   /mentoring/v1/entity-type/delete/{id}:
     delete:
       summary: Delete entity type
-      tags: []
+      tags:
+        - Entity Type
       description: |-
         You can use this API to create a user entity  
          - The API Endpoint for creating a user entity is `/mentoring/v1/entity-type/delete` 
          - It is mandatory to provide values for parameters that are marked as `required` 
          - This is a mandatory parameter and cannot be empty or null.
-      parameters:
-        - name: X-auth-token
-          in: header
-          description: >-
-            To use this API, you require an X-auth-token. This is available in
-            the login API Response.
-          required: true
-          schema:
-            type: string
+      parameters: *ref_6
       requestBody:
         content: {}
       responses:
@@ -5570,12 +5446,7 @@ paths:
                     meta:
                       correlation: b6841b40-4977-47b5-ac83-3c1e9aa40771
                       meeting_platform: BBB
-        '400':
-          description: Bad Request. User Entity already exists.
-          content:
-            application.json:
-              schema:
-                $ref: '#/components/schemas/entity/createUserEntity400Response'
+        '400': *ref_7
   /mentoring/v1/org-admin/roleChange:
     post:
       summary: To change a users role
@@ -5586,15 +5457,7 @@ paths:
          - The API Endpoint for changing a users role is `/mentoring/v1/org-admin/roleChange` 
          - It is mandatory to provide values for parameters that are marked as `required` 
          - This is a mandatory parameter and cannot be empty or null.
-      parameters:
-        - name: X-auth-token
-          in: header
-          description: >-
-            To use this API, you require an X-auth-token. This is available in
-            the login API Response.
-          required: true
-          schema:
-            type: string
+      parameters: *ref_6
       requestBody:
         content:
           application/json:
@@ -5671,15 +5534,7 @@ paths:
          - The API Endpoint for inheriting  an entity type is `/mentoring/v1/org-admin/inheritEntityType` 
          - It is mandatory to provide values for parameters that are marked as `required` 
          - This is a mandatory parameter and cannot be empty or null.
-      parameters:
-        - name: X-auth-token
-          in: header
-          description: >-
-            To use this API, you require an X-auth-token. This is available in
-            the login API Response.
-          required: true
-          schema:
-            type: string
+      parameters: *ref_6
       requestBody:
         content:
           application/json:
@@ -5789,19 +5644,11 @@ paths:
          - The API Endpoint for getting organization policy is `/mentoring/v1/org-admin/getOrgPolicies` 
          - It is mandatory to provide values for parameters that are marked as `required` 
          - This is a mandatory parameter and cannot be empty or null.
-      parameters:
-        - name: X-auth-token
-          in: header
-          description: >-
-            To use this API, you require an X-auth-token. This is available in
-            the login API Response.
-          required: true
-          schema:
-            type: string
+      parameters: *ref_6
       requestBody:
         content: {}
       responses:
-        '200':
+        '200': &ref_8
           description: Created
           content:
             application.json:
@@ -5883,15 +5730,7 @@ paths:
          - The API Endpoint for setting related organization policy is `/mentoring/v1/org-admin/updateRelatedOrgs` 
          - It is mandatory to provide values for parameters that are marked as `required` 
          - This is a mandatory parameter and cannot be empty or null.
-      parameters:
-        - name: X-auth-token
-          in: header
-          description: >-
-            To use this API, you require an X-auth-token. This is available in
-            the login API Response.
-          required: true
-          schema:
-            type: string
+      parameters: *ref_6
       requestBody:
         content:
           application/json:
@@ -5924,78 +5763,7 @@ paths:
                     correlation: 252e274b-f6e0-4c29-922b-957fd9374119
                     meetingPlatform: BBB
       responses:
-        '200':
-          description: Created
-          content:
-            application.json:
-              schema:
-                $schema: http://json-schema.org/draft-04/schema#
-                type: object
-                properties:
-                  responseCode:
-                    type: string
-                  message:
-                    type: string
-                  result:
-                    type: object
-                    properties:
-                      organization_id:
-                        type: number
-                      session_visibility_policy:
-                        type: string
-                      mentor_visibility_policy:
-                        type: string
-                      external_session_visibility_policy:
-                        type: string
-                      external_mentor_visibility_policy:
-                        type: string
-                      approval_required_for:
-                        type: array
-                        items:
-                          type: string
-                      allow_mentor_override:
-                        type: boolean
-                      created_by:
-                        type: number
-                      updated_by:
-                        type: number
-                      mentee_feedback_question_set:
-                        type: string
-                      mentor_feedback_question_set:
-                        type: string
-                      created_at:
-                        type: string
-                      updated_at:
-                        type: string
-                  meta:
-                    type: object
-                    properties:
-                      correlation:
-                        type: string
-                      meetingPlatform:
-                        type: string
-              examples:
-                example1:
-                  value:
-                    responseCode: OK
-                    message: ORG_POLICIES_FETCHED_SUCCESSFULLY
-                    result:
-                      organization_id: 3
-                      session_visibility_policy: ALL
-                      mentor_visibility_policy: ALL
-                      external_session_visibility_policy: ALL
-                      external_mentor_visibility_policy: ALL
-                      approval_required_for: []
-                      allow_mentor_override: false
-                      created_by: 2
-                      updated_by: 2
-                      mentee_feedback_question_set: MENTEE_QS1
-                      mentor_feedback_question_set: MENTOR_QS2
-                      created_at: '2023-12-01T12:20:50.758Z'
-                      updated_at: '2023-12-05T15:06:06.117Z'
-                    meta:
-                      correlation: de6f9bef-4a80-4dba-af31-e19d54f36ad5
-                      meetingPlatform: BBB
+        '200': *ref_8
   /mentoring/v1/org-admin/setOrgPolicies:
     post:
       summary: To set organization policy
@@ -6006,15 +5774,7 @@ paths:
          - The API Endpoint for setting organization policy is `/mentoring/v1/org-admin/setOrgPoliciessetOrgPolicies` 
          - It is mandatory to provide values for parameters that are marked as `required` 
          - This is a mandatory parameter and cannot be empty or null.
-      parameters:
-        - name: X-auth-token
-          in: header
-          description: >-
-            To use this API, you require an X-auth-token. This is available in
-            the login API Response.
-          required: true
-          schema:
-            type: string
+      parameters: *ref_6
       requestBody:
         content:
           application/json:
@@ -6123,16 +5883,8 @@ paths:
          - The API Endpoint for deleting a user is `/mentoring/v1/admin/userDelete` 
          - It is mandatory to provide values for parameters that are marked as `required` 
          - This is a mandatory parameter and cannot be empty or null.
-      parameters:
-        - name: X-auth-token
-          in: header
-          description: >-
-            To use this API, you require an X-auth-token. This is available in
-            the login API Response.
-          required: true
-          schema:
-            type: string
-      requestBody:
+      parameters: *ref_6
+      requestBody: &ref_9
         content: {}
       responses:
         '200':
@@ -6182,10 +5934,11 @@ paths:
         schema:
           type: number
         required: true
-      - in: path
+      - &ref_10
+        in: path
         name: ''
         description: ''
-        schema:
+        schema: &ref_15
           type: string
   /mentoring/v1/admin/triggerViewRebuild:
     get:
@@ -6197,23 +5950,14 @@ paths:
          - The API Endpoint for creating view is `/mentoring/v1/admin/triggerViewRebuild` 
          - It is mandatory to provide values for parameters that are marked as `required` 
          - This is a mandatory parameter and cannot be empty or null.
-      parameters:
-        - name: X-auth-token
-          in: header
-          description: >-
-            To use this API, you require an X-auth-token. This is available in
-            the login API Response.
-          required: true
-          schema:
-            type: string
-      requestBody:
-        content: {}
-      responses:
+      parameters: *ref_6
+      requestBody: *ref_9
+      responses: &ref_11
         '200':
           description: Created
           content:
             application.json:
-              schema:
+              schema: &ref_13
                 $schema: http://json-schema.org/draft-04/schema#
                 type: object
                 properties:
@@ -6241,12 +5985,8 @@ paths:
                     meta:
                       correlation: b04f35d7-29fb-4a16-b32f-6f852b291753
                       meetingPlatform: BBB
-    parameters:
-      - in: path
-        name: ''
-        description: ''
-        schema:
-          type: string
+    parameters: &ref_12
+      - *ref_10
   /mentoring/v1/admin/triggerViewRebuildInternal:
     get:
       summary: >-
@@ -6259,56 +5999,10 @@ paths:
          - The API Endpoint for creating view is `/mentoring/v1/admin/triggerViewRebuildInternal` 
          - It is mandatory to provide values for parameters that are marked as `required` 
          - This is a mandatory parameter and cannot be empty or null.
-      parameters:
-        - name: X-auth-token
-          in: header
-          description: >-
-            To use this API, you require an X-auth-token. This is available in
-            the login API Response.
-          required: true
-          schema:
-            type: string
-      requestBody:
-        content: {}
-      responses:
-        '200':
-          description: Created
-          content:
-            application.json:
-              schema:
-                $schema: http://json-schema.org/draft-04/schema#
-                type: object
-                properties:
-                  responseCode:
-                    type: string
-                  message:
-                    type: string
-                  result:
-                    type: array
-                    items:
-                      type: string
-                  meta:
-                    type: object
-                    properties:
-                      correlation:
-                        type: string
-                      meetingPlatform:
-                        type: string
-              examples:
-                example1:
-                  value:
-                    responseCode: OK
-                    message: Materialized views generated successfully
-                    result: []
-                    meta:
-                      correlation: b04f35d7-29fb-4a16-b32f-6f852b291753
-                      meetingPlatform: BBB
-    parameters:
-      - in: path
-        name: ''
-        description: ''
-        schema:
-          type: string
+      parameters: *ref_6
+      requestBody: *ref_9
+      responses: *ref_11
+    parameters: *ref_12
   /mentoring/v1/admin/triggerPeriodicViewRefresh:
     get:
       summary: To refresh all the views data generated via build API.
@@ -6319,41 +6013,14 @@ paths:
          - The API Endpoint for refreshing view is `/mentoring/v1/admin/triggerPeriodicViewRefresh` 
          - It is mandatory to provide values for parameters that are marked as `required` 
          - This is a mandatory parameter and cannot be empty or null.
-      parameters:
-        - name: X-auth-token
-          in: header
-          description: >-
-            To use this API, you require an X-auth-token. This is available in
-            the login API Response.
-          required: true
-          schema:
-            type: string
-      requestBody:
-        content: {}
-      responses:
+      parameters: *ref_6
+      requestBody: *ref_9
+      responses: &ref_14
         '200':
           description: Created
           content:
             application.json:
-              schema:
-                $schema: http://json-schema.org/draft-04/schema#
-                type: object
-                properties:
-                  responseCode:
-                    type: string
-                  message:
-                    type: string
-                  result:
-                    type: array
-                    items:
-                      type: string
-                  meta:
-                    type: object
-                    properties:
-                      correlation:
-                        type: string
-                      meetingPlatform:
-                        type: string
+              schema: *ref_13
               examples:
                 example1:
                   value:
@@ -6363,12 +6030,7 @@ paths:
                     meta:
                       correlation: a3f1403d-7c2e-4d67-b43b-26a7a2e4bdea
                       meetingPlatform: BBB
-    parameters:
-      - in: path
-        name: ''
-        description: ''
-        schema:
-          type: string
+    parameters: *ref_12
   /mentoring/v1/admin/triggerPeriodicViewRefreshInternal:
     get:
       summary: To refresh a single view, this is supposed to be called internally
@@ -6379,82 +6041,25 @@ paths:
          - The API Endpoint for refreshing view is `/mentoring/v1/admin/triggerPeriodicViewRefreshInternal` 
          - It is mandatory to provide values for parameters that are marked as `required` 
          - This is a mandatory parameter and cannot be empty or null.
-      parameters:
-        - name: X-auth-token
-          in: header
-          description: >-
-            To use this API, you require an X-auth-token. This is available in
-            the login API Response.
-          required: true
-          schema:
-            type: string
-      requestBody:
-        content: {}
-      responses:
-        '200':
-          description: Created
-          content:
-            application.json:
-              schema:
-                $schema: http://json-schema.org/draft-04/schema#
-                type: object
-                properties:
-                  responseCode:
-                    type: string
-                  message:
-                    type: string
-                  result:
-                    type: array
-                    items:
-                      type: string
-                  meta:
-                    type: object
-                    properties:
-                      correlation:
-                        type: string
-                      meetingPlatform:
-                        type: string
-              examples:
-                example1:
-                  value:
-                    responseCode: OK
-                    message: Materialized views refresh initiated successfully
-                    result: []
-                    meta:
-                      correlation: a3f1403d-7c2e-4d67-b43b-26a7a2e4bdea
-                      meetingPlatform: BBB
+      parameters: *ref_6
+      requestBody: *ref_9
+      responses: *ref_14
     parameters:
       - in: path
         name: model_name
         description: Model name of the views table
-        schema:
-          type: string
+        schema: *ref_15
         required: true
   /mentoring/v1/mentors/list:
     get:
       summary: Get all the available mentor
-      tags: []
+      tags: *ref_16
       description: |-
         This API is associated with mentor profile 
          - Endpoint for listing all mentor is `/mentoring/v1/mentors/list` 
          - It is mandatory to provide values for parameters marked with `required` 
          - Mandatory parameter cannot be empty or null
-      parameters:
-        - name: X-auth-token
-          in: header
-          description: >-
-            To make use of the API, you require X-auth-token. This is Available
-            in login API Response.
-          required: true
-          schema:
-            type: string
-        - in: path
-          name: mentorId
-          required: true
-          description: Please append a valid mentorId
-          schema:
-            type: string
-          example: 21
+      parameters: *ref_17
       responses:
         '200':
           description: ok
@@ -6637,42 +6242,28 @@ paths:
                     meta:
                       correlation: 5937d5ad-b600-42d3-bca4-9e4c9045e2a7
                       meetingPlatform: BBB
-        '400':
-          description: Bad request
-          content:
-            application.json:
-              schema:
-                $ref: '#/components/schemas/mentors/shareMentorProfile400Response'
+        '400': *ref_18
     parameters:
       - in: path
         name: area_of_expertise
         description: Filters to be applied should be passed like this
-        schema:
-          type: string
+        schema: *ref_19
   /mentoring/v1/mentors/createdSessions:
     get:
       summary: Get all the available mentor
-      tags: []
+      tags: *ref_16
       description: |-
         This API is associated with mentor profile 
          - Endpoint for listing all sessions created by mentor is `/mentoring/v1/mentors/createdSessions` 
          - It is mandatory to provide values for parameters marked with `required` 
          - Mandatory parameter cannot be empty or null
       parameters:
-        - name: X-auth-token
-          in: header
-          description: >-
-            To make use of the API, you require X-auth-token. This is Available
-            in login API Response.
-          required: true
-          schema:
-            type: string
+        - *ref_20
         - in: path
           name: status
           required: true
           description: Values in:PUBLISHED,COMPLETED and LIVE
-          schema:
-            type: string
+          schema: *ref_21
           example: 21
       responses:
         '200':
@@ -6779,956 +6370,8 @@ paths:
                     meta:
                       correlation: f6a04881-f8d5-4082-bcb8-fe116fa2ad00
                       meetingPlatform: BBB
-        '400':
-          description: Bad request
-          content:
-            application.json:
-              schema:
-                $ref: '#/components/schemas/mentors/shareMentorProfile400Response'
+        '400': *ref_18
     parameters: []
-  /mentoring/v1/permissions/create:
-    post:
-      summary: Creating new permissions for userRoles
-      tags:
-        - Permissions
-      description: |-
-        This API is associated with userPermissionRoles
-         - Endpoint for creating permissions  `/mentoring/v1/permissions/create` 
-         - It is mandatory to provide values for parameters marked with `required` 
-         - Mandatory parameter cannot be empty or null
-      parameters:
-        - name: X-auth-token
-          in: header
-          description: >-
-            To make use of the API, you require X-auth-token. This is Available
-            in login API Response.
-          required: true
-          schema:
-            type: string
-      responses:
-        '201':
-          description: ok
-          content:
-            application.json:
-              schema:
-                $schema: http://json-schema.org/draft-04/schema#
-                type: object
-                properties:
-                  responseCode:
-                    type: string
-                  message:
-                    type: string
-                  result:
-                    type: object
-                    properties:
-                      Id:
-                        type: number
-                      status:
-                        type: string
-                      module:
-                        type: string
-                      request_type:
-                        type: array
-                        items:
-                          type: string
-                  meta:
-                    type: object
-                    properties:
-                      correlation:
-                        type: string
-                      meetingPlatform:
-                        type: string
-              examples:
-                example1:
-                  value:
-                    responseCode: OK
-                    message: Permission created successfully
-                    result:
-                      Id: 18
-                      status: ACTIVE
-                      module: ssss
-                      request_type:
-                        - POST
-                    meta:
-                      correlation: f8c4a52c-d79a-46ab-b890-7b2915e125da
-                      meetingPlatform: BBB
-        '400':
-          description: Bad request
-          content:
-            application.json:
-              schema:
-                $schema: http://json-schema.org/draft-04/schema#
-                type: object
-                properties:
-                  responseCode:
-                    type: string
-                  error:
-                    type: array
-                    items:
-                      type: string
-                  meta:
-                    type: object
-                    properties:
-                      correlation:
-                        type: string
-                  message:
-                    type: string
-              examples:
-                example1:
-                  value:
-                    responseCode: CLIENT_ERROR
-                    error: []
-                    meta:
-                      correlation: 32016da1-8bf1-4157-afad-34508aa609c8
-                    message: permission already exists
-      requestBody:
-        description: ''
-        content:
-          application/json:
-            schema:
-              $schema: http://json-schema.org/draft-04/schema#
-              type: object
-              properties:
-                code:
-                  type: string
-                  description: Must be unique
-                module:
-                  type: string
-                  description: 'module name '
-                request_type:
-                  type: array
-                  items:
-                    type: string
-                  description: request types of the api
-                api_path:
-                  type: string
-                  description: Url of the api
-                status:
-                  type: string
-                  description: Status of that permission
-              required:
-                - code
-                - module
-                - request_type
-                - api_path
-            examples:
-              example1:
-                value:
-                  code: ssss
-                  module: ssss
-                  request_type:
-                    - POST
-                  api_path: /mentoring/v1/sessions/sections
-                  status: ACTIVE
-    parameters: []
-  /mentoring/v1/permissions/update/{id}:
-    post:
-      summary: Update permissions by id
-      tags:
-        - Permissions
-      description: |-
-        You can use this API to update permissions
-         - The API Endpoint for updating permissions is `/mentoring/v1/permissions/update` 
-         - It is mandatory to provide values for parameters that are marked as `required` 
-         - This is a mandatory parameter and cannot be empty or null.
-      parameters:
-        - name: X-auth-token
-          in: header
-          description: >-
-            To use this API, you require an X-auth-token. This is available in
-            the login API Response.
-          required: true
-          schema:
-            type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $schema: http://json-schema.org/draft-04/schema#
-              type: object
-              properties:
-                code:
-                  type: string
-                  description: code of the permission
-                module:
-                  type: string
-                  description: module of the permission
-                request_type:
-                  type: array
-                  items:
-                    type: string
-                  description: 'request type of the api '
-                api_path:
-                  type: string
-                  description: Url of the api
-                status:
-                  type: string
-                  description: status of the permission
-            examples:
-              example1:
-                value:
-                  code: session_creation
-                  module: sessions
-                  actions: WRITE
-                  status: ACTIVE
-      responses:
-        '201':
-          description: Created
-          content:
-            application.json:
-              schema:
-                $schema: http://json-schema.org/draft-04/schema#
-                type: object
-                properties:
-                  responseCode:
-                    type: string
-                  message:
-                    type: string
-                  result:
-                    type: object
-                    properties:
-                      Id:
-                        type: number
-                      status:
-                        type: string
-                      module:
-                        type: string
-                      request_type:
-                        type: array
-                        items:
-                          type: string
-                  meta:
-                    type: object
-                    properties:
-                      correlation:
-                        type: string
-                      meetingPlatform:
-                        type: string
-              examples:
-                example1:
-                  value:
-                    responseCode: OK
-                    message: Permission updated successfully
-                    result:
-                      Id: 18
-                      status: ACTIVE
-                      module: ssss
-                      request_type:
-                        - POST
-                    meta:
-                      correlation: 23570166-11d5-4d26-b35c-a40e544eb612
-                      meetingPlatform: BBB
-        '400':
-          description: Bad Request. User Entity already exists.
-          content:
-            application.json:
-              schema:
-                $ref: '#/components/schemas/entity/createUserEntity400Response'
-  /mentoring/v1/permissions/delete/{id}:
-    delete:
-      summary: Delete permissions by id
-      tags:
-        - Permissions
-      description: |-
-        You can use this API to delete permission  
-         - The API Endpoint for deleting permissions is `/mentoring/v1/permissions/delete` 
-         - It is mandatory to provide values for parameters that are marked as `required` 
-         - This is a mandatory parameter and cannot be empty or null.
-      parameters:
-        - name: X-auth-token
-          in: header
-          description: >-
-            To use this API, you require an X-auth-token. This is available in
-            the login API Response.
-          required: true
-          schema:
-            type: string
-      requestBody:
-        content: {}
-      responses:
-        '202':
-          description: Created
-          content:
-            application.json:
-              schema:
-                $schema: http://json-schema.org/draft-04/schema#
-                type: object
-                properties:
-                  responseCode:
-                    type: string
-                  message:
-                    type: string
-                  result:
-                    type: object
-                    properties: {}
-                  meta:
-                    type: object
-                    properties:
-                      correlation:
-                        type: string
-                      meetingPlatform:
-                        type: string
-              examples:
-                example1:
-                  value:
-                    responseCode: OK
-                    message: Permission deleted successfully
-                    result: {}
-                    meta:
-                      correlation: a3f7cde4-83f2-4143-a5c4-7e3291085cb4
-                      meetingPlatform: BBB
-        '400':
-          description: Bad Request. User Entity already exists.
-          content:
-            application.json:
-              schema:
-                $ref: '#/components/schemas/entity/createUserEntity400Response'
-  /mentoring/v1/permissions/list?page={page}&limit={limit}&search={search}:
-    get:
-      summary: Get list of permissions
-      tags:
-        - Permissions
-      description: |-
-        You can use this API to get a list of permissions
-         - The API Endpoint for getting a list of permissions is `/mentoring/v1/permissions/list` 
-         - It is mandatory to provide values for parameters marked with `required` 
-         - Mandatory parameter cannot be empty or null
-      parameters:
-        - name: X-auth-token
-          required: true
-          in: header
-          description: >-
-            You require an X-auth-token to use this API. This token is available
-            in the login API Response.
-          schema:
-            type: string
-        - in: path
-          name: page
-          description: Please add page number
-          schema:
-            type: number
-          example: 1
-        - in: path
-          name: limit
-          description: Number of records to limit
-          schema:
-            type: number
-          example: 2
-        - in: path
-          name: search
-          description: Please search for information such as 'code' names
-          schema:
-            type: string
-          example: John
-      responses:
-        '200':
-          description: ok
-          content:
-            application.json:
-              schema:
-                $schema: http://json-schema.org/draft-04/schema#
-                type: object
-                properties:
-                  responseCode:
-                    type: string
-                  message:
-                    type: string
-                  result:
-                    type: object
-                    properties:
-                      results:
-                        type: object
-                        properties:
-                          data:
-                            type: array
-                            items:
-                              type: object
-                              properties:
-                                id:
-                                  type: number
-                                code:
-                                  type: string
-                                module:
-                                  type: string
-                                request_type:
-                                  type: array
-                                  items:
-                                    type: string
-                                api_path:
-                                  type: string
-                                status:
-                                  type: string
-                          count:
-                            type: number
-                  meta:
-                    type: object
-                    properties:
-                      correlation:
-                        type: string
-                      meetingPlatform:
-                        type: string
-              examples:
-                example1:
-                  value:
-                    responseCode: OK
-                    message: Permissions fetched successfully
-                    result:
-                      results:
-                        data:
-                          - id: 3
-                            code: read_modules_list
-                            module: modules
-                            request_type:
-                              - GET
-                            api_path: /mentoring/v1/modules/list
-                            status: ACTIVE
-                        count: 1
-                    meta:
-                      correlation: 0e36b1d1-adcf-4c5e-812a-1ad1d00a9163
-                      meetingPlatform: BBB
-        '400':
-          description: Bad Request. Session Not Found
-          content:
-            application.json:
-              schema:
-                $ref: '#/components/schemas/sessions/getSessionList400Response'
-  /mentoring/v1/modules/create:
-    post:
-      summary: Creating new modules
-      tags: []
-      description: |-
-        This API is associated with modules
-         - Endpoint for creating modules  `/mentoring/v1/modules/create` 
-         - It is mandatory to provide values for parameters marked with `required` 
-         - Mandatory parameter cannot be empty or null
-      parameters:
-        - name: X-auth-token
-          in: header
-          description: >-
-            To make use of the API, you require X-auth-token. This is Available
-            in login API Response.
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: ok
-          content:
-            application.json:
-              schema:
-                $schema: http://json-schema.org/draft-04/schema#
-                type: object
-                properties:
-                  responseCode:
-                    type: string
-                  message:
-                    type: string
-                  result:
-                    type: object
-                    properties:
-                      Id:
-                        type: number
-                      code:
-                        type: string
-                      status:
-                        type: string
-                  meta:
-                    type: object
-                    properties:
-                      correlation:
-                        type: string
-                      meetingPlatform:
-                        type: string
-              examples:
-                example1:
-                  value:
-                    responseCode: OK
-                    message: Module created successfully
-                    result:
-                      Id: 6
-                      code: system_admin
-                      status: ACTIVE
-                    meta:
-                      correlation: f9a97b88-d663-437f-ae6e-cc2628294f0e
-                      meetingPlatform: BBB
-        '400':
-          description: Bad request
-          content:
-            application.json:
-              schema:
-                $schema: http://json-schema.org/draft-04/schema#
-                type: object
-                properties:
-                  responseCode:
-                    type: string
-                  error:
-                    type: array
-                    items:
-                      type: string
-                  meta:
-                    type: object
-                    properties:
-                      correlation:
-                        type: string
-                  message:
-                    type: string
-              examples:
-                example1:
-                  value:
-                    responseCode: CLIENT_ERROR
-                    error: []
-                    meta:
-                      correlation: 32016da1-8bf1-4157-afad-34508aa609c8
-                    message: permission already exists
-      requestBody:
-        description: ''
-        content:
-          application/json:
-            schema:
-              $schema: http://json-schema.org/draft-04/schema#
-              type: object
-              properties:
-                code:
-                  type: string
-              required:
-                - code
-            examples:
-              example1:
-                value:
-                  code: system_admin
-    parameters: []
-  /mentoring/v1/modules/update/{id}:
-    post:
-      summary: Update modules by id
-      tags:
-        - Modules
-      description: |-
-        You can use this API to update modules by id
-         - The API Endpoint for updating modules `/mentoring/v1/modules/update` 
-         - It is mandatory to provide values for parameters that are marked as `required` 
-         - This is a mandatory parameter and cannot be empty or null.
-      parameters:
-        - name: X-auth-token
-          in: header
-          description: >-
-            To use this API, you require an X-auth-token. This is available in
-            the login API Response.
-          required: true
-          schema:
-            type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $schema: http://json-schema.org/draft-04/schema#
-              type: object
-              properties:
-                code:
-                  type: string
-              required:
-                - code
-            examples:
-              example1:
-                value:
-                  code: session_creation
-                  module: sessions
-                  actions: WRITE
-                  status: ACTIVE
-      responses:
-        '201':
-          description: Created
-          content:
-            application.json:
-              schema:
-                $schema: http://json-schema.org/draft-04/schema#
-                type: object
-                properties:
-                  responseCode:
-                    type: string
-                  message:
-                    type: string
-                  result:
-                    type: object
-                    properties:
-                      id:
-                        type: number
-                      status:
-                        type: string
-                      code:
-                        type: string
-                  meta:
-                    type: object
-                    properties:
-                      correlation:
-                        type: string
-                      meetingPlatform:
-                        type: string
-              examples:
-                example1:
-                  value:
-                    responseCode: OK
-                    message: Module updated successfully
-                    result:
-                      id: 5
-                      status: ACTIVE
-                      code: system
-                    meta:
-                      correlation: dea5b252-75d2-40ed-a5a7-f8dec087467e
-                      meetingPlatform: BBB
-        '400':
-          description: Bad Request. User Entity already exists.
-          content:
-            application.json:
-              schema:
-                $ref: '#/components/schemas/entity/createUserEntity400Response'
-  /mentoring/v1/modules/delete/{id}:
-    delete:
-      summary: Delete modules by id
-      tags: []
-      description: |-
-        You can use this API to delete modules  
-         - The API Endpoint for deleting modules is `/mentoring/v1/modules/delete` 
-         - It is mandatory to provide values for parameters that are marked as `required` 
-         - This is a mandatory parameter and cannot be empty or null.
-      parameters:
-        - name: X-auth-token
-          in: header
-          description: >-
-            To use this API, you require an X-auth-token. This is available in
-            the login API Response.
-          required: true
-          schema:
-            type: string
-      requestBody:
-        content: {}
-      responses:
-        '202':
-          description: Created
-          content:
-            application.json:
-              schema:
-                $schema: http://json-schema.org/draft-04/schema#
-                type: object
-                properties:
-                  responseCode:
-                    type: string
-                  message:
-                    type: string
-                  result:
-                    type: object
-                    properties: {}
-                  meta:
-                    type: object
-                    properties:
-                      correlation:
-                        type: string
-                      meetingPlatform:
-                        type: string
-              examples:
-                example1:
-                  value:
-                    responseCode: OK
-                    message: Module deleted successfully
-                    result: {}
-                    meta:
-                      correlation: 471d834a-4954-4564-ae91-6a1f24bec1e5
-                      meetingPlatform: BBB
-        '400':
-          description: Bad Request. User Entity already exists.
-          content:
-            application.json:
-              schema:
-                $ref: '#/components/schemas/entity/createUserEntity400Response'
-  /mentoring/v1/modules/list?page={page}&limit={limit}&search={search}:
-    get:
-      summary: Get list of modules
-      tags:
-        - Modules
-      description: |-
-        You can use this API to get a list of modules
-         - The API Endpoint for getting a list of modules is `/mentoring/v1/modules/list` 
-         - It is mandatory to provide values for parameters marked with `required` 
-         - Mandatory parameter cannot be empty or null
-      parameters:
-        - name: X-auth-token
-          required: true
-          in: header
-          description: >-
-            You require an X-auth-token to use this API. This token is available
-            in the login API Response.
-          schema:
-            type: string
-        - in: path
-          name: page
-          description: Please add page number
-          schema:
-            type: number
-          example: 1
-        - in: path
-          name: limit
-          description: Number of records to limit
-          schema:
-            type: number
-          example: 2
-        - in: path
-          name: search
-          description: Please search for information such as 'code' names
-          schema:
-            type: string
-          example: John
-      responses:
-        '200':
-          description: ok
-          content:
-            application.json:
-              schema:
-                $schema: http://json-schema.org/draft-04/schema#
-                type: object
-                properties:
-                  responseCode:
-                    type: string
-                  message:
-                    type: string
-                  result:
-                    type: object
-                    properties:
-                      data:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            id:
-                              type: number
-                            code:
-                              type: string
-                            status:
-                              type: string
-                          required:
-                            - id
-                            - code
-                            - status
-                      count:
-                        type: number
-                  meta:
-                    type: object
-                    properties:
-                      correlation:
-                        type: string
-                      meetingPlatform:
-                        type: string
-              examples:
-                example1:
-                  value:
-                    responseCode: OK
-                    message: Module fetched successfully
-                    result:
-                      data:
-                        - id: 6
-                          code: adminsystem
-                          status: ACTIVE
-                        - id: 2
-                          code: manage_session
-                          status: ACTIVE
-                        - id: 4
-                          code: modules
-                          status: ACTIVE
-                        - id: 5
-                          code: system
-                          status: ACTIVE
-                      count: 4
-                    meta:
-                      correlation: 4cbb42f7-ed92-41a1-b93d-d689121cda08
-                      meetingPlatform: BBB
-        '400':
-          description: Bad Request. Session Not Found
-          content:
-            application.json:
-              schema:
-                $ref: '#/components/schemas/sessions/getSessionList400Response'
-  /mentoring/v1/rolePermissionMapping/create/{role_id}:
-    post:
-      summary: Creating new role permission mapping
-      tags:
-        - RolePermissionMapping
-      description: |-
-        This API is associated with Role Permissions
-         - Endpoint for creating Role Permissions  `/mentoring/v1/rolePermissionMapping/create` 
-         - It is mandatory to provide values for parameters marked with `required` 
-         - Mandatory parameter cannot be empty or null
-      parameters:
-        - name: X-auth-token
-          in: header
-          description: >-
-            To make use of the API, you require X-auth-token. This is Available
-            in login API Response.
-          required: true
-          schema:
-            type: string
-      responses:
-        '201':
-          description: ok
-          content:
-            application.json:
-              schema:
-                $schema: http://json-schema.org/draft-04/schema#
-                type: object
-                properties:
-                  responseCode:
-                    type: string
-                  message:
-                    type: string
-                  result:
-                    type: object
-                    properties:
-                      roleId:
-                        type: number
-                      permissionId:
-                        type: number
-                      module:
-                        type: string
-                      request_type:
-                        type: array
-                        items:
-                          type: string
-                  meta:
-                    type: object
-                    properties:
-                      correlation:
-                        type: string
-                      meetingPlatform:
-                        type: string
-              examples:
-                example1:
-                  value:
-                    responseCode: OK
-                    message: Permission added to the role
-                    result:
-                      roleId: 2
-                      permissionId: 1
-                      module: mentees
-                      request_type:
-                        - GET
-                    meta:
-                      correlation: ad793d7f-3bb1-4bbd-9d59-bdf79dff5f86
-                      meetingPlatform: BBB
-        '400':
-          description: Bad request
-          content:
-            application.json:
-              schema:
-                $schema: http://json-schema.org/draft-04/schema#
-                type: object
-                properties:
-                  responseCode:
-                    type: string
-                  error:
-                    type: array
-                    items:
-                      type: string
-                  meta:
-                    type: object
-                    properties:
-                      correlation:
-                        type: string
-                  message:
-                    type: string
-              examples:
-                example1:
-                  value:
-                    responseCode: CLIENT_ERROR
-                    error: []
-                    meta:
-                      correlation: 32016da1-8bf1-4157-afad-34508aa609c8
-                    message: permission already exists
-      requestBody:
-        description: ''
-        content:
-          application/json:
-            schema:
-              $schema: http://json-schema.org/draft-04/schema#
-              type: object
-              properties:
-                permission_id:
-                  type: number
-              required:
-                - permission_id
-            examples:
-              example1:
-                value:
-                  permission_id: 1
-    parameters: []
-  /mentoring/v1/rolePermissionMapping/delete/{role_id}:
-    post:
-      summary: Delete rolePermissionMapping by id
-      tags:
-        - RolePermissionMapping
-      description: |-
-        You can use this API to delete Role Permissions
-         - The API Endpoint for deleting Role Permissions is `/mentoring/v1/rolePermissionMapping/delete` 
-         - It is mandatory to provide values for parameters that are marked as `required` 
-         - This is a mandatory parameter and cannot be empty or null.
-      parameters:
-        - name: X-auth-token
-          in: header
-          description: >-
-            To use this API, you require an X-auth-token. This is available in
-            the login API Response.
-          required: true
-          schema:
-            type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $schema: http://json-schema.org/draft-04/schema#
-              type: object
-              properties:
-                permission_id:
-                  type: number
-              required:
-                - permission_id
-            examples:
-              example1:
-                value:
-                  permission_id: 1
-      responses:
-        '201':
-          description: Created
-          content:
-            application.json:
-              schema:
-                $schema: http://json-schema.org/draft-04/schema#
-                type: object
-                properties:
-                  responseCode:
-                    type: string
-                  message:
-                    type: string
-                  result:
-                    type: object
-                    properties: {}
-                  meta:
-                    type: object
-                    properties:
-                      correlation:
-                        type: string
-                      meetingPlatform:
-                        type: string
-              examples:
-                example1:
-                  value:
-                    responseCode: OK
-                    message: ROLE_PERMISSION_MAPPING_DELETED_SUCCESSFULLY
-                    result: {}
-                    meta:
-                      correlation: 4373a59a-ca10-4932-b7ce-8675009ef388
-                      meetingPlatform: BBB
-        '400':
-          description: Bad Request. User Entity already exists.
-          content:
-            application.json:
-              schema:
-                $ref: '#/components/schemas/entity/createUserEntity400Response'
 components:
   schemas:
     form:
@@ -10056,102 +8699,6 @@ components:
               count:
                 type: number
                 example: 1
-      filterList200Response:
-        type: object
-        properties:
-          responseCode:
-            type: string
-            example: 'OK'
-          message:
-            type: string
-            example: 'Filter list fetched successfully.'
-          result:
-            type: object
-            properties:
-              organizations:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    id:
-                      type: integer
-                      example: 24
-                    name:
-                      type: string
-                      example: 'Tunerlabs'
-                    code:
-                      type: string
-                      example: 'tl'
-                    description:
-                      type: string
-                      example: 'Tunerlabs'
-              entity_types:
-                type: object
-                properties:
-                  designation:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/users/FilterDesignation'
-
-      FilterDesignation:
-        type: object
-        properties:
-          id:
-            type: integer
-            example: 5
-          label:
-            type: string
-            example: 'Designation'
-          value:
-            type: string
-            example: 'designation'
-          parent_id:
-            type: integer
-            nullable: true
-          organization_id:
-            type: integer
-            example: 1
-          entities:
-            type: array
-            items:
-              type: object
-              properties:
-                id:
-                  type: integer
-                  example: 19
-                entity_type_id:
-                  type: integer
-                  example: 5
-                value:
-                  type: string
-                  example: 'beo'
-                label:
-                  type: string
-                  example: 'Block education officer'
-                status:
-                  type: string
-                  example: 'ACTIVE'
-                type:
-                  type: string
-                  example: 'SYSTEM'
-                created_by:
-                  type: integer
-                  example: 0
-                updated_by:
-                  type: integer
-                  nullable: true
-                created_at:
-                  type: string
-                  format: date-time
-                  example: '2023-12-12T14:05:07.769Z'
-                updated_at:
-                  type: string
-                  format: date-time
-                  example: '2023-12-12T14:05:07.769Z'
-                deleted_at:
-                  type: string
-                  format: date-time
-                  nullable: true
     email:
       emailSendRequest:
         description: Email Sent request
@@ -10298,9 +8845,6 @@ components:
                     type: string
             correlation:
               type: string
-    schema-1:
-      type: object
-      properties: {}
   securitySchemes:
     bearer:
       type: apiKey
@@ -10338,21 +8882,6 @@ tags:
       description: ''
       url: ''
   - name: Admin APIs
-    description: ''
-    externalDocs:
-      description: ''
-      url: ''
-  - name: Permissions
-    description: ''
-    externalDocs:
-      description: ''
-      url: ''
-  - name: Modules
-    description: ''
-    externalDocs:
-      description: ''
-      url: ''
-  - name: RolePermissionMapping
     description: ''
     externalDocs:
       description: ''

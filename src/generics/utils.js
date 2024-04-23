@@ -87,9 +87,8 @@ const getDownloadableUrl = async (imgPath) => {
 			bucketName: process.env.DEFAULT_GCP_BUCKET_NAME,
 			gcpProjectId: process.env.GCP_PROJECT_ID,
 			gcpJsonFilePath: path.join(__dirname, '../', process.env.GCP_PATH),
-			expiry: Date.now() + parseFloat(process.env.DOWNLOAD_URL_EXPIRATION_DURATION),
 		}
-		imgPath = await GcpFileHelper.getSignedDownloadableUrl(options)
+		imgPath = await GcpFileHelper.getDownloadableUrl(options)
 	} else if (process.env.CLOUD_STORAGE === 'AWS') {
 		const options = {
 			destFilePath: imgPath,
@@ -182,62 +181,6 @@ function validateInput(input, validationData, modelName) {
 				param: field.value,
 				msg: `${field.value} is not allowed for the ${modelName} model.`,
 			})
-		}
-
-		function addError(field, value, dataType, message) {
-			errors.push({
-				param: field.value,
-				msg: `${value} is invalid for data type ${dataType}. ${message}`,
-			})
-		}
-
-		if (fieldValue !== undefined) {
-			const dataType = field.data_type
-
-			switch (dataType) {
-				case 'ARRAY[STRING]':
-					if (Array.isArray(fieldValue)) {
-						fieldValue.forEach((element) => {
-							if (typeof element !== 'string') {
-								addError(field, element, dataType, 'It should be a string')
-							} else if (field.allow_custom_entities && /[^A-Za-z0-9\s_]/.test(element)) {
-								addError(
-									field,
-									element,
-									dataType,
-									'It should not contain special characters except underscore.'
-								)
-							}
-						})
-					} else {
-						addError(field, field.value, dataType, '')
-					}
-					break
-
-				case 'STRING':
-					if (typeof fieldValue !== 'string') {
-						addError(field, fieldValue, dataType, 'It should be a string')
-					} else if (field.allow_custom_entities && /[^A-Za-z0-9\s_]/.test(fieldValue)) {
-						addError(
-							field,
-							fieldValue,
-							dataType,
-							'It should not contain special characters except underscore.'
-						)
-					}
-					break
-
-				case 'NUMBER':
-					console.log('Type of', typeof fieldValue)
-					if (typeof fieldValue !== 'number') {
-						addError(field, fieldValue, dataType, '')
-					}
-					break
-
-				default:
-					//isValid = false
-					break
-			}
 		}
 
 		if (!fieldValue || field.allow_custom_entities === true || field.has_entities === false) {
@@ -555,17 +498,17 @@ const generateWhereClause = (tableName) => {
 }
 
 function validateFilters(input, validationData, modelName) {
-	const entityTypes = []
-	validationData.forEach((entityType) => {
+	const allValues = []
+	validationData.forEach((item) => {
 		// Extract the 'value' property from the main object
-		entityTypes.push(entityType.value)
+		allValues.push(item.value)
 
 		// Extract the 'value' property from the 'entities' array
 	})
 
 	for (const key in input) {
 		if (input.hasOwnProperty(key)) {
-			if (entityTypes.includes(key)) {
+			if (allValues.includes(key)) {
 				continue
 			} else {
 				delete input[key]

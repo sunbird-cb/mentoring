@@ -11,10 +11,9 @@ const entityTypeQueries = require('@database/queries/entityType')
 const userRequests = require('@requests/user')
 const utils = require('@generics/utils')
 const _ = require('lodash')
-const questionSetQueries = require('../database/queries/question-set')
+const questionsSetQueries = require('../database/queries/questionSet')
 const { Op } = require('sequelize')
 const user = require('@health-checks/user')
-const responses = require('@helpers/responses')
 
 module.exports = class OrgAdminService {
 	/**
@@ -58,7 +57,7 @@ module.exports = class OrgAdminService {
 			let mentorDetails = await mentorQueries.getMentorExtension(bodyData.user_id)
 			// If such mentor return error
 			if (!mentorDetails) {
-				return responses.failureResponse({
+				return common.failureResponse({
 					message: 'MENTOR_EXTENSION_NOT_FOUND',
 					statusCode: httpStatusCode.bad_request,
 					responseCode: 'CLIENT_ERROR',
@@ -69,7 +68,7 @@ module.exports = class OrgAdminService {
 				mentorDetails.organization_id = bodyData.organization_id
 				const organizationDetails = await userRequests.fetchDefaultOrgDetails(bodyData.organization_id)
 				if (!(organizationDetails.success && organizationDetails.data && organizationDetails.data.result)) {
-					return responses.failureResponse({
+					return common.failureResponse({
 						message: 'ORGANIZATION_NOT_FOUND',
 						statusCode: httpStatusCode.bad_request,
 						responseCode: 'CLIENT_ERROR',
@@ -80,7 +79,7 @@ module.exports = class OrgAdminService {
 					bodyData.organization_id
 				)
 				if (!orgPolicies?.organization_id) {
-					return responses.failureResponse({
+					return common.failureResponse({
 						message: 'ORG_EXTENSION_NOT_FOUND',
 						statusCode: httpStatusCode.bad_request,
 						responseCode: 'CLIENT_ERROR',
@@ -95,7 +94,7 @@ module.exports = class OrgAdminService {
 			// Add fetched mentor details to user_extension table
 			const menteeCreationData = await menteeQueries.createMenteeExtension(mentorDetails)
 			if (!menteeCreationData) {
-				return responses.failureResponse({
+				return common.failureResponse({
 					message: 'MENTEE_EXTENSION_CREATION_FAILED',
 					statusCode: httpStatusCode.bad_request,
 					responseCode: 'CLIENT_ERROR',
@@ -114,7 +113,7 @@ module.exports = class OrgAdminService {
 				await mentorQueries.deleteMentorExtension(bodyData.user_id, true)
 			}
 
-			return responses.successResponse({
+			return common.successResponse({
 				statusCode: httpStatusCode.ok,
 				message: 'USER_ROLE_UPDATED',
 				result: {
@@ -142,7 +141,7 @@ module.exports = class OrgAdminService {
 			let menteeDetails = await menteeQueries.getMenteeExtension(bodyData.user_id)
 			// If no mentee present return error
 			if (!menteeDetails) {
-				return responses.failureResponse({
+				return common.failureResponse({
 					statusCode: httpStatusCode.not_found,
 					message: 'MENTEE_EXTENSION_NOT_FOUND',
 				})
@@ -151,7 +150,7 @@ module.exports = class OrgAdminService {
 			if (bodyData.organization_id) {
 				let organizationDetails = await userRequests.fetchDefaultOrgDetails(bodyData.organization_id)
 				if (!(organizationDetails.success && organizationDetails.data && organizationDetails.data.result)) {
-					return responses.failureResponse({
+					return common.failureResponse({
 						message: 'ORGANIZATION_NOT_FOUND',
 						statusCode: httpStatusCode.bad_request,
 						responseCode: 'CLIENT_ERROR',
@@ -162,7 +161,7 @@ module.exports = class OrgAdminService {
 					bodyData.organization_id
 				)
 				if (!orgPolicies?.organization_id) {
-					return responses.failureResponse({
+					return common.failureResponse({
 						message: 'ORG_EXTENSION_NOT_FOUND',
 						statusCode: httpStatusCode.bad_request,
 						responseCode: 'CLIENT_ERROR',
@@ -177,7 +176,7 @@ module.exports = class OrgAdminService {
 			// Add fetched mentee details to mentor_extension table
 			const mentorCreationData = await mentorQueries.createMentorExtension(menteeDetails)
 			if (!mentorCreationData) {
-				return responses.failureResponse({
+				return common.failureResponse({
 					message: 'MENTOR_EXTENSION_CREATION_FAILED',
 					statusCode: httpStatusCode.bad_request,
 					responseCode: 'CLIENT_ERROR',
@@ -187,7 +186,7 @@ module.exports = class OrgAdminService {
 			// Delete mentee extension (user_extension table)
 			await menteeQueries.deleteMenteeExtension(bodyData.user_id, true)
 
-			return responses.successResponse({
+			return common.successResponse({
 				statusCode: httpStatusCode.ok,
 				message: 'USER_ROLE_UPDATED',
 				result: {
@@ -204,7 +203,7 @@ module.exports = class OrgAdminService {
 	static async setOrgPolicies(decodedToken, policies) {
 		try {
 			if (!decodedToken.roles.some((role) => role.title === common.ORG_ADMIN_ROLE)) {
-				return responses.failureResponse({
+				return common.failureResponse({
 					message: 'UNAUTHORIZED_REQUEST',
 					statusCode: httpStatusCode.unauthorized,
 					responseCode: 'UNAUTHORIZED',
@@ -259,7 +258,7 @@ module.exports = class OrgAdminService {
 			}
 
 			delete orgPolicies.dataValues.deleted_at
-			return responses.successResponse({
+			return common.successResponse({
 				statusCode: httpStatusCode.ok,
 				message: 'ORG_POLICIES_SET_SUCCESSFULLY',
 				result: { ...orgPolicies.dataValues },
@@ -272,7 +271,7 @@ module.exports = class OrgAdminService {
 	static async getOrgPolicies(decodedToken) {
 		try {
 			if (!decodedToken.roles.some((role) => role.title === common.ORG_ADMIN_ROLE)) {
-				return responses.failureResponse({
+				return common.failureResponse({
 					message: 'UNAUTHORIZED_REQUEST',
 					statusCode: httpStatusCode.unauthorized,
 					responseCode: 'UNAUTHORIZED',
@@ -281,7 +280,7 @@ module.exports = class OrgAdminService {
 			const orgPolicies = await organisationExtensionQueries.getById(decodedToken.organization_id)
 			if (orgPolicies) {
 				delete orgPolicies.deleted_at
-				return responses.successResponse({
+				return common.successResponse({
 					statusCode: httpStatusCode.ok,
 					message: 'ORG_POLICIES_FETCHED_SUCCESSFULLY',
 					result: { ...orgPolicies },
@@ -308,7 +307,7 @@ module.exports = class OrgAdminService {
 	static async inheritEntityType(entityValue, entityLabel, userOrgId, decodedToken) {
 		try {
 			if (!decodedToken.roles.some((role) => role.title === common.ORG_ADMIN_ROLE)) {
-				return responses.failureResponse({
+				return common.failureResponse({
 					message: 'UNAUTHORIZED_REQUEST',
 					statusCode: httpStatusCode.unauthorized,
 					responseCode: 'UNAUTHORIZED',
@@ -321,7 +320,7 @@ module.exports = class OrgAdminService {
 			if (defaultOrgDetails.success && defaultOrgDetails.data && defaultOrgDetails.data.result) {
 				defaultOrgId = defaultOrgDetails.data.result.id
 			} else {
-				return responses.failureResponse({
+				return common.failureResponse({
 					message: 'DEFAULT_ORG_ID_NOT_SET',
 					statusCode: httpStatusCode.bad_request,
 					responseCode: 'CLIENT_ERROR',
@@ -329,7 +328,7 @@ module.exports = class OrgAdminService {
 			}
 
 			if (defaultOrgId === userOrgId) {
-				return responses.failureResponse({
+				return common.failureResponse({
 					message: 'USER_IS_FROM_DEFAULT_ORG',
 					statusCode: httpStatusCode.bad_request,
 					responseCode: 'CLIENT_ERROR',
@@ -346,7 +345,7 @@ module.exports = class OrgAdminService {
 
 			// If no matching data found return failure response
 			if (!entityTypeDetails) {
-				return responses.failureResponse({
+				return common.failureResponse({
 					message: 'ENTITY_TYPE_NOT_FOUND',
 					statusCode: httpStatusCode.bad_request,
 					responseCode: 'CLIENT_ERROR',
@@ -363,7 +362,7 @@ module.exports = class OrgAdminService {
 
 			// Create new inherited entity type
 			let inheritedEntityType = await entityTypeQueries.createEntityType(entityTypeDetails)
-			return responses.successResponse({
+			return common.successResponse({
 				statusCode: httpStatusCode.created,
 				message: 'ENTITY_TYPE_CREATED_SUCCESSFULLY',
 				result: inheritedEntityType,
@@ -388,7 +387,7 @@ module.exports = class OrgAdminService {
 			// Get organization details
 			let organizationDetails = await userRequests.fetchDefaultOrgDetails(orgId)
 			if (!(organizationDetails.success && organizationDetails.data && organizationDetails.data.result)) {
-				return responses.failureResponse({
+				return common.failureResponse({
 					message: 'ORGANIZATION_NOT_FOUND',
 					statusCode: httpStatusCode.bad_request,
 					responseCode: 'CLIENT_ERROR',
@@ -398,7 +397,7 @@ module.exports = class OrgAdminService {
 			// Get organization policies
 			const orgPolicies = await organisationExtensionQueries.findOrInsertOrganizationExtension(orgId)
 			if (!orgPolicies?.organization_id) {
-				return responses.failureResponse({
+				return common.failureResponse({
 					message: 'ORG_EXTENSION_NOT_FOUND',
 					statusCode: httpStatusCode.bad_request,
 					responseCode: 'CLIENT_ERROR',
@@ -416,7 +415,7 @@ module.exports = class OrgAdminService {
 			if (utils.validateRoleAccess(bodyData.roles, common.MENTOR_ROLE))
 				await mentorQueries.updateMentorExtension(bodyData.user_id, updateData)
 			else await menteeQueries.updateMenteeExtension(bodyData.user_id, updateData)
-			return responses.successResponse({
+			return common.successResponse({
 				statusCode: httpStatusCode.ok,
 				message: 'UPDATE_ORG_SUCCESSFULLY',
 			})
@@ -459,7 +458,7 @@ module.exports = class OrgAdminService {
 				}
 			}
 
-			return responses.successResponse({
+			return common.successResponse({
 				statusCode: httpStatusCode.ok,
 				message: failedUserIds.length > 0 ? 'SESSION_DEACTIVATION_FAILED' : 'SESSION_DEACTIVATED_SUCCESSFULLY',
 				result: {
@@ -500,30 +499,35 @@ module.exports = class OrgAdminService {
 		return policyData
 	}
 
-	/**
-	 * @description 							- update related organization of mentees and mentors if there is an update in the organization
-	 * @method									- POST
-	 * @name 									- updateRelatedOrgs
-	 * @param {Array} relatedOrgs 		 		- Array of related organization passed
-	 * @param {Number} orgId 					- Specific orgId which was updated
-	 * @param {Object} organizationDetails 		- Object of organization details of the related org from user service.
-	 * @returns {Object} 						- A object that reurn a response object.
-	 */
-	static async updateRelatedOrgs(delta_organization_ids, orgId, action) {
+	static async updateRelatedOrgs(relatedOrgs, orgId) {
 		try {
-			if (action == common.PUSH) {
+			const orgPolicies = await organisationExtensionQueries.getById(orgId)
+			if (
+				orgPolicies.external_mentor_visibility_policy == common.ASSOCIATED ||
+				orgPolicies.mentor_visibility_policy == common.ASSOCIATED
+			) {
+				relatedOrgs.push(orgId) //Adding there own org id since its used for querying
+
+				const updateData = {
+					visible_to_organizations: relatedOrgs,
+				}
+
 				await Promise.all([
-					await menteeQueries.addVisibleToOrg(orgId, delta_organization_ids),
-					await mentorQueries.addVisibleToOrg(orgId, delta_organization_ids),
-				])
-			} else if (action == common.POP) {
-				await Promise.all([
-					await menteeQueries.removeVisibleToOrg(orgId, delta_organization_ids),
-					await mentorQueries.removeVisibleToOrg(orgId, delta_organization_ids),
+					mentorQueries.updateMentorExtension(
+						null,
+						updateData,
+						{ raw: true, returning: true },
+						{ organization_id: orgId }
+					),
+					menteeQueries.updateMenteeExtension(
+						null,
+						updateData,
+						{ raw: true, returning: true },
+						{ organization_id: orgId }
+					),
 				])
 			}
-
-			return responses.successResponse({
+			return common.successResponse({
 				statusCode: httpStatusCode.ok,
 				message: 'RELATED_ORG_UPDATED',
 			})
@@ -535,13 +539,13 @@ module.exports = class OrgAdminService {
 	static async setDefaultQuestionSets(bodyData, decodedToken) {
 		try {
 			if (!decodedToken.roles.some((role) => role.title === common.ORG_ADMIN_ROLE)) {
-				return responses.failureResponse({
+				return common.failureResponse({
 					message: 'UNAUTHORIZED_REQUEST',
 					statusCode: httpStatusCode.unauthorized,
 					responseCode: 'UNAUTHORIZED',
 				})
 			}
-			const questionSets = await questionSetQueries.findQuestionSets(
+			const questionSets = await questionsSetQueries.findQuestionsSets(
 				{
 					code: { [Op.in]: [bodyData.mentee_feedback_question_set, bodyData.mentor_feedback_question_set] },
 				},
@@ -553,7 +557,7 @@ module.exports = class OrgAdminService {
 				(questionSets.length === 1 &&
 					bodyData.mentee_feedback_question_set !== bodyData.mentor_feedback_question_set)
 			) {
-				return responses.failureResponse({
+				return common.failureResponse({
 					message: 'QUESTIONS_SET_NOT_FOUND',
 					statusCode: httpStatusCode.bad_request,
 					responseCode: 'CLIENT_ERROR',
@@ -566,7 +570,7 @@ module.exports = class OrgAdminService {
 				updated_by: decodedToken.id,
 			}
 			const orgExtension = await organisationExtensionQueries.upsert(extensionData)
-			return responses.successResponse({
+			return common.successResponse({
 				statusCode: httpStatusCode.ok,
 				message: 'ORG_DEFAULT_QUESTION_SETS_SET_SUCCESSFULLY',
 				result: {

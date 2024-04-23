@@ -5,8 +5,38 @@
  * Description : All commonly used constants through out the service
  */
 
-function getPaginationOffset(page, limit) {
-	return (page - 1) * limit
+const form = require('@generics/form')
+const { elevateLog, correlationId } = require('elevate-logger')
+const logger = elevateLog.init()
+const successResponse = async ({ statusCode = 500, responseCode = 'OK', message, result = [], meta = {} }) => {
+	const versions = await form.getAllFormsVersion()
+	let response = {
+		statusCode,
+		responseCode,
+		message,
+		result,
+		meta: {
+			...meta,
+			formsVersion: versions,
+			correlation: correlationId.getId(),
+			meetingPlatform: process.env.DEFAULT_MEETING_SERVICE,
+		},
+	}
+	logger.info('Request Response', { response: response })
+
+	return response
+}
+
+const failureResponse = ({ message = 'Oops! Something Went Wrong.', statusCode = 500, responseCode, result }) => {
+	const errorMessage = message.key || message
+
+	const error = new Error(errorMessage)
+	error.statusCode = statusCode
+	error.responseCode = responseCode
+	error.interpolation = message?.interpolation || false
+	error.data = result || []
+
+	return error
 }
 
 module.exports = {
@@ -14,7 +44,16 @@ module.exports = {
 		DEFAULT_PAGE_NO: 1,
 		DEFAULT_PAGE_SIZE: 100,
 	},
-	getPaginationOffset,
+	successResponse,
+	failureResponse,
+	guestUrls: [
+		'/sessions/completed',
+		'/sessions/updateRecordingUrl',
+		'/sessions/details',
+		'/mentors/profile/',
+		'/mentors/upcomingSessions/',
+		'/platform/config',
+	],
 	DELETE_METHOD: 'DELETE',
 	dateFormat: 'dddd, Do MMMM YYYY',
 	timeFormat: 'hh:mm A',
@@ -22,7 +61,7 @@ module.exports = {
 	MENTOR_SESSION_REMAINDER_EMAIL_CODE: 'mentor_session_reminder',
 	MENTOR_SESSION_ONE_HOUR_REMAINDER_EMAIL_CODE: 'mentor_one_hour_before_session_reminder',
 	UTC_DATE_TIME_FORMAT: 'YYYY-MM-DDTHH:mm:ss',
-	internalAccessUrls: [
+	internalAccessUrs: [
 		'/notifications/emailCronJob',
 		'/org-admin/roleChange',
 		'/org-admin/updateOrganization',
@@ -30,8 +69,7 @@ module.exports = {
 		'/admin/triggerPeriodicViewRefreshInternal',
 		'/admin/triggerViewRebuildInternal',
 		'/org-admin/updateRelatedOrgs',
-		'/sessions/bulkUpdateMentorNames',
-		'/organization/eventListener',
+		'/sessions/completed',
 	],
 	COMPLETED_STATUS: 'COMPLETED',
 	UNFULFILLED_STATUS: 'UNFULFILLED',
@@ -57,11 +95,6 @@ module.exports = {
 	],
 	MENTOR_ROLE: 'mentor',
 	MENTEE_ROLE: 'mentee',
-	USER_ROLE: 'user',
-	PUBLIC_ROLE: 'public',
-	MENTORING_SERVICE: 'mentoring',
-	SESSION_MANAGER_ROLE: 'session_manager',
-	MANAGE_SESSION_CODE: 'manage_session',
 	MEDIUM: 'medium',
 	RECOMMENDED_FOR: 'recommended_for',
 	CATEGORIES: 'categories',
@@ -116,23 +149,4 @@ module.exports = {
 	notificationEndPoint: '/mentoring/v1/notifications/emailCronJob',
 	sessionCompleteEndpoint: '/mentoring/v1/sessions/completed/',
 	INACTIVE_STATUS: 'INACTIVE',
-	ACTIVE_STATUS: 'ACTIVE',
-	SEARCH: '',
-	INVITED: 'INVITED',
-	ENROLLED: 'ENROLLED',
-	UNIT_OF_TIME: 'minutes',
-	SESSION_TYPE: {
-		PUBLIC: 'PUBLIC',
-		PRIVATE: 'PRIVATE',
-	},
-	SESSION_OWNERSHIP_TYPE: {
-		CREATOR: 'CREATOR',
-		MENTOR: 'MENTOR',
-	},
-	PUSH: 'PUSH',
-	POP: 'POP',
-	AUTH_METHOD: {
-		JWT_ONLY: 'jwt_only',
-		USER_SERVICE: 'user_service_authenticated',
-	},
 }

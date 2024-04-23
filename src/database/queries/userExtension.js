@@ -1,23 +1,10 @@
 const MenteeExtension = require('../models/index').UserExtension
-const { QueryTypes } = require('sequelize')
-const sequelize = require('sequelize')
-const Sequelize = require('@database/models/index').sequelize
-const common = require('@constants/common')
 const _ = require('lodash')
-const { Op } = require('sequelize')
 
 module.exports = class MenteeExtensionQueries {
 	static async getColumns() {
 		try {
 			return await Object.keys(MenteeExtension.rawAttributes)
-		} catch (error) {
-			return error
-		}
-	}
-
-	static async getModelName() {
-		try {
-			return await MenteeExtension.name
 		} catch (error) {
 			return error
 		}
@@ -46,99 +33,6 @@ module.exports = class MenteeExtensionQueries {
 		}
 	}
 
-	static async addVisibleToOrg(organizationId, newRelatedOrgs, options = {}) {
-		// Update user extension and concat related org to the org id
-		await MenteeExtension.update(
-			{
-				visible_to_organizations: sequelize.literal(
-					`array_cat("visible_to_organizations", ARRAY[${newRelatedOrgs}]::integer[])`
-				),
-			},
-			{
-				where: {
-					organization_id: organizationId,
-					[Op.or]: [
-						{
-							[Op.not]: {
-								visible_to_organizations: {
-									[Op.contains]: newRelatedOrgs,
-								},
-							},
-						},
-						{
-							visible_to_organizations: {
-								[Op.is]: null,
-							},
-						},
-					],
-				},
-				...options,
-				individualHooks: true,
-			}
-		)
-		// Update user extension and append org id to all the related orgs
-		return await MenteeExtension.update(
-			{
-				visible_to_organizations: sequelize.literal(
-					`COALESCE("visible_to_organizations", ARRAY[]::integer[]) || ARRAY[${organizationId}]::integer[]`
-				),
-			},
-			{
-				where: {
-					organization_id: {
-						[Op.in]: [...newRelatedOrgs],
-					},
-					[Op.or]: [
-						{
-							[Op.not]: {
-								visible_to_organizations: {
-									[Op.contains]: [organizationId],
-								},
-							},
-						},
-						{
-							visible_to_organizations: {
-								[Op.is]: null,
-							},
-						},
-					],
-				},
-				individualHooks: true,
-				...options,
-			}
-		)
-	}
-
-	static async removeVisibleToOrg(orgId, elementsToRemove) {
-		const organizationUpdateQuery = `
-		  UPDATE "user_extensions"
-		  SET "visible_to_organizations" = (
-			SELECT array_agg(elem)
-			FROM unnest("visible_to_organizations") AS elem
-			WHERE elem NOT IN (${elementsToRemove.join(',')})
-		  )
-		  WHERE organization_id = :orgId
-		`
-
-		await Sequelize.query(organizationUpdateQuery, {
-			replacements: { orgId },
-			type: Sequelize.QueryTypes.UPDATE,
-		})
-		const relatedOrganizationUpdateQuery = `
-		  UPDATE "user_extensions"
-		  SET "visible_to_organizations" = (
-			SELECT array_agg(elem)
-			FROM unnest("visible_to_organizations") AS elem
-			WHERE elem NOT IN (${orgId})
-		  )
-		  WHERE organization_id IN (:elementsToRemove)
-		`
-
-		await Sequelize.query(relatedOrganizationUpdateQuery, {
-			replacements: { elementsToRemove },
-			type: Sequelize.QueryTypes.UPDATE,
-		})
-	}
 	static async getMenteeExtension(userId, attributes = []) {
 		try {
 			const queryOptions = {
@@ -211,89 +105,6 @@ module.exports = class MenteeExtensionQueries {
 			return result
 		} catch (error) {
 			throw error
-		}
-	}
-
-	static async getUsersByUserIdsFromView(
-		ids,
-		page,
-		limit,
-		filter,
-		saasFilter = '',
-		additionalProjectionclause = '',
-		returnOnlyUserId
-	) {
-		try {
-			const filterConditions = []
-
-			if (filter && typeof filter === 'object') {
-				for (const key in filter) {
-					if (Array.isArray(filter[key])) {
-						filterConditions.push(`"${key}" @> ARRAY[:${key}]::character varying[]`)
-					}
-				}
-			}
-
-			const excludeUserIds = ids.length === 0
-			const userFilterClause = excludeUserIds ? '' : `user_id IN (${ids.join(',')})`
-
-			let filterClause = filterConditions.length > 0 ? ` ${filterConditions.join(' AND ')}` : ''
-
-			let saasFilterClause = saasFilter !== '' ? saasFilter : ''
-			if (excludeUserIds && Object.keys(filter).length === 0) {
-				saasFilterClause = saasFilterClause.replace('AND ', '') // Remove "AND" if excludeUserIds is true and filter is empty
-			}
-
-			let projectionClause =
-				'user_id,meta,visibility,organization_id,designation,area_of_expertise,education_qualification'
-
-			if (returnOnlyUserId) {
-				projectionClause = 'user_id'
-			} else if (additionalProjectionclause !== '') {
-				projectionClause += `,${additionalProjectionclause}`
-			}
-
-			if (userFilterClause && filterClause.length > 0) {
-				filterClause = filterClause.startsWith('AND') ? filterClause : 'AND' + filterClause
-			}
-
-			let query = `
-				SELECT ${projectionClause}
-				FROM
-					${common.materializedViewsPrefix + MenteeExtension.tableName}
-				WHERE
-					${userFilterClause}
-					${filterClause}
-					${saasFilterClause}
-			`
-
-			const replacements = {
-				...filter, // Add filter parameters to replacements
-			}
-
-			if (page !== null && limit !== null) {
-				query += `
-					OFFSET
-						:offset
-					LIMIT
-						:limit;
-				`
-
-				replacements.offset = limit * (page - 1)
-				replacements.limit = limit
-			}
-
-			const mentees = await Sequelize.query(query, {
-				type: QueryTypes.SELECT,
-				replacements: replacements,
-			})
-
-			return {
-				data: mentees,
-				count: mentees.length,
-			}
-		} catch (error) {
-			return error
 		}
 	}
 }

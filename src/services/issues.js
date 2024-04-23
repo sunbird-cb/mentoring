@@ -6,7 +6,6 @@ const kafkaCommunication = require('@generics/kafka-communication')
 const notificationTemplateQueries = require('@database/queries/notificationTemplate')
 const issueQueries = require('../database/queries/issue')
 const userRequests = require('@requests/user')
-const responses = require('@helpers/responses')
 
 module.exports = class issuesHelper {
 	/**
@@ -65,7 +64,7 @@ module.exports = class issuesHelper {
 			}
 			await issueQueries.create(bodyData)
 
-			return responses.successResponse({
+			return common.successResponse({
 				statusCode: httpStatusCode.created,
 				message: 'ISSUE_REPORTED_SUCCESSFULLY',
 			})

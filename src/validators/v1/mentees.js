@@ -16,12 +16,4 @@ module.exports = {
 			.isIn(['MONTHLY', 'WEEKLY', 'QUARTERLY'])
 			.withMessage('filterType is invalid')
 	},
-
-	joinSession: (req) => {
-		req.checkParams('id')
-			.notEmpty()
-			.withMessage('id param is empty')
-			.isNumeric()
-			.withMessage('id param is invalid, must be an integer')
-	},
 }

@@ -1,23 +1,23 @@
 /**
- * name : questions.js
- * author : Aman Gupta
- * created-date : 04-Nov-2021
+ * name : questionsSet.js
+ * author : Rakesh Kumar
+ * created-date : 01-Dec-2021
  * Description : Question Controller.
  */
 
 // Dependencies
-const questionsService = require('@services/questions')
+const questionsService = require('@services/questionsSet')
 const utilsHelper = require('@generics/utils')
 const common = require('@constants/common')
 const httpStatusCode = require('@generics/http-status')
 
-module.exports = class Questions {
+module.exports = class QuestionsSet {
 	/**
-	 * create questions
+	 * create questions set
 	 * @method
 	 * @name create
 	 * @param {Object} req -request data.
-	 * @returns {JSON} - Question creation object.
+	 * @returns {JSON} - Questions Set creation.
 	 */
 
 	async create(req) {
@@ -29,19 +29,20 @@ module.exports = class Questions {
 					responseCode: 'CLIENT_ERROR',
 				})
 			}
-			const createdQuestion = await questionsService.create(req.body, req.decodedToken)
-			return createdQuestion
+			const createQuestionsSet = await questionsService.create(req.body, req.decodedToken)
+			return createQuestionsSet
 		} catch (error) {
 			return error
 		}
 	}
 
 	/**
-	 * updates question
+	 * update questions set
 	 * @method
 	 * @name update
-	 * @param {Object} req - request data.
-	 * @returns {JSON} - Question updation response.
+	 * @param {Object} req -request data.
+	 * @param {String} req.params.id - question set id.
+	 * @returns {JSON} - Questions Set updation.
 	 */
 
 	async update(req) {
@@ -53,25 +54,26 @@ module.exports = class Questions {
 					responseCode: 'CLIENT_ERROR',
 				})
 			}
-			const updatedQuestion = await questionsService.update(req.params.id, req.body, req.decodedToken)
-			return updatedQuestion
+			const updateQuestionsSet = await questionsService.update(req.params.id, req.body, req.decodedToken)
+			return updateQuestionsSet
 		} catch (error) {
 			return error
 		}
 	}
 
 	/**
-	 * reads question
+	 * read questions set
 	 * @method
 	 * @name read
 	 * @param {Object} req -request data.
-	 * @returns {JSON} - question object.
+	 * @param {String} req.params.id - question set id.
+	 * @returns {JSON} - Questions set data.
 	 */
 
 	async read(req) {
 		try {
-			const questionData = await questionsService.read(req.params.id)
-			return questionData
+			const questionsSetData = await questionsService.read(req.params.id)
+			return questionsSetData
 		} catch (error) {
 			return error
 		}

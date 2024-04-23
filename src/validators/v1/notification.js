@@ -4,12 +4,9 @@
  * Date : 03-Nov-2023
  * Description : Validations of notification controller
  */
-const { filterRequestBody } = require('../common')
-const { notification } = require('@constants/blacklistConfig').default
+
 module.exports = {
 	create: (req) => {
-		req.body = filterRequestBody(req.body, notification.create)
-
 		req.checkBody('type').trim().notEmpty().withMessage('type field is empty')
 
 		req.checkBody('code').trim().notEmpty().withMessage('code field is empty')
@@ -20,8 +17,6 @@ module.exports = {
 	},
 
 	update: (req) => {
-		req.body = filterRequestBody(req.body, notification.update)
-
 		req.checkBody('type').trim().notEmpty().withMessage('type field is empty')
 
 		req.checkBody('code').trim().notEmpty().withMessage('code field is empty')
