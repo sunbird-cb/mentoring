@@ -131,11 +131,11 @@ Before setting up the following MentorEd application, dependencies given below s
         curl -o ./user/distributionColumns.sql -JL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/distribution-columns/user/distributionColumns.sql
         ```
 
-    3. Set up the citus_setup_local file by following the steps given below.
+    3. Set up the `citus_setup` file by following the steps given below.
 
         - **Ubuntu/Linux/Mac**
 
-            1. Download the `citus_setup_local.sh` file:
+            1. Download the `citus_setup.sh` file:
 
                 ```
                 curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/native/scripts/linux/citus_setup.sh
@@ -144,16 +144,16 @@ Before setting up the following MentorEd application, dependencies given below s
             2. Make the setup file executable by running the following command:
 
                 ```
-                chmod +x citus_setup_local.sh
+                chmod +x citus_setup.sh
                 ```
 
-            3. Enable Citus and set distribution columns for `mentoring` database by running the `citus_setup_local.sh` with the following arguments.
+            3. Enable Citus and set distribution columns for `mentoring` database by running the `citus_setup.sh` with the following arguments.
                 ```
-                ./citus_setup_local.sh mentoring postgres://postgres:postgres@localhost:9700/mentoring
+                ./citus_setup.sh mentoring postgres://postgres:postgres@localhost:9700/mentoring
                 ```
-            4. Enable Citus and set distribution columns for `user` database by running the `citus_setup_local.sh`with the following arguments.
+            4. Enable Citus and set distribution columns for `user` database by running the `citus_setup.sh`with the following arguments.
                 ```
-                ./citus_setup_local.sh user postgres://postgres:postgres@localhost:9700/users
+                ./citus_setup.sh user postgres://postgres:postgres@localhost:9700/users
                 ```
 
 8. **Insert Initial Data**
