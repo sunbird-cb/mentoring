@@ -51,12 +51,12 @@ Before setting up the following MentorEd application, dependencies given below s
     - **Ubuntu/Linux/Mac**
 
         ```
-        git clone -b release-2.5.0 https://github.com/ELEVATE-Project/mentoring.git && \
-        git clone -b release-2.5.0 https://github.com/ELEVATE-Project/user.git && \
-        git clone -b release-2.5.0 https://github.com/ELEVATE-Project/notification.git && \
-        git clone -b release-2.5.0 https://github.com/ELEVATE-Project/interface-service.git && \
-        git clone -b release-2.5.0 https://github.com/ELEVATE-Project/scheduler.git && \
-        git clone -b release-2.5.0 https://github.com/ELEVATE-Project/mentoring-mobile-app.git
+        git clone -b release-2.6.1 https://github.com/ELEVATE-Project/mentoring.git && \
+        git clone -b release-2.6.1 https://github.com/ELEVATE-Project/user.git && \
+        git clone -b release-2.6.1 https://github.com/ELEVATE-Project/notification.git && \
+        git clone -b release-2.6.1 https://github.com/ELEVATE-Project/interface-service.git && \
+        git clone -b release-2.6.1 https://github.com/ELEVATE-Project/scheduler.git && \
+        git clone -b release-2.6.1 https://github.com/ELEVATE-Project/mentoring-mobile-app.git
         ```
 
 3. **Install NPM Packages**
