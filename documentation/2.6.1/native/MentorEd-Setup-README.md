@@ -206,12 +206,12 @@ Before setting up the following MentorEd application, dependencies given below s
            Navigate to mentoring-mobile-app directory and run:
 
             ```
-            cd /mentoring-mobile-app && ionic build && cd ..
+            cd mentoring-mobile-app && ionic build && cd ..
             ```
 
         4. Start the portal:
             ```
-            cd /mentoring-mobile-app && pm2 start pm2.config.json && cd ..
+            cd mentoring-mobile-app && pm2 start pm2.config.json && cd ..
             ```
 
     Navigate to http://localhost:7601 to access the MentorEd Portal.
