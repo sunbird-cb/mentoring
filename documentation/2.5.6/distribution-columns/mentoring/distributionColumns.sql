@@ -12,6 +12,6 @@ SELECT create_distributed_table('questions', 'id');
 SELECT create_distributed_table('question_sets', 'code');
 SELECT create_distributed_table('session_attendees', 'session_id');
 SELECT create_distributed_table('session_enrollments', 'mentee_id');
-SELECT create_distributed_table('session_ownerships', 'user_id');
+SELECT create_distributed_table('session_ownerships', 'mentor_id');
 SELECT create_distributed_table('sessions', 'id');
-SELECT create_distributed_table('user_extensions', 'mentor_id');
+SELECT create_distributed_table('user_extensions', 'user_id');
