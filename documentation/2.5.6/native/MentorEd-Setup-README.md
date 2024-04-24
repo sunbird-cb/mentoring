@@ -6,13 +6,13 @@ Expectation: Upon following the prescribed steps, you will achieve a fully opera
 
 Before setting up the following MentorEd application, dependencies given below should be installed and verified to be running. Refer to the steps given below to install them and verify.
 
--   **Ubuntu/Linux/Mac**
+-   **Ubuntu/Linux**
 
     1. Download dependency management scripts:
         ```
-        curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.5.6/native/scripts/linux/check-dependencies.sh && \
-        curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.5.6/native/scripts/linux/install-dependencies.sh && \
-        curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.5.6/native/scripts/linux/uninstall-dependencies.sh && \
+        curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/native/scripts/linux/check-dependencies.sh && \
+        curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/native/scripts/linux/install-dependencies.sh && \
+        curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/native/scripts/linux/uninstall-dependencies.sh && \
         chmod +x check-dependencies.sh && \
         chmod +x install-dependencies.sh && \
         chmod +x uninstall-dependencies.sh
@@ -40,6 +40,37 @@ Before setting up the following MentorEd application, dependencies given below s
 
         > Warning: This script should only be used to uninstall dependencies that were installed via installation script in step 3. If same dependencies were installed using other methods, refrain from using this script. This script is provided in-order to reverse installation in-case issues arise from a bad install.
 
+-   **MacOS**
+
+    1. Install Node.js 20:
+
+        ```
+        brew install node@20
+        ```
+
+    2. Install Kafka:
+
+        ```
+        brew install kafka
+        ```
+
+    3. Install PostgreSQL 16:
+
+        ```
+        brew install postgresql@16
+        ```
+
+    4. Install PM2:
+
+        ```
+        sudo npm install pm2@latest -g
+        ```
+
+    5. Install Redis:
+        ```
+        brew install redis
+        ```
+
 ## Installation
 
 1. **Create Mentoring Directory:** Create a directory named **mentorEd**.
@@ -48,7 +79,7 @@ Before setting up the following MentorEd application, dependencies given below s
 
 2. **Git Clone Services And Portal Repositories**
 
-    - **Ubuntu/Linux/Mac**
+    - **Ubuntu/Linux/MacOS**
 
         ```
         git clone -b release-2.5.6 https://github.com/ELEVATE-Project/mentoring.git && \
@@ -61,7 +92,7 @@ Before setting up the following MentorEd application, dependencies given below s
 
 3. **Install NPM Packages**
 
-    - **Ubuntu/Linux/Mac**
+    - **Ubuntu/Linux/MacOS**
 
         ```
         cd mentoring/src && npm install && cd ../.. && \
@@ -74,23 +105,36 @@ Before setting up the following MentorEd application, dependencies given below s
 
 4. **Download Environment Files**
 
-    - **Ubuntu/Linux/Mac**
+    - **Ubuntu/Linux/MacOS**
 
         ```
-        curl -L -o mentoring/src/.env https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.5.6/native/envs/mentoring_env && \
-        curl -L -o user/src/.env https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.5.6/native/envs/user_env && \
-        curl -L -o notification/src/.env https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.5.6/native/envs/notification_env && \
-        curl -L -o interface-service/src/.env https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.5.6/native/envs/interface_env && \
-        curl -L -o scheduler/src/.env https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.5.6/native/envs/scheduler_env && \
-        curl -L -o mentoring-mobile-app/src/environments/environment.ts https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.5.6/native/envs/environment.ts
+        curl -L -o mentoring/src/.env https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/native/envs/non-citus/mentoring_env && \
+        curl -L -o user/src/.env https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/native/envs/non-citus/user_env && \
+        curl -L -o notification/src/.env https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/native/envs/non-citus/notification_env && \
+        curl -L -o interface-service/src/.env https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/native/envs/interface_env && \
+        curl -L -o scheduler/src/.env https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/native/envs/scheduler_env && \
+        curl -L -o mentoring-mobile-app/src/environments/environment.ts https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/native/envs/environment.ts
         ```
 
 5. **Create Databases**
 
-    - **Ubuntu/Linux/Mac**
+    - **Ubuntu/Linux**
         1. Download `create-databases.sh` Script File:
             ```
-            curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.5.6/native/scripts/linux/create-databases.sh
+            curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/native/scripts/linux/create-databases.sh
+            ```
+        2. Make the executable by running the following command:
+            ```
+            chmod +x create-databases.sh
+            ```
+        3. Run the script file:
+            ```
+            ./create-databases.sh
+            ```
+    - **MacOS**
+        1. Download `create-databases.sh` Script File:
+            ```
+            curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/native/scripts/macos/create-databases.sh
             ```
         2. Make the executable by running the following command:
             ```
@@ -103,7 +147,7 @@ Before setting up the following MentorEd application, dependencies given below s
 
 6. **Run Migrations To Create Tables**
 
-    - **Ubuntu/Linux/Mac**
+    - **Ubuntu/Linux/MacOS**
         1. Install Sequelize-cli globally:
             ```
             sudo npm i sequelize-cli -g
@@ -119,26 +163,28 @@ Before setting up the following MentorEd application, dependencies given below s
 
     MentorEd relies on PostgreSQL as its core database system. To boost performance and scalability, users can opt to enable the Citus extension. This transforms PostgreSQL into a distributed database, spreading data across multiple nodes to handle large datasets more efficiently as demand grows.
 
+    > NOTE: Currently only available for Linux based operation systems.
+
     1. Download mentoring `distributionColumns.sql` file.
 
         ```
-        curl -o ./mentoring/distributionColumns.sql -JL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.5.6/distribution-columns/mentoring/distributionColumns.sql
+        curl -o ./mentoring/distributionColumns.sql -JL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/distribution-columns/mentoring/distributionColumns.sql
         ```
 
     2. Download user `distributionColumns.sql` file.
 
         ```
-        curl -o ./user/distributionColumns.sql -JL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.5.6/distribution-columns/user/distributionColumns.sql
+        curl -o ./user/distributionColumns.sql -JL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/distribution-columns/user/distributionColumns.sql
         ```
 
     3. Set up the `citus_setup` file by following the steps given below.
 
-        - **Ubuntu/Linux/Mac**
+        - **Ubuntu/Linux/MacOS**
 
             1. Download the `citus_setup.sh` file:
 
                 ```
-                curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.5.6/native/scripts/linux/citus_setup.sh
+                curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/native/scripts/linux/citus_setup.sh
                 ```
 
             2. Make the setup file executable by running the following command:
@@ -168,13 +214,24 @@ Before setting up the following MentorEd application, dependencies given below s
 
     Following the steps given below, 2 instances of each MentorEd backend service will be deployed and be managed by PM2 process manager.
 
-    ```
-    cd mentoring/src && pm2 start app.js -i 2 --name mentored-mentoring && cd ../.. && \
-    cd user/src && pm2 start app.js -i 2 --name mentored-user && cd ../.. && \
-    cd notification/src && pm2 start app.js -i 2 --name mentored-notification && cd ../.. && \
-    cd interface-service/src && pm2 start app.js -i 2 --name mentored-interface && cd ../.. && \
-    cd scheduler/src && pm2 start app.js -i 2 --name mentored-scheduler && cd ../..
-    ```
+    - **Ubuntu/Linux**
+
+        ```
+        cd mentoring/src && pm2 start app.js -i 2 --name mentored-mentoring && cd ../.. && \
+        cd user/src && pm2 start app.js -i 2 --name mentored-user && cd ../.. && \
+        cd notification/src && pm2 start app.js -i 2 --name mentored-notification && cd ../.. && \
+        cd interface-service/src && pm2 start app.js -i 2 --name mentored-interface && cd ../.. && \
+        cd scheduler/src && pm2 start app.js -i 2 --name mentored-scheduler && cd ../..
+        ```
+
+    - **MacOS**
+        ```
+        cd mentoring/src && npx pm2 start app.js -i 2 --name mentored-mentoring && cd ../.. && \
+        cd user/src && npx pm2 start app.js -i 2 --name mentored-user && cd ../.. && \
+        cd notification/src && npx pm2 start app.js -i 2 --name mentored-notification && cd ../.. && \
+        cd interface-service/src && npx pm2 start app.js -i 2 --name mentored-interface && cd ../.. && \
+        cd scheduler/src && npx pm2 start app.js -i 2 --name mentored-scheduler && cd ../..
+        ```
 
 10. **Run Service Scripts**
 
@@ -188,7 +245,7 @@ Before setting up the following MentorEd application, dependencies given below s
 
     MentorEd portal utilizes Ionic and Angular CLI for building the browser bundle, follow the steps given below to install them and start the portal.
 
-    - **Ubuntu/Linux/Mac**
+    - **Ubuntu/Linux/MacOS**
 
         1. Install Ionic CLI globally:
 
@@ -202,16 +259,54 @@ Before setting up the following MentorEd application, dependencies given below s
             sudo npm install -g @angular/cli
             ```
 
-        3. Build the portal
+        3. Navigate to `mentoring-mobile-app` directory:
+
+            ```
+            cd mentoring-mobile-app
+            ```
+
+        4. Build the portal
            Navigate to mentoring-mobile-app directory and run:
 
             ```
-            cd mentoring-mobile-app && ionic build && cd ..
+            ionic build
             ```
 
-        4. Start the portal:
+        5. Start the portal:
             ```
-            cd mentoring-mobile-app && pm2 start pm2.config.json && cd ..
+            pm2 start pm2.config.json && cd ..
+            ```
+
+    - **MacOS**
+
+        1. Install Ionic CLI globally:
+
+            ```
+            sudo npm install -g @ionic/cli
+            ```
+
+        2. Install Angular CLI globally:
+
+            ```
+            sudo npm install -g @angular/cli
+            ```
+
+        3. Navigate to `mentoring-mobile-app` directory:
+
+            ```
+            cd mentoring-mobile-app
+            ```
+
+        4. Build the portal
+           Navigate to mentoring-mobile-app directory and run:
+
+            ```
+            npx ionic build
+            ```
+
+        5. Start the portal:
+            ```
+            npx pm2 start pm2.config.json && cd ..
             ```
 
     Navigate to http://localhost:7601 to access the MentorEd Portal.
