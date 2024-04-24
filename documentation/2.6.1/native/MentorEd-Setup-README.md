@@ -277,7 +277,6 @@ Before setting up the following MentorEd application, dependencies given below s
             ```
 
         4. Build the portal
-           Navigate to mentoring-mobile-app directory and run:
 
             ```
             ionic build
