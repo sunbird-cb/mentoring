@@ -190,7 +190,7 @@ Before setting up the following MentorEd application, dependencies given below s
 
     3. Set up the `citus_setup` file by following the steps given below.
 
-        - **Ubuntu/Linux/MacOS**
+        - **Ubuntu/Linux**
 
             1. Download the `citus_setup.sh` file:
 
@@ -308,8 +308,7 @@ Before setting up the following MentorEd application, dependencies given below s
             cd mentoring-mobile-app
             ```
 
-        4. Build the portal
-           Navigate to mentoring-mobile-app directory and run:
+        4. Build the portal:
 
             ```
             npx ionic build
