@@ -105,6 +105,17 @@ Before setting up the following MentorEd application, dependencies given below s
 
 4. **Download Environment Files**
 
+    - **Ubuntu/Linux**
+
+        ```
+        curl -L -o mentoring/src/.env https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/native/envs/mentoring_env && \
+        curl -L -o user/src/.env https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/native/envs/user_env && \
+        curl -L -o notification/src/.env https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/native/envs/notification_env && \
+        curl -L -o interface-service/src/.env https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/native/envs/interface_env && \
+        curl -L -o scheduler/src/.env https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/native/envs/scheduler_env && \
+        curl -L -o mentoring-mobile-app/src/environments/environment.ts https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/native/envs/environment.ts
+        ```
+
     - **Ubuntu/Linux/MacOS**
 
         ```
