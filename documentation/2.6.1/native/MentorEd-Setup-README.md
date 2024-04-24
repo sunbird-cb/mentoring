@@ -116,7 +116,7 @@ Before setting up the following MentorEd application, dependencies given below s
         curl -L -o mentoring-mobile-app/src/environments/environment.ts https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/native/envs/environment.ts
         ```
 
-    - **Ubuntu/Linux/MacOS**
+    - **MacOS**
 
         ```
         curl -L -o mentoring/src/.env https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/native/envs/non-citus/mentoring_env && \
