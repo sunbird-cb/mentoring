@@ -1,18 +1,18 @@
-const QuestionSet = require('../models/index').QuestionSet
+const QuestionsSet = require('../models/index').QuestionSet
 
 module.exports = class QuestionsData {
-	static async createQuestionSet(data) {
+	static async createQuestionsSet(data) {
 		try {
-			const questionSet = await QuestionSet.create(data)
+			const questionSet = await QuestionsSet.create(data)
 			return questionSet
 		} catch (error) {
 			throw error
 		}
 	}
 
-	static async findOneQuestionSet(filter, projection = {}) {
+	static async findOneQuestionsSet(filter, projection = {}) {
 		try {
-			const questionSet = await QuestionSet.findOne({
+			const questionSet = await QuestionsSet.findOne({
 				where: filter,
 				attributes: projection,
 				raw: true,
@@ -23,9 +23,9 @@ module.exports = class QuestionsData {
 		}
 	}
 
-	static async updateOneQuestionSet(filter, update, options = {}) {
+	static async updateOneQuestionsSet(filter, update, options = {}) {
 		try {
-			const [rowsAffected] = await QuestionSet.update(update, {
+			const [rowsAffected] = await QuestionsSet.update(update, {
 				where: filter,
 				...options,
 			})
@@ -35,9 +35,9 @@ module.exports = class QuestionsData {
 		}
 	}
 
-	static async findQuestionSets(filter, projection) {
+	static async findQuestionsSets(filter, projection) {
 		try {
-			const questionSets = await QuestionSet.findAll({
+			const questionSets = await QuestionsSet.findAll({
 				where: filter,
 				attributes: projection,
 				raw: true,

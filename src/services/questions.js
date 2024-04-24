@@ -1,6 +1,6 @@
 const httpStatusCode = require('@generics/http-status')
+const common = require('@constants/common')
 const questionQueries = require('../database/queries/questions')
-const responses = require('@helpers/responses')
 module.exports = class questionsHelper {
 	/**
 	 * Create questions.
@@ -15,7 +15,7 @@ module.exports = class questionsHelper {
 			bodyData['created_by'] = decodedToken.id
 			bodyData['updated_by'] = decodedToken.id
 			let question = await questionQueries.createQuestion(bodyData)
-			return responses.successResponse({
+			return common.successResponse({
 				statusCode: httpStatusCode.created,
 				message: 'QUESTION_CREATED_SUCCESSFULLY',
 				result: question,
@@ -41,13 +41,13 @@ module.exports = class questionsHelper {
 			const result = await questionQueries.updateOneQuestion(filter, bodyData)
 
 			if (result === 'QUESTION_NOT_FOUND') {
-				return responses.failureResponse({
+				return common.failureResponse({
 					message: 'QUESTION_NOT_FOUND',
 					statusCode: httpStatusCode.bad_request,
 					responseCode: 'CLIENT_ERROR',
 				})
 			}
-			return responses.successResponse({
+			return common.successResponse({
 				statusCode: httpStatusCode.accepted,
 				message: 'QUESTION_UPDATED_SUCCESSFULLY',
 			})
@@ -70,13 +70,13 @@ module.exports = class questionsHelper {
 			const filter = { id: questionId }
 			const question = await questionQueries.findOneQuestion(filter)
 			if (!question) {
-				return responses.failureResponse({
+				return common.failureResponse({
 					message: 'QUESTION_NOT_FOUND',
 					statusCode: httpStatusCode.bad_request,
 					responseCode: 'CLIENT_ERROR',
 				})
 			}
-			return responses.successResponse({
+			return common.successResponse({
 				statusCode: httpStatusCode.ok,
 				message: 'QUESTION_FETCHED_SUCCESSFULLY',
 				result: question,

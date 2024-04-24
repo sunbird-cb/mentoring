@@ -2,12 +2,11 @@
 const common = require('@constants/common')
 const httpStatusCode = require('@generics/http-status')
 const sessionQueries = require('@database/queries/sessions')
-const questionSetQueries = require('@database/queries/question-set')
+const questionSetQueries = require('@database/queries/questionSet')
 const questionsQueries = require('@database/queries/questions')
 const feedbackQueries = require('@database/queries/feedback')
 const sessionAttendeesQueries = require('@database/queries/sessionAttendees')
 const mentorExtensionQueries = require('@database/queries/mentorExtension')
-const responses = require('@helpers/responses')
 
 module.exports = class MenteesHelper {
 	/**
@@ -84,7 +83,7 @@ module.exports = class MenteesHelper {
 				sessionData['form'] = feedbackForm[formCode] || []
 			}
 
-			return responses.successResponse({
+			return common.successResponse({
 				statusCode: httpStatusCode.ok,
 				message: 'PENDING_FEEDBACK_FETCHED_SUCCESSFULLY',
 				result: sessions,
@@ -113,7 +112,7 @@ module.exports = class MenteesHelper {
 			)
 
 			if (!sessioninfo) {
-				return responses.failureResponse({
+				return common.failureResponse({
 					message: 'SESSION_NOT_FOUND',
 					statusCode: httpStatusCode.bad_request,
 					responseCode: 'CLIENT_ERROR',
@@ -130,7 +129,7 @@ module.exports = class MenteesHelper {
 
 			let formData = await getFeedbackQuestions(formCode)
 
-			return responses.successResponse({
+			return common.successResponse({
 				statusCode: httpStatusCode.ok,
 				message: 'FEEDBACKFORM_MESSAGE',
 				result: {
@@ -170,7 +169,7 @@ module.exports = class MenteesHelper {
 			)
 
 			if (!sessionInfo) {
-				return responses.failureResponse({
+				return common.failureResponse({
 					message: 'SESSION_NOT_FOUND',
 					statusCode: httpStatusCode.bad_request,
 					responseCode: 'CLIENT_ERROR',
@@ -210,7 +209,7 @@ module.exports = class MenteesHelper {
 					sessionInfo.is_feedback_skipped == true ||
 					(feedbacks.length > 0 && feedbackNotExists.length == 0)
 				) {
-					return responses.failureResponse({
+					return common.failureResponse({
 						message: 'FEEDBACK_ALREADY_SUBMITTED',
 						statusCode: httpStatusCode.bad_request,
 						responseCode: 'CLIENT_ERROR',
@@ -221,7 +220,7 @@ module.exports = class MenteesHelper {
 				if (updateData.is_feedback_skipped) {
 					const rowsAffected = await sessionQueries.updateOne({ id: sessionId }, updateData)
 					if (rowsAffected == 0) {
-						return responses.failureResponse({
+						return common.failureResponse({
 							message: 'SESSION_NOT_FOUND',
 							statusCode: httpStatusCode.bad_request,
 							responseCode: 'CLIENT_ERROR',
@@ -234,7 +233,7 @@ module.exports = class MenteesHelper {
 					await feedbackQueries.bulkCreate(feedbackNotExists)
 				}
 
-				return responses.successResponse({
+				return common.successResponse({
 					statusCode: httpStatusCode.ok,
 					message: 'FEEDBACK_SUBMITTED',
 				})
@@ -254,7 +253,7 @@ module.exports = class MenteesHelper {
 					sessionAttendesInfo.is_feedback_skipped == true ||
 					(feedbacks.length > 0 && feedbackNotExists.length == 0)
 				) {
-					return responses.failureResponse({
+					return common.failureResponse({
 						message: 'FEEDBACK_ALREADY_SUBMITTED',
 						statusCode: httpStatusCode.bad_request,
 						responseCode: 'CLIENT_ERROR',
@@ -270,7 +269,7 @@ module.exports = class MenteesHelper {
 						updateData
 					)
 					if (attendeeRowsAffected[0] == 0) {
-						return responses.failureResponse({
+						return common.failureResponse({
 							message: 'SESSION_NOT_FOUND',
 							statusCode: httpStatusCode.bad_request,
 							responseCode: 'CLIENT_ERROR',
@@ -294,7 +293,7 @@ module.exports = class MenteesHelper {
 					}
 				}
 
-				return responses.successResponse({
+				return common.successResponse({
 					statusCode: httpStatusCode.ok,
 					message: 'FEEDBACK_SUBMITTED',
 				})
@@ -316,23 +315,14 @@ module.exports = class MenteesHelper {
 
 const getFeedbackQuestions = async function (formCode) {
 	try {
-		let questionSet = await questionSetQueries.findOneQuestionSet({
+		let questionsSet = await questionSetQueries.findOneQuestionsSet({
 			code: formCode,
 		})
 
 		let result = {}
-		if (questionSet && questionSet.questions) {
+		if (questionsSet && questionsSet.questions) {
 			let questions = await questionsQueries.find({
-				id: questionSet.questions,
-			})
-			const questionIndexMap = new Map()
-			questionSet.questions.forEach((id, index) => {
-				questionIndexMap.set(id.toString(), index)
-			})
-			questions.sort((x, y) => {
-				const idX = parseInt(x.id)
-				const idY = parseInt(y.id)
-				return questionIndexMap.get(idX.toString()) - questionIndexMap.get(idY.toString())
+				id: questionsSet.questions,
 			})
 
 			if (questions && questions.length > 0) {

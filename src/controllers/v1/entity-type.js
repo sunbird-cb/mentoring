@@ -23,7 +23,7 @@ module.exports = class Entity {
 	 * @method
 	 * @name update
 	 * @param {Object} req - request data.
-	 * @returns {JSON} - entities updating response.
+	 * @returns {JSON} - entities updation response.
 	 */
 
 	async update(req) {
@@ -72,7 +72,7 @@ module.exports = class Entity {
 
 	async delete(req) {
 		try {
-			return await entityTypeService.delete(req.params.id, req.decodedToken.organization_id)
+			return await entityTypeService.delete(req.params.id)
 		} catch (error) {
 			return error
 		}

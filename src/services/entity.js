@@ -1,9 +1,9 @@
 // Dependencies
 const httpStatusCode = require('@generics/http-status')
+const common = require('@constants/common')
 const entityTypeQueries = require('../database/queries/entity')
 const { UniqueConstraintError, ForeignKeyConstraintError } = require('sequelize')
 const { Op } = require('sequelize')
-const responses = require('@helpers/responses')
 
 module.exports = class EntityHelper {
 	/**
@@ -20,21 +20,21 @@ module.exports = class EntityHelper {
 		bodyData.updated_by = id
 		try {
 			const entity = await entityTypeQueries.createEntity(bodyData)
-			return responses.successResponse({
+			return common.successResponse({
 				statusCode: httpStatusCode.created,
 				message: 'ENTITY_CREATED_SUCCESSFULLY',
 				result: entity,
 			})
 		} catch (error) {
 			if (error instanceof UniqueConstraintError) {
-				return responses.failureResponse({
+				return common.failureResponse({
 					message: 'ENTITY_ALREADY_EXISTS',
 					statusCode: httpStatusCode.bad_request,
 					responseCode: 'CLIENT_ERROR',
 				})
 			}
 			if (error instanceof ForeignKeyConstraintError) {
-				return responses.failureResponse({
+				return common.failureResponse({
 					message: 'ENTITY_TYPE_NOT_FOUND',
 					statusCode: httpStatusCode.bad_request,
 					responseCode: 'CLIENT_ERROR',
@@ -63,20 +63,20 @@ module.exports = class EntityHelper {
 			})
 
 			if (updateCount === 0) {
-				return responses.failureResponse({
+				return common.failureResponse({
 					message: 'ENTITY_NOT_FOUND',
 					statusCode: httpStatusCode.bad_request,
 					responseCode: 'CLIENT_ERROR',
 				})
 			}
-			return responses.successResponse({
+			return common.successResponse({
 				statusCode: httpStatusCode.accepted,
 				message: 'ENTITY_UPDATED_SUCCESSFULLY',
 				result: updatedEntity,
 			})
 		} catch (error) {
 			if (error instanceof UniqueConstraintError) {
-				return responses.failureResponse({
+				return common.failureResponse({
 					message: 'ENTITY_ALREADY_EXISTS',
 					statusCode: httpStatusCode.bad_request,
 					responseCode: 'CLIENT_ERROR',
@@ -123,13 +123,13 @@ module.exports = class EntityHelper {
 			const entities = await entityTypeQueries.findAllEntities(filter)
 
 			if (!entities.length) {
-				return responses.failureResponse({
+				return common.failureResponse({
 					message: 'ENTITY_NOT_FOUND',
 					statusCode: httpStatusCode.bad_request,
 					responseCode: 'CLIENT_ERROR',
 				})
 			}
-			return responses.successResponse({
+			return common.successResponse({
 				statusCode: httpStatusCode.ok,
 				message: 'ENTITY_FETCHED_SUCCESSFULLY',
 				result: entities,
@@ -161,13 +161,13 @@ module.exports = class EntityHelper {
 			const entities = await entityTypeQueries.findAllEntities(filter)
 
 			if (!entities.length) {
-				return responses.failureResponse({
+				return common.failureResponse({
 					message: 'ENTITY_NOT_FOUND',
 					statusCode: httpStatusCode.bad_request,
 					responseCode: 'CLIENT_ERROR',
 				})
 			}
-			return responses.successResponse({
+			return common.successResponse({
 				statusCode: httpStatusCode.ok,
 				message: 'ENTITY_FETCHED_SUCCESSFULLY',
 				result: entities,
@@ -189,14 +189,14 @@ module.exports = class EntityHelper {
 		try {
 			const deleteCount = await entityTypeQueries.deleteOneEntityType(id, userId)
 			if (deleteCount === '0') {
-				return responses.failureResponse({
+				return common.failureResponse({
 					message: 'ENTITY_NOT_FOUND',
 					statusCode: httpStatusCode.bad_request,
 					responseCode: 'CLIENT_ERROR',
 				})
 			}
 
-			return responses.successResponse({
+			return common.successResponse({
 				statusCode: httpStatusCode.accepted,
 				message: 'ENTITY_DELETED_SUCCESSFULLY',
 			})

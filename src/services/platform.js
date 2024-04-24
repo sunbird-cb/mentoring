@@ -1,26 +1,24 @@
 const common = require('@constants/common')
 const httpStatusCode = require('@generics/http-status')
-const responses = require('@helpers/responses')
 
 module.exports = class platformHelper {
 	/**
-	 * Get application configuration.
-	 *
-	 * @static
-	 * @async
+	 * Get app related config details
 	 * @method
 	 * @name getConfig
-	 * @returns {Promise<Object>} - A promise that resolves with the application configuration.
-	 * @throws {Error} - Throws an error if there's an issue during configuration retrieval.
+	 * @returns {JSON} - returns success response.
 	 */
 	static async getConfig() {
 		try {
 			let config = {
-				meeting_platform: process.env.DEFAULT_MEETING_SERVICE,
-				session_mentee_limit: process.env.SESSION_MENTEE_LIMIT,
+				meetingPlatform: process.env.DEFAULT_MEETING_SERVICE,
+				reportIssue: {
+					to: process.env.SUPPORT_EMAIL_ID,
+					subject: common.REPORT_EMAIL_SUBJECT,
+				},
 			}
 
-			return responses.successResponse({
+			return common.successResponse({
 				statusCode: httpStatusCode.created,
 				message: 'APP_CONFIG_FETCHED_SUCCESSFULLY',
 				result: config,

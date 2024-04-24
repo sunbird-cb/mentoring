@@ -7,7 +7,7 @@ module.exports = (sequelize, DataTypes) => {
 				allowNull: false,
 				autoIncrement: true,
 			},
-			user_id: {
+			mentor_id: {
 				type: DataTypes.INTEGER,
 				allowNull: false,
 				primaryKey: true,
@@ -16,14 +16,6 @@ module.exports = (sequelize, DataTypes) => {
 				type: DataTypes.INTEGER,
 				allowNull: false,
 				primaryKey: true,
-			},
-			type: {
-				type: DataTypes.STRING,
-				allowNull: false,
-				primaryKey: true,
-				validate: {
-					isIn: [['MENTOR', 'CREATOR']],
-				},
 			},
 		},
 		{

@@ -10,8 +10,9 @@ const userBaseUrl = process.env.USER_SERVICE_HOST + process.env.USER_SERVICE_BAS
 const requests = require('@generics/requests')
 const endpoints = require('@constants/endpoints')
 const request = require('request')
+const common = require('@constants/common')
 const httpStatusCode = require('@generics/http-status')
-const responses = require('@helpers/responses')
+const utilsHelper = require('@generics/utils')
 
 /**
  * Fetches the default organization details for a given organization code/id.
@@ -57,10 +58,11 @@ const details = function (token = '', userId = '') {
 	return new Promise(async (resolve, reject) => {
 		try {
 			let profileUrl = userBaseUrl + endpoints.USER_PROFILE_DETAILS
-			let internalToken = true // All internal api calls require internal access token
+			let internalToken = false
 
 			if (userId != '') {
 				profileUrl = profileUrl + '/' + userId
+				internalToken = true
 			}
 			const profileDetails = await requests.get(profileUrl, token, internalToken)
 			return resolve(profileDetails)
@@ -124,7 +126,7 @@ const share = function (profileId) {
 			let shareLink = await requests.get(apiUrl, false, true)
 			if (shareLink.data.responseCode === 'CLIENT_ERROR') {
 				return resolve(
-					responses.failureResponse({
+					common.failureResponse({
 						message: shareLink.data.message,
 						statusCode: httpStatusCode.bad_request,
 						responseCode: 'CLIENT_ERROR',
@@ -132,7 +134,7 @@ const share = function (profileId) {
 				)
 			}
 			return resolve(
-				responses.successResponse({
+				common.successResponse({
 					statusCode: httpStatusCode.ok,
 					message: shareLink.data.message,
 					result: shareLink.data.result,
@@ -179,54 +181,6 @@ const list = function (userType, pageNo, pageSize, searchText) {
 }
 
 /**
- * User Role list.
- * @method
- * @name defaultList
- * @param {Number} page - page No.
- * @param {Number} limit - page limit.
- * @param {String} search - search field.
- * @returns {JSON} - List of roles
- */
-
-const getListOfUserRoles = async (page, limit, search) => {
-	const options = {
-		headers: {
-			'Content-Type': 'application/json',
-			internal_access_token: process.env.INTERNAL_ACCESS_TOKEN,
-		},
-		json: true,
-	}
-
-	const apiUrl = userBaseUrl + endpoints.USERS_ROLE_LIST + `?page=${page}&limit=${limit}&search=${search}`
-
-	try {
-		const data = await new Promise((resolve, reject) => {
-			request.get(apiUrl, options, (err, response) => {
-				if (err) {
-					reject({
-						message: 'USER_SERVICE_DOWN',
-						error: err,
-					})
-				} else {
-					try {
-						resolve(response.body)
-					} catch (parseError) {
-						reject({
-							message: 'Failed to parse JSON response',
-							error: parseError,
-						})
-					}
-				}
-			})
-		})
-
-		return data
-	} catch (error) {
-		throw error
-	}
-}
-
-/**
  * User list.
  * @method
  * @name list
@@ -249,14 +203,7 @@ const listWithoutLimit = function (userType, searchText) {
 		}
 	})
 }
-const search = function (userType, pageNo, pageSize, searchText, userServiceQueries) {
-	let userSearchBody = {}
-	// queryParams to search in user service. Like user_ids , name , email etc...
-	if (userServiceQueries) {
-		for (const [key, value] of Object.entries(userServiceQueries)) {
-			userSearchBody[key] = value
-		}
-	}
+const search = function (userType, pageNo, pageSize, searchText, userIds) {
 	return new Promise(async (resolve, reject) => {
 		try {
 			const apiUrl =
@@ -270,7 +217,7 @@ const search = function (userType, pageNo, pageSize, searchText, userServiceQuer
 				pageSize +
 				'&search=' +
 				searchText
-			const userDetails = await requests.post(apiUrl, { ...userSearchBody }, '', true)
+			const userDetails = await requests.post(apiUrl, { user_ids: userIds }, false, true)
 
 			return resolve(userDetails)
 		} catch (error) {
@@ -278,61 +225,6 @@ const search = function (userType, pageNo, pageSize, searchText, userServiceQuer
 		}
 	})
 }
-
-// const listOrganization = function (organizationIds = []) {
-// 	return new Promise(async (resolve, reject) => {
-// 		try {
-// 			const apiUrl = userBaseUrl + endpoints.ORGANIZATION_LIST
-// 			const organizations = await requests.post(apiUrl, { organizationIds }, '', true)
-
-// 			return resolve(organizations)
-// 		} catch (error) {
-// 			return reject(error)
-// 		}
-// 	})
-// }
-
-/**
- * Get Organization list.
- * @method
- * @name listOrganization
- * @param {Array} organizationIds
- * @returns
- */
-
-const listOrganization = function (organizationIds = []) {
-	return new Promise(async (resolve, reject) => {
-		const options = {
-			headers: {
-				'Content-Type': 'application/json',
-				internal_access_token: process.env.INTERNAL_ACCESS_TOKEN,
-			},
-			form: {
-				organizationIds,
-			},
-		}
-
-		const apiUrl = userBaseUrl + endpoints.ORGANIZATION_LIST
-		try {
-			request.get(apiUrl, options, callback)
-			let result = {
-				success: true,
-			}
-			function callback(err, data) {
-				if (err) {
-					result.success = false
-				} else {
-					response = JSON.parse(data.body)
-					result.data = response
-				}
-				return resolve(result)
-			}
-		} catch (error) {
-			return reject(error)
-		}
-	})
-}
-
 module.exports = {
 	fetchDefaultOrgDetails,
 	details,
@@ -341,6 +233,4 @@ module.exports = {
 	share,
 	listWithoutLimit,
 	search,
-	getListOfUserRoles,
-	listOrganization,
 }

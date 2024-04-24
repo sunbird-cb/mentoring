@@ -125,11 +125,7 @@ module.exports = class OrgAdmin {
 	 */
 	async updateRelatedOrgs(req) {
 		try {
-			return await orgAdminService.updateRelatedOrgs(
-				req.body.delta_organization_ids,
-				req.body.organization_id,
-				req.body.action
-			)
+			return await orgAdminService.updateRelatedOrgs(req.body.related_organization_ids, req.body.organization_id)
 		} catch (error) {
 			return error
 		}

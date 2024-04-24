@@ -1,3 +1,4 @@
+const questionModel = require('../queries/questions')
 module.exports = {
 	up: async (queryInterface, Sequelize) => {
 		try {

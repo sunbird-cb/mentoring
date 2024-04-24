@@ -1,15 +1,15 @@
 const NotificationTemplate = require('@database/models/index').NotificationTemplate
 const { getDefaultOrgId } = require('@helpers/getDefaultOrgId')
 const { Op } = require('sequelize')
+const common = require('@constants/common')
 const httpStatusCode = require('@generics/http-status')
-const responses = require('@helpers/responses')
 
 module.exports = class NotificationTemplateData {
 	static async findOneEmailTemplate(code, orgId) {
 		try {
 			const defaultOrgId = await getDefaultOrgId()
 			if (!defaultOrgId) {
-				return responses.failureResponse({
+				return common.failureResponse({
 					message: 'DEFAULT_ORG_ID_NOT_SET',
 					statusCode: httpStatusCode.bad_request,
 					responseCode: 'CLIENT_ERROR',
