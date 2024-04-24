@@ -47,6 +47,7 @@ MENTOR_REQUEST_ACCEPTED_EMAIL_TEMPLATE_CODE=mentor_request_accepted
 MENTOR_REQUEST_REJECTED_EMAIL_TEMPLATE_CODE=mentor_request_rejected
 MENTORING_SERVICE_URL=http://localhost:3000
 NOTIFICATION_KAFKA_TOPIC=dev.notifications
+ORG_ADMIN_INVITATION_EMAIL_TEMPLATE_CODE=invite_org_admin
 OCI_ACCESS_KEY_ID=asdgf6a0s98d76g9a8sasdasd7df987as98df
 OCI_BUCKET_ENDPOINT=https://as98d7asdasdf.compat.objectstorage.ap-hyderabad-1.oraclecloud.com
 OCI_BUCKET_REGION=ap-hyderabad-1
