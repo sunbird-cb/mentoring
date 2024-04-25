@@ -214,7 +214,6 @@ Before setting up the following MentorEd application, dependencies given below s
         cd interface-service\src & npm install & cd ..\.. & ^
         cd scheduler\src & npm install & cd ..\.. & ^
         cd mentoring-mobile-app & npm install --force & cd ..
-
         ```
 
 4. **Download Environment Files**
@@ -250,7 +249,6 @@ Before setting up the following MentorEd application, dependencies given below s
         curl -L -o interface-service\src\.env https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/native/envs/interface_env & ^
         curl -L -o scheduler\src\.env https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/native/envs/scheduler_env & ^
         curl -L -o mentoring-mobile-app\src\environments\environment.ts https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/native/envs/environment.ts
-
         ```
 
 5. **Create Databases**
