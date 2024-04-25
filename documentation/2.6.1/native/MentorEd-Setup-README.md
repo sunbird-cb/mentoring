@@ -93,11 +93,11 @@ Before setting up the following MentorEd application, dependencies given below s
 
     1. Install Node.js 20:
 
-        Download and install Node.js v20 for Windows platform (x64) from [official Node.js download page](https://nodejs.org/en/download).
+        Download and install Node.js v20 for Windows platform (x64) from official [Node.js download page](https://nodejs.org/en/download).
 
     2. Install Kafka 3.5.0:
 
-        1. Adapt the instructions given in the following ["Apache Kafka on Windows" documentation](https://www.conduktor.io/kafka/how-to-install-apache-kafka-on-windows/) to install Kafka version 3.5.0.
+        1. Adapt the instructions given in the following ["Apache Kafka on Windows"](https://www.conduktor.io/kafka/how-to-install-apache-kafka-on-windows/) documentation to install Kafka version 3.5.0.
 
             > Note: As per the instructions, Kafka server and Zookeeper has to be kept active on different WSL terminals for the entire lifetime of MentorEd services.
 
@@ -132,7 +132,7 @@ Before setting up the following MentorEd application, dependencies given below s
 
     3. Install Redis:
 
-        1. Follow the instructions given in the [Official Redis Documentation](https://redis.io/docs/latest/operate/oss_and_stack/install/install-redis/install-redis-on-windows/) to install Redis using WSL.
+        1. Follow the instructions given in the official [Redis Documentation](https://redis.io/docs/latest/operate/oss_and_stack/install/install-redis/install-redis-on-windows/) to install Redis using WSL.
 
         2. Using the WSL terminal, open the Redis configuration file in a text editor, such as nano:
 
@@ -156,7 +156,7 @@ Before setting up the following MentorEd application, dependencies given below s
 
     5. Install PostgreSQL 16:
 
-        1. Download and install PostgreSQL 16 from [EnterpriseDB PostgreSQL download page](https://www.enterprisedb.com/downloads/postgres-postgresql-downloads).
+        1. Download and install PostgreSQL 16 from [EnterpriseDB PostgreSQL](https://www.enterprisedb.com/downloads/postgres-postgresql-downloads) download page.
 
             > Note: Set username and password for the default database to be 'postgres' during installation.
 
