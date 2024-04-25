@@ -71,8 +71,22 @@ Before setting up the following MentorEd application, dependencies given below s
         ```
 
     5. Install Redis:
+
         ```
         brew install redis
+        ```
+
+    6. Download `check-dependencies.sh` file:
+
+        ```
+        curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/native/scripts/macos/check-dependencies.sh && \
+        chmod +x check-dependencies.sh
+        ```
+
+    7. Verify installed dependencies by running `check-dependencies.sh`:
+
+        ```
+        ./check-dependencies.sh
         ```
 
 -   **Windows**
@@ -132,7 +146,6 @@ Before setting up the following MentorEd application, dependencies given below s
 
             ```
             sudo service redis-server restart
-
             ```
 
     4. Install PM2:
