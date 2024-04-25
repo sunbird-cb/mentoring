@@ -48,6 +48,10 @@ Before setting up the following MentorEd application, dependencies given below s
         brew install node@20
         ```
 
+        ```
+        brew link --overwrite node@20
+        ```
+
     2. Install Kafka:
 
         ```
