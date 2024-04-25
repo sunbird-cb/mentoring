@@ -114,19 +114,19 @@ Before setting up the following MentorEd application, dependencies given below s
             ```
             2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1492 qdisc mq state UP group default qlen 1000
             link/ether 11:56:54:f0:as:vf brd ff:ff:ff:ff:ff:ff
-            inet 172.24.64.200/20 brd 172.24.79.255 scope global eth0
+            inet 172.12.46.150/20 brd 172.24.79.255 scope global eth0
                 valid_lft forever preferred_lft forever
             inet6 fe80::215:5dff:fee7:dc52/64 scope link
                 valid_lft forever preferred_lft forever
             ```
 
-            Keep note of the IP address shown alongside `inet`. In the above case, `172.24.64.200` is IP address of the WSL instance.
+            Keep note of the IP address shown alongside `inet`. In the above case, `172.12.46.150` is IP address of the WSL instance.
 
         3. In the same WSL terminal, navigate to `config` directory of Kafka from step 1 and make the following changes to `server.properties` file.
 
-            - Find the line `listeners=PLAINTEXT://localhost:9092` and change it to `listeners=PLAINTEXT://0.0.0.0:9092` to allow connections from any IP.
+            - Uncomment `listeners=PLAINTEXT://:9092` line and change it to `listeners=PLAINTEXT://0.0.0.0:9092` to allow connections from any IP.
 
-            - Uncomment `advertised.listeners` line and set it to `advertised.listeners=PLAINTEXT://172.24.64.200:9092`. Replace `172.24.64.200` with the actual IP address of your WSL instance.
+            - Uncomment `advertised.listeners` line and set it to `advertised.listeners=PLAINTEXT://172.12.46.150:9092`. Replace `172.12.46.150` with the actual IP address of your WSL instance.
 
         4. Restart the Zookeeper and Kafka Server from their own WSL terminals from step 1.
 
