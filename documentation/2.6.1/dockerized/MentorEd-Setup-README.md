@@ -43,12 +43,12 @@ To set up the MentorEd application, ensure you have Docker and Docker Compose in
 
         ```
         curl -L ^
-            -O https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/dockerized/interface_env ^
-            -O https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/dockerized/mentoring_env ^
-            -O https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/dockerized/notification_env ^
-            -O https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/dockerized/scheduler_env ^
-            -O https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/dockerized/user_env ^
-            -O https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/dockerized/environment.ts
+            -O https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/dockerized/envs/interface_env ^
+            -O https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/dockerized/envs/mentoring_env ^
+            -O https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/dockerized/envs/notification_env ^
+            -O https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/dockerized/envs/scheduler_env ^
+            -O https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/dockerized/envs/user_env ^
+            -O https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/dockerized/envs/environment.ts
         ```
 
     > **Note:** Modify the environment files as necessary for your deployment using any text editor, ensuring that the values are appropriate for your environment. The default values provided in the current files are functional and serve as a good starting point. Refer to the sample env files provided at the [Mentoring](https://github.com/ELEVATE-Project/mentoring/blob/master/src/.env.sample), [User](https://github.com/ELEVATE-Project/user/blob/master/src/.env.sample), [Notification](https://github.com/ELEVATE-Project/notification/blob/master/src/.env.sample), [Scheduler](https://github.com/ELEVATE-Project/scheduler/blob/master/src/.env.sample), and [Interface](https://github.com/ELEVATE-Project/interface-service/blob/main/src/.env.sample) repositories for reference.
