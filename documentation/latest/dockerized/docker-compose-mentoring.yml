@@ -145,7 +145,7 @@ services:
       - ${scheduler_env}
   interface:
     # Update with latest image
-    image: shikshalokamqa/elevate-interface:2.6.2
+    image: shikshalokamqa/elevate-interface:latest
     ports:
       - '3569:3569'
     command: ['node', 'app.js']
