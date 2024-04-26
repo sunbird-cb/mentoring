@@ -15,7 +15,7 @@ To set up the MentorEd application, ensure you have Docker and Docker Compose in
 2.  **Download Docker Compose File:** Retrieve the **[docker-compose-mentoring.yml](https://github.com/ELEVATE-Project/mentoring/blob/doc-fix-2.5/src/scripts/setup/docker-compose-mentoring.yml)** file from the Mentoring repository and save it to the mentoring directory.
 
     ```
-    curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/dockerized/docker-compose-mentoring.yml
+    curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/latest/dockerized/docker-compose-mentoring.yml
     ```
 
     > Note: All commands are run from the mentoring directory.
@@ -32,23 +32,23 @@ To set up the MentorEd application, ensure you have Docker and Docker Compose in
     -   **Ubuntu/Linux/Mac**
         ```
         curl -L \
-         -O https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/dockerized/envs/interface_env \
-         -O https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/dockerized/envs/mentoring_env \
-         -O https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/dockerized/envs/notification_env \
-         -O https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/dockerized/envs/scheduler_env \
-         -O https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/dockerized/envs/user_env \
-         -O https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/dockerized/envs/environment.ts
+         -O https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/latest/dockerized/envs/interface_env \
+         -O https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/latest/dockerized/envs/mentoring_env \
+         -O https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/latest/dockerized/envs/notification_env \
+         -O https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/latest/dockerized/envs/scheduler_env \
+         -O https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/latest/dockerized/envs/user_env \
+         -O https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/latest/dockerized/envs/environment.ts
         ```
     -   **Windows**
 
         ```
         curl -L ^
-            -O https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/dockerized/interface_env ^
-            -O https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/dockerized/mentoring_env ^
-            -O https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/dockerized/notification_env ^
-            -O https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/dockerized/scheduler_env ^
-            -O https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/dockerized/user_env ^
-            -O https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/dockerized/environment.ts
+            -O https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/latest/dockerized/interface_env ^
+            -O https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/latest/dockerized/mentoring_env ^
+            -O https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/latest/dockerized/notification_env ^
+            -O https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/latest/dockerized/scheduler_env ^
+            -O https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/latest/dockerized/user_env ^
+            -O https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/latest/dockerized/environment.ts
         ```
 
     > **Note:** Modify the environment files as necessary for your deployment using any text editor, ensuring that the values are appropriate for your environment. The default values provided in the current files are functional and serve as a good starting point. Refer to the sample env files provided at the [Mentoring](https://github.com/ELEVATE-Project/mentoring/blob/master/src/.env.sample), [User](https://github.com/ELEVATE-Project/user/blob/master/src/.env.sample), [Notification](https://github.com/ELEVATE-Project/notification/blob/master/src/.env.sample), [Scheduler](https://github.com/ELEVATE-Project/scheduler/blob/master/src/.env.sample), and [Interface](https://github.com/ELEVATE-Project/interface-service/blob/main/src/.env.sample) repositories for reference.
@@ -62,13 +62,13 @@ To set up the MentorEd application, ensure you have Docker and Docker Compose in
     -   **Ubuntu/Linux/Mac**
 
         ```
-        curl -OJL https://raw.githubusercontent.com/ELEVATE-Project/mentoring/doc-fix-2.5/documentation/2.6.1/dockerized/scripts/mac-linux/replace_volume_path.sh
+        curl -OJL https://raw.githubusercontent.com/ELEVATE-Project/mentoring/doc-fix-2.5/documentation/latest/dockerized/scripts/mac-linux/replace_volume_path.sh
         ```
 
     -   **Windows**
 
         ```
-        curl -OJL https://raw.githubusercontent.com/ELEVATE-Project/mentoring/doc-fix-2.5/documentation/2.6.1/dockerized/scripts/windows/replace_volume_path.bat
+        curl -OJL https://raw.githubusercontent.com/ELEVATE-Project/mentoring/doc-fix-2.5/documentation/latest/dockerized/scripts/windows/replace_volume_path.bat
         ```
 
 5.  **Run `replace_volume_path` Script File**
@@ -103,11 +103,11 @@ To set up the MentorEd application, ensure you have Docker and Docker Compose in
         1. Download the files.
 
             ```
-            curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/dockerized/scripts/mac-linux/docker-compose-up.sh
+            curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/latest/dockerized/scripts/mac-linux/docker-compose-up.sh
             ```
 
             ```
-            curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/dockerized/scripts/mac-linux/docker-compose-down.sh
+            curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/latest/dockerized/scripts/mac-linux/docker-compose-down.sh
             ```
 
         2. Make the files executable by running the following commands.
@@ -123,11 +123,11 @@ To set up the MentorEd application, ensure you have Docker and Docker Compose in
     -   **Windows**
 
         ```
-        curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/dockerized/scripts/windows/docker-compose-up.bat
+        curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/latest/dockerized/scripts/windows/docker-compose-up.bat
         ```
 
         ```
-        curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/dockerized/scripts/windows/docker-compose-down.bat
+        curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/latest/dockerized/scripts/windows/docker-compose-down.bat
         ```
 
 7.  **Run All Services & Dependencies:** All services and dependencies can be started using the `docker-compose-up` script file.
@@ -172,11 +172,11 @@ To enable the Citus extension for mentoring and user services, follow these step
 
 1. Create a sub-directory named `mentoring` and download `distributionColumns.sql` into it.
     ```
-    mkdir mentoring && curl -o ./mentoring/distributionColumns.sql -JL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/distribution-columns/mentoring/distributionColumns.sql
+    mkdir mentoring && curl -o ./mentoring/distributionColumns.sql -JL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/latest/distribution-columns/mentoring/distributionColumns.sql
     ```
 2. Create a sub-directory named `user` and download `distributionColumns.sql` into it.
     ```
-    mkdir user && curl -o ./user/distributionColumns.sql -JL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/distribution-columns/user/distributionColumns.sql
+    mkdir user && curl -o ./user/distributionColumns.sql -JL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/latest/distribution-columns/user/distributionColumns.sql
     ```
 3. Set up the citus_setup file by following the steps given below.
 
@@ -185,7 +185,7 @@ To enable the Citus extension for mentoring and user services, follow these step
         1. Download the `citus_setup.sh` file.
 
             ```
-            curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/dockerized/scripts/mac-linux/citus_setup.sh
+            curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/latest/dockerized/scripts/mac-linux/citus_setup.sh
             ```
 
         2. Make the setup file executable by running the following command.
@@ -206,7 +206,7 @@ To enable the Citus extension for mentoring and user services, follow these step
     - **Windows**
         1. Download the `citus_setup.bat` file.
             ```
-             curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/dockerized/scripts/windows/citus_setup.bat
+             curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/latest/dockerized/scripts/windows/citus_setup.bat
             ```
         2. Enable Citus and set distribution columns for `mentoring` database by running the `citus_setup.bat`with the following arguments.
             ```
