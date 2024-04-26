@@ -1,4 +1,4 @@
-## B. PM2 Managed Services & Natively Installed Dependencies
+## PM2 Managed Services & Natively Installed Dependencies
 
 Expectation: Upon following the prescribed steps, you will achieve a fully operational MentorEd application setup. Both the portal and backend services are managed using PM2, with all dependencies installed natively on the host system.
 
