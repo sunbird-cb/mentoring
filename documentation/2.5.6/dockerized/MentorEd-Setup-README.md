@@ -57,7 +57,7 @@ To set up the MentorEd application, ensure you have Docker and Docker Compose in
     >
     > For detailed instructions on adjusting these values, please consult the **[MentorEd Environment Variable Modification Guide](./MentorEd-Env-Modification.md)**.
 
-    > Important: As mentioned in the above linked document, the **User SignUp** functionality may be compromised if key environment variables are not set correctly during deployment. If you opt to skip this setup, consider using the sample user account generator detailed in the `Sample User Accounts Generation` section of this document.
+    > **Important:** As mentioned in the above linked document, the **User SignUp** functionality may be compromised if key environment variables are not set correctly during deployment. If you opt to skip this setup, consider using the sample user account generator detailed in the `Sample User Accounts Generation` section of this document.
 
 4.  **Download `replace_volume_path` Script File**
 
