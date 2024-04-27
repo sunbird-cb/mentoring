@@ -4,6 +4,6 @@ INSERT INTO public.users (id, name, email, email_verified, roles, status, passwo
 INSERT INTO public.users_credentials (id, email, password, organization_id, user_id, meta, created_at, updated_at, deleted_at, organization_user_invite_id) VALUES (1, 'aaravpatel@example.com', '\$2a\$10\$NTzc2CjEbwB4DavjEKU11eqJXJLrODnvAwvXWor9Dz/gXr55Pvyj.', 1, 1, NULL, '2024-04-18 08:12:19.407+00', '2024-04-18 08:12:19.407+00', NULL, NULL);
 INSERT INTO public.users_credentials (id, email, password, organization_id, user_id, meta, created_at, updated_at, deleted_at, organization_user_invite_id) VALUES (2, 'arunimareddy@example.com', '\$2a\$10\$NTzc2CjEbwB4DavjEKU11eqJXJLrODnvAwvXWor9Dz/gXr55Pvyj.', 1, 2, NULL, '2024-04-18 08:12:19.407+00', '2024-04-18 08:12:19.407+00', NULL, NULL);
 INSERT INTO public.users_credentials (id, email, password, organization_id, user_id, meta, created_at, updated_at, deleted_at, organization_user_invite_id) VALUES (3, 'devikasingh@example.com', '\$2a\$10\$NTzc2CjEbwB4DavjEKU11eqJXJLrODnvAwvXWor9Dz/gXr55Pvyj.', 1, 3, NULL, '2024-04-18 08:12:19.407+00', '2024-04-18 08:12:19.407+00', NULL, NULL);
-SELECT nextval('users_id_seq'::regclass) FROM public.users
-SELECT nextval('users_credentials_id_seq'::regclass) FROM public.users_credentials
+SELECT nextval('users_id_seq'::regclass) FROM public.users;
+SELECT nextval('users_credentials_id_seq'::regclass) FROM public.users_credentials;
 SELECT NULL;
