@@ -110,7 +110,8 @@ exports.buildUserAvailabilities = ({ startEpoch, endEpoch, userAvailabilities })
 						occurrenceDate.add(occurrenceWeek, 'weeks')
 						occurrenceEndDate.add(occurrenceWeek, 'weeks')
 
-						// Set the time components of occurrenceDate to match occurrenceDateTime
+						/* Set the time components of occurrenceDate to match occurrenceDateTime,
+						   since it was overwritten by .clone().startOf('month').day(dayOfWeek) */
 						occurrenceDate.set({
 							hour: occurrenceDateTime.hour(),
 							minute: occurrenceDateTime.minute(),
