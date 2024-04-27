@@ -112,8 +112,11 @@ while IFS= read -r line; do
         echo "Table '$full_table_name' exists, executing: $line"
         # Execute the SQL command in the Docker container with the full table name
         docker exec --user "$DB_USER" "$CONTAINER_NAME" bash -c "PGPASSWORD='$DB_PASSWORD' psql -h localhost -U $DB_USER -d $DB_NAME -p $DB_PORT -c \"$line\""
+    else
+        # Execute the SQL command directly if not an INSERT command
+        echo "Executing command: $line"
+        docker exec --user "$DB_USER" "$CONTAINER_NAME" bash -c "PGPASSWORD='$DB_PASSWORD' psql -h localhost -U $DB_USER -d $DB_NAME -p $DB_PORT -c \"$line\""
     fi
 done <"$SAMPLE_COLUMNS_FILE"
-
 
 echo "Sample Data Insertion Completed"
