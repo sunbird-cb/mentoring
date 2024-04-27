@@ -67,8 +67,10 @@ exports.buildUserAvailabilities = ({ startEpoch, endEpoch, userAvailabilities })
 							...userAvailability,
 							start_time: occurrenceDate.unix(),
 							end_time: occurrenceEndDate.unix(),
-							/* start_time_date: occurrenceDate.utcOffset('+05:30').format('YYYY-MMM-DD hh:mm A'),
-							end_time_date: occurrenceEndDate.utcOffset('+05:30').format('YYYY-MMM-DD hh:mm A'), */
+							start_time_date:
+								occurrenceDate.clone().utcOffset('+05:30').format('DD-MMM-YYYY hh:mm A') + ' IST',
+							end_time_date:
+								occurrenceEndDate.clone().utcOffset('+05:30').format('DD-MMM-YYYY hh:mm A') + ' IST',
 						})
 					} else if (
 						userAvailability?.exceptions !== null &&
