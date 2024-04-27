@@ -7,23 +7,26 @@ const rl = readline.createInterface({
 })
 
 rl.question('Enter the version of the documentation (leave blank for latest): ', (input) => {
-	const version = input.trim() || 'latest'
-	const templatePath = './README-Template.md'
+	const version = input.trim() || 'latest' // Default to 'latest' if no input
+	const templatePath = './README-Template.md' // Path to your original markdown file
 	const dockerComposePath = `./${version}/dockerized/MentorEd-Setup-README.md`
 	const pm2Path = `./${version}/native/MentorEd-Setup-README.md`
 
 	fs.readFile(templatePath, 'utf8', (err, data) => {
 		if (err) {
 			console.error(`Failed to read the template markdown file: ${err.message}`)
-			return rl.close()
+			rl.close()
+			return
 		}
 
-		let updatedMarkdown = data
+		// Replace all instances of {{MENTORED_VERSION}} with the specified version
+		let updatedMarkdown = data.replace(/{{MENTORED_VERSION}}/g, version)
 
 		fs.readFile(dockerComposePath, 'utf8', (err, dockerContent) => {
 			if (err) {
 				console.error(`Failed to read Docker Compose documentation: ${err.message}`)
-				return rl.close()
+				rl.close()
+				return
 			}
 
 			updatedMarkdown = updatedMarkdown.replace('{{DOCKER_COMPOSE_DOCUMENTATION}}', dockerContent)
@@ -31,7 +34,8 @@ rl.question('Enter the version of the documentation (leave blank for latest): ',
 			fs.readFile(pm2Path, 'utf8', (err, pm2Content) => {
 				if (err) {
 					console.error(`Failed to read PM2 documentation: ${err.message}`)
-					return rl.close()
+					rl.close()
+					return
 				}
 
 				updatedMarkdown = updatedMarkdown.replace('{{PM2_DOCUMENTATION}}', pm2Content)
