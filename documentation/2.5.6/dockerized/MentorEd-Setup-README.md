@@ -55,7 +55,7 @@ To set up the MentorEd application, ensure you have Docker and Docker Compose in
 
     > **Caution:** While the default values in the downloaded environment files enable the MentorEd Application to operate, certain features may not function correctly or could be impaired unless the adopter-specific environment variables are properly configured.
     >
-    > For detailed instructions on adjusting these values, please consult the **[MentorEd Environment Variable Modification Guide](./MentorEd-Env-Modification.md)**.
+    > For detailed instructions on adjusting these values, please consult the **[MentorEd Environment Variable Modification Guide](../MentorEd-Env-Modication-README.md)**.
 
     > **Important:** As mentioned in the above linked document, the **User SignUp** functionality may be compromised if key environment variables are not set correctly during deployment. If you opt to skip this setup, consider using the sample user account generator detailed in the `Sample User Accounts Generation` section of this document.
 

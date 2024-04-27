@@ -251,6 +251,14 @@ Before setting up the following MentorEd application, dependencies given below s
         curl -L -o mentoring-mobile-app\src\environments\environment.ts https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.5.6/native/envs/environment.ts
         ```
 
+    > **Note:** Modify the environment files as necessary for your deployment using any text editor, ensuring that the values are appropriate for your environment. The default values provided in the current files are functional and serve as a good starting point. Refer to the sample env files provided at the [Mentoring](https://github.com/ELEVATE-Project/mentoring/blob/master/src/.env.sample), [User](https://github.com/ELEVATE-Project/user/blob/master/src/.env.sample), [Notification](https://github.com/ELEVATE-Project/notification/blob/master/src/.env.sample), [Scheduler](https://github.com/ELEVATE-Project/scheduler/blob/master/src/.env.sample), and [Interface](https://github.com/ELEVATE-Project/interface-service/blob/main/src/.env.sample) repositories for reference.
+
+    > **Caution:** While the default values in the downloaded environment files enable the MentorEd Application to operate, certain features may not function correctly or could be impaired unless the adopter-specific environment variables are properly configured.
+    >
+    > For detailed instructions on adjusting these values, please consult the **[MentorEd Environment Variable Modification Guide](../MentorEd-Env-Modication-README.md)**.
+
+    > **Important:** As mentioned in the above linked document, the **User SignUp** functionality may be compromised if key environment variables are not set correctly during deployment. If you opt to skip this setup, consider using the sample user account generator detailed in the `Sample User Accounts Generation` section of this document.
+
 5. **Create Databases**
 
     - **Ubuntu/Linux**
@@ -526,3 +534,41 @@ Before setting up the following MentorEd application, dependencies given below s
             ```
 
     Navigate to http://localhost:7601 to access the MentorEd Portal.
+
+## Sample User Accounts Generation
+
+During the initial setup of MentorEd services with the default configuration, you may encounter issues creating new accounts through the regular SignUp flow on the MentorEd portal. This typically occurs because the default SignUp process includes OTP verification to prevent abuse. Until the notification service is configured correctly to send actual emails, you will not be able to create new accounts.
+
+In such cases, you can generate sample user accounts using the steps below. This allows you to explore the MentorEd services and portal immediately after setup.
+
+> **Warning:** Use this generator only immediately after the initial system setup and before any normal user accounts are created through the portal. It should not be used under any circumstances thereafter.
+
+    - **Ubuntu/Linux**
+
+        ```
+        curl -o insert_sample_data.sh https://raw.githubusercontent.com/ELEVATE-Project/mentoring/doc-fix-2.5/documentation/2.5.6/native/scripts/linux/insert_sample_data.sh && \
+        chmod +x insert_sample_data.sh && \
+        ./insert_sample_data.sh
+        ```
+
+    - **MacOS**
+
+        ```
+        curl -o insert_sample_data.sh https://raw.githubusercontent.com/ELEVATE-Project/mentoring/doc-fix-2.5/documentation/2.5.6/native/scripts/macos/insert_sample_data.sh && \
+        chmod +x insert_sample_data.sh && \
+        ./insert_sample_data.sh
+        ```
+    - **Windows**
+
+        ```
+        curl -o insert_sample_data.bat https://raw.githubusercontent.com/ELEVATE-Project/mentoring/doc-fix-2.5/documentation/2.5.6/native/scripts/windows/insert_sample_data.bat && ^
+        insert_sample_data.bat
+        ```
+
+After successfully running the script mentioned above, the following user accounts will be created and available for login:
+
+| Email ID                 | Password   | Role               |
+| ------------------------ | ---------- | ------------------ |
+| aaravpatel@example.com   | Password1@ | Mentee             |
+| arunimareddy@example.com | Password1@ | Mentor             |
+| aaravpatel@example.com   | Password1@ | Organization Admin |
