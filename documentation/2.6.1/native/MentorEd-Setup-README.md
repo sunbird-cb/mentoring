@@ -572,4 +572,4 @@ After successfully running the script mentioned above, the following user accoun
 | ------------------------ | ---------- | ------------------ |
 | aaravpatel@example.com   | Password1@ | Mentee             |
 | arunimareddy@example.com | Password1@ | Mentor             |
-| aaravpatel@example.com   | Password1@ | Organization Admin |
+| devikasingh@example.com  | Password1@ | Organization Admin |
