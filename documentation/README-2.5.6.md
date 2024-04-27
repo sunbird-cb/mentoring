@@ -66,7 +66,7 @@ The Mentor building block enables effective mentoring interactions between mento
 
 # Setup Options
 
-Elevate services can be setup in local using two methods:
+**Elevate services can be setup in local using two methods:**
 
 <details><summary>Dockerized Services & Dependencies Using Docker-Compose File</summary>
 
@@ -87,7 +87,7 @@ To set up the MentorEd application, ensure you have Docker and Docker Compose in
 2.  **Download Docker Compose File:** Retrieve the **[docker-compose-mentoring.yml](https://github.com/ELEVATE-Project/mentoring/blob/doc-fix-2.5/src/scripts/setup/docker-compose-mentoring.yml)** file from the Mentoring repository and save it to the mentoring directory.
 
     ```
-    curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/dockerized/docker-compose-mentoring.yml
+    curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.5.6/dockerized/docker-compose-mentoring.yml
     ```
 
     > Note: All commands are run from the mentoring directory.
@@ -104,30 +104,30 @@ To set up the MentorEd application, ensure you have Docker and Docker Compose in
     -   **Ubuntu/Linux/Mac**
         ```
         curl -L \
-         -O https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/dockerized/envs/interface_env \
-         -O https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/dockerized/envs/mentoring_env \
-         -O https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/dockerized/envs/notification_env \
-         -O https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/dockerized/envs/scheduler_env \
-         -O https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/dockerized/envs/user_env \
-         -O https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/dockerized/envs/environment.ts
+         -O https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.5.6/dockerized/envs/interface_env \
+         -O https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.5.6/dockerized/envs/mentoring_env \
+         -O https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.5.6/dockerized/envs/notification_env \
+         -O https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.5.6/dockerized/envs/scheduler_env \
+         -O https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.5.6/dockerized/envs/user_env \
+         -O https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.5.6/dockerized/envs/environment.ts
         ```
     -   **Windows**
 
         ```
         curl -L ^
-            -O https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/dockerized/envs/interface_env ^
-            -O https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/dockerized/envs/mentoring_env ^
-            -O https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/dockerized/envs/notification_env ^
-            -O https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/dockerized/envs/scheduler_env ^
-            -O https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/dockerized/envs/user_env ^
-            -O https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/dockerized/envs/environment.ts
+            -O https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.5.6/dockerized/envs/interface_env ^
+            -O https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.5.6/dockerized/envs/mentoring_env ^
+            -O https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.5.6/dockerized/envs/notification_env ^
+            -O https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.5.6/dockerized/envs/scheduler_env ^
+            -O https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.5.6/dockerized/envs/user_env ^
+            -O https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.5.6/dockerized/envs/environment.ts
         ```
 
     > **Note:** Modify the environment files as necessary for your deployment using any text editor, ensuring that the values are appropriate for your environment. The default values provided in the current files are functional and serve as a good starting point. Refer to the sample env files provided at the [Mentoring](https://github.com/ELEVATE-Project/mentoring/blob/master/src/.env.sample), [User](https://github.com/ELEVATE-Project/user/blob/master/src/.env.sample), [Notification](https://github.com/ELEVATE-Project/notification/blob/master/src/.env.sample), [Scheduler](https://github.com/ELEVATE-Project/scheduler/blob/master/src/.env.sample), and [Interface](https://github.com/ELEVATE-Project/interface-service/blob/main/src/.env.sample) repositories for reference.
 
     > **Caution:** While the default values in the downloaded environment files enable the MentorEd Application to operate, certain features may not function correctly or could be impaired unless the adopter-specific environment variables are properly configured.
     >
-    > For detailed instructions on adjusting these values, please consult the **[MentorEd Environment Variable Modification Guide](../MentorEd-Env-Modification-README.md)**.
+    > For detailed instructions on adjusting these values, please consult the **[MentorEd Environment Variable Modification Guide](https://github.com/ELEVATE-Project/mentoring/blob/doc-fix-2.5/documentation/2.5.6/MentorEd-Env-Modication-README.md)**.
 
     > **Important:** As mentioned in the above linked document, the **User SignUp** functionality may be compromised if key environment variables are not set correctly during deployment. If you opt to skip this setup, consider using the sample user account generator detailed in the `Sample User Accounts Generation` section of this document.
 
@@ -136,13 +136,13 @@ To set up the MentorEd application, ensure you have Docker and Docker Compose in
     -   **Ubuntu/Linux/Mac**
 
         ```
-        curl -OJL https://raw.githubusercontent.com/ELEVATE-Project/mentoring/doc-fix-2.5/documentation/2.6.1/dockerized/scripts/mac-linux/replace_volume_path.sh
+        curl -OJL https://raw.githubusercontent.com/ELEVATE-Project/mentoring/doc-fix-2.5/documentation/2.5.6/dockerized/scripts/mac-linux/replace_volume_path.sh
         ```
 
     -   **Windows**
 
         ```
-        curl -OJL https://raw.githubusercontent.com/ELEVATE-Project/mentoring/doc-fix-2.5/documentation/2.6.1/dockerized/scripts/windows/replace_volume_path.bat
+        curl -OJL https://raw.githubusercontent.com/ELEVATE-Project/mentoring/doc-fix-2.5/documentation/2.5.6/dockerized/scripts/windows/replace_volume_path.bat
         ```
 
 5.  **Run `replace_volume_path` Script File**
@@ -177,11 +177,11 @@ To set up the MentorEd application, ensure you have Docker and Docker Compose in
         1. Download the files.
 
             ```
-            curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/dockerized/scripts/mac-linux/docker-compose-up.sh
+            curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.5.6/dockerized/scripts/mac-linux/docker-compose-up.sh
             ```
 
             ```
-            curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/dockerized/scripts/mac-linux/docker-compose-down.sh
+            curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.5.6/dockerized/scripts/mac-linux/docker-compose-down.sh
             ```
 
         2. Make the files executable by running the following commands.
@@ -197,11 +197,11 @@ To set up the MentorEd application, ensure you have Docker and Docker Compose in
     -   **Windows**
 
         ```
-        curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/dockerized/scripts/windows/docker-compose-up.bat
+        curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.5.6/dockerized/scripts/windows/docker-compose-up.bat
         ```
 
         ```
-        curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/dockerized/scripts/windows/docker-compose-down.bat
+        curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.5.6/dockerized/scripts/windows/docker-compose-down.bat
         ```
 
 7.  **Run All Services & Dependencies:** All services and dependencies can be started using the `docker-compose-up` script file.
@@ -246,11 +246,11 @@ To enable the Citus extension for mentoring and user services, follow these step
 
 1. Create a sub-directory named `mentoring` and download `distributionColumns.sql` into it.
     ```
-    mkdir mentoring && curl -o ./mentoring/distributionColumns.sql -JL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/distribution-columns/mentoring/distributionColumns.sql
+    mkdir mentoring && curl -o ./mentoring/distributionColumns.sql -JL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.5.6/distribution-columns/mentoring/distributionColumns.sql
     ```
 2. Create a sub-directory named `user` and download `distributionColumns.sql` into it.
     ```
-    mkdir user && curl -o ./user/distributionColumns.sql -JL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/distribution-columns/user/distributionColumns.sql
+    mkdir user && curl -o ./user/distributionColumns.sql -JL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.5.6/distribution-columns/user/distributionColumns.sql
     ```
 3. Set up the citus_setup file by following the steps given below.
 
@@ -259,7 +259,7 @@ To enable the Citus extension for mentoring and user services, follow these step
         1. Download the `citus_setup.sh` file.
 
             ```
-            curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/dockerized/scripts/mac-linux/citus_setup.sh
+            curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.5.6/dockerized/scripts/mac-linux/citus_setup.sh
             ```
 
         2. Make the setup file executable by running the following command.
@@ -280,7 +280,7 @@ To enable the Citus extension for mentoring and user services, follow these step
     - **Windows**
         1. Download the `citus_setup.bat` file.
             ```
-             curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/dockerized/scripts/windows/citus_setup.bat
+             curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.5.6/dockerized/scripts/windows/citus_setup.bat
             ```
         2. Enable Citus and set distribution columns for `mentoring` database by running the `citus_setup.bat`with the following arguments.
             ```
@@ -292,11 +292,11 @@ To enable the Citus extension for mentoring and user services, follow these step
             ```
             > **Note:** Since the `citus_setup.bat` file requires arguments, it must be run from a terminal.
 
-## Persistence Of Database Data In Docker Container
+## Persistence of Database Data in Docker Container
 
 To ensure the persistence of database data when running `docker compose down`, it is necessary to modify the `docker-compose-mentoring.yml` file according to the steps given below:
 
-1. **Modification Of The `docker-compose-mentoring.yml` File:**
+1. **Modification of the `docker-compose-mentoring.yml` File:**
 
     Begin by opening the `docker-compose-mentoring.yml` file. Locate the section pertaining to the Citus container and proceed to uncomment the volume specification. This action is demonstrated in the snippet provided below:
 
@@ -310,7 +310,7 @@ To ensure the persistence of database data when running `docker compose down`, i
             - citus-data:/var/lib/postgresql/data
     ```
 
-2. **Uncommenting Volume Names Under The Volumes Section:**
+2. **Uncommenting Volume Names Under the Volumes Section:**
 
     Next, navigate to the volumes section of the file and proceed to uncomment the volume names as illustrated in the subsequent snippet:
 
@@ -339,16 +339,16 @@ In such cases, you can generate sample user accounts using the steps below. This
 
         ```
         mkdir -p sample-data/mentoring sample-data/user && \
-        curl -L https://raw.githubusercontent.com/ELEVATE-Project/mentoring/doc-fix-2.5/documentation/2.6.1/sample-data/mac-linux/mentoring/sampleData.sql -o sample-data/mentoring/sampleData.sql && \
-        curl -L https://raw.githubusercontent.com/ELEVATE-Project/mentoring/doc-fix-2.5/documentation/2.6.1/sample-data/mac-linux/user/sampleData.sql -o sample-data/user/sampleData.sql
+        curl -L https://raw.githubusercontent.com/ELEVATE-Project/mentoring/doc-fix-2.5/documentation/2.5.6/sample-data/mac-linux/mentoring/sampleData.sql -o sample-data/mentoring/sampleData.sql && \
+        curl -L https://raw.githubusercontent.com/ELEVATE-Project/mentoring/doc-fix-2.5/documentation/2.5.6/sample-data/mac-linux/user/sampleData.sql -o sample-data/user/sampleData.sql
         ```
 
     - **Windows**
 
         ```
         mkdir sample-data\mentoring 2>nul & mkdir sample-data\user 2>nul & ^
-        curl -L "https://raw.githubusercontent.com/ELEVATE-Project/mentoring/doc-fix-2.5/documentation/2.6.1/sample-data/windows/mentoring/sampleData.sql" -o sample-data\mentoring\sampleData.sql & ^
-        curl -L "https://raw.githubusercontent.com/ELEVATE-Project/mentoring/doc-fix-2.5/documentation/2.6.1/sample-data/windows/user/sampleData.sql" -o sample-data\user\sampleData.sql
+        curl -L "https://raw.githubusercontent.com/ELEVATE-Project/mentoring/doc-fix-2.5/documentation/2.5.6/sample-data/windows/mentoring/sampleData.sql" -o sample-data\mentoring\sampleData.sql & ^
+        curl -L "https://raw.githubusercontent.com/ELEVATE-Project/mentoring/doc-fix-2.5/documentation/2.5.6/sample-data/windows/user/sampleData.sql" -o sample-data\user\sampleData.sql
         ```
 
 2. **Download The `insert_sample_data` Script File:**
@@ -356,13 +356,13 @@ In such cases, you can generate sample user accounts using the steps below. This
     - **Ubuntu/Linux/Mac**
 
         ```
-        curl -L -o insert_sample_data.sh https://raw.githubusercontent.com/ELEVATE-Project/mentoring/doc-fix-2.5/documentation/2.6.1/dockerized/scripts/mac-linux/insert_sample_data.sh && chmod +x insert_sample_data.sh
+        curl -L -o insert_sample_data.sh https://raw.githubusercontent.com/ELEVATE-Project/mentoring/doc-fix-2.5/documentation/2.5.6/dockerized/scripts/mac-linux/insert_sample_data.sh && chmod +x insert_sample_data.sh
         ```
 
     - **Windows**
 
         ```
-        curl -L -o insert_sample_data.bat https://raw.githubusercontent.com/ELEVATE-Project/mentoring/doc-fix-2.5/documentation/2.6.1/dockerized/scripts/windows/insert_sample_data.bat
+        curl -L -o insert_sample_data.bat https://raw.githubusercontent.com/ELEVATE-Project/mentoring/doc-fix-2.5/documentation/2.5.6/dockerized/scripts/windows/insert_sample_data.bat
         ```
 
 3. **Run The `insert_sample_data` Script File:**
@@ -389,6 +389,7 @@ In such cases, you can generate sample user accounts using the steps below. This
     | arunimareddy@example.com | Password1@ | Mentor             |
     | aaravpatel@example.com   | Password1@ | Organization Admin |
 
+
 </details>
 
 <details>
@@ -406,9 +407,9 @@ Before setting up the following MentorEd application, dependencies given below s
 
     1. Download dependency management scripts:
         ```
-        curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/native/scripts/linux/check-dependencies.sh && \
-        curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/native/scripts/linux/install-dependencies.sh && \
-        curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/native/scripts/linux/uninstall-dependencies.sh && \
+        curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.5.6/native/scripts/linux/check-dependencies.sh && \
+        curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.5.6/native/scripts/linux/install-dependencies.sh && \
+        curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.5.6/native/scripts/linux/uninstall-dependencies.sh && \
         chmod +x check-dependencies.sh && \
         chmod +x install-dependencies.sh && \
         chmod +x uninstall-dependencies.sh
@@ -475,7 +476,7 @@ Before setting up the following MentorEd application, dependencies given below s
     6. Download `check-dependencies.sh` file:
 
         ```
-        curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/native/scripts/macos/check-dependencies.sh && \
+        curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.5.6/native/scripts/macos/check-dependencies.sh && \
         chmod +x check-dependencies.sh
         ```
 
@@ -569,23 +570,23 @@ Before setting up the following MentorEd application, dependencies given below s
     - **Ubuntu/Linux/MacOS**
 
         ```
-        git clone -b release-2.6.1 https://github.com/ELEVATE-Project/mentoring.git && \
-        git clone -b release-2.6.1 https://github.com/ELEVATE-Project/user.git && \
-        git clone -b release-2.6.1 https://github.com/ELEVATE-Project/notification.git && \
-        git clone -b release-2.6.1 https://github.com/ELEVATE-Project/interface-service.git && \
-        git clone -b release-2.6.1 https://github.com/ELEVATE-Project/scheduler.git && \
-        git clone -b release-2.6.1 https://github.com/ELEVATE-Project/mentoring-mobile-app.git
+        git clone -b release-2.5.6 https://github.com/ELEVATE-Project/mentoring.git && \
+        git clone -b release-2.5.6 https://github.com/ELEVATE-Project/user.git && \
+        git clone -b release-2.5.6 https://github.com/ELEVATE-Project/notification.git && \
+        git clone -b release-2.5.6 https://github.com/ELEVATE-Project/interface-service.git && \
+        git clone -b release-2.5.6 https://github.com/ELEVATE-Project/scheduler.git && \
+        git clone -b release-2.5.0 https://github.com/ELEVATE-Project/mentoring-mobile-app.git
         ```
 
     - **Windows**
 
         ```
-        git clone -b release-2.6.1 https://github.com/ELEVATE-Project/mentoring.git & ^
-        git clone -b release-2.6.1 https://github.com/ELEVATE-Project/user.git & ^
-        git clone -b release-2.6.1 https://github.com/ELEVATE-Project/notification.git & ^
-        git clone -b release-2.6.1 https://github.com/ELEVATE-Project/interface-service.git & ^
-        git clone -b release-2.6.1 https://github.com/ELEVATE-Project/scheduler.git & ^
-        git clone -b release-2.6.1 https://github.com/ELEVATE-Project/mentoring-mobile-app.git
+        git clone -b release-2.5.6 https://github.com/ELEVATE-Project/mentoring.git & ^
+        git clone -b release-2.5.6 https://github.com/ELEVATE-Project/user.git & ^
+        git clone -b release-2.5.6 https://github.com/ELEVATE-Project/notification.git & ^
+        git clone -b release-2.5.6 https://github.com/ELEVATE-Project/interface-service.git & ^
+        git clone -b release-2.5.6 https://github.com/ELEVATE-Project/scheduler.git & ^
+        git clone -b release-2.5.0 https://github.com/ELEVATE-Project/mentoring-mobile-app.git
         ```
 
 3. **Install NPM Packages**
@@ -617,41 +618,41 @@ Before setting up the following MentorEd application, dependencies given below s
     - **Ubuntu/Linux**
 
         ```
-        curl -L -o mentoring/src/.env https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/native/envs/mentoring_env && \
-        curl -L -o user/src/.env https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/native/envs/user_env && \
-        curl -L -o notification/src/.env https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/native/envs/notification_env && \
-        curl -L -o interface-service/src/.env https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/native/envs/interface_env && \
-        curl -L -o scheduler/src/.env https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/native/envs/scheduler_env && \
-        curl -L -o mentoring-mobile-app/src/environments/environment.ts https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/native/envs/environment.ts
+        curl -L -o mentoring/src/.env https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.5.6/native/envs/mentoring_env && \
+        curl -L -o user/src/.env https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.5.6/native/envs/user_env && \
+        curl -L -o notification/src/.env https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.5.6/native/envs/notification_env && \
+        curl -L -o interface-service/src/.env https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.5.6/native/envs/interface_env && \
+        curl -L -o scheduler/src/.env https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.5.6/native/envs/scheduler_env && \
+        curl -L -o mentoring-mobile-app/src/environments/environment.ts https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.5.6/native/envs/environment.ts
         ```
 
     - **MacOS**
 
         ```
-        curl -L -o mentoring/src/.env https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/native/envs/non-citus/mentoring_env && \
-        curl -L -o user/src/.env https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/native/envs/non-citus/user_env && \
-        curl -L -o notification/src/.env https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/native/envs/non-citus/notification_env && \
-        curl -L -o interface-service/src/.env https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/native/envs/interface_env && \
-        curl -L -o scheduler/src/.env https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/native/envs/scheduler_env && \
-        curl -L -o mentoring-mobile-app/src/environments/environment.ts https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/native/envs/environment.ts
+        curl -L -o mentoring/src/.env https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.5.6/native/envs/non-citus/mentoring_env && \
+        curl -L -o user/src/.env https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.5.6/native/envs/non-citus/user_env && \
+        curl -L -o notification/src/.env https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.5.6/native/envs/non-citus/notification_env && \
+        curl -L -o interface-service/src/.env https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.5.6/native/envs/interface_env && \
+        curl -L -o scheduler/src/.env https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.5.6/native/envs/scheduler_env && \
+        curl -L -o mentoring-mobile-app/src/environments/environment.ts https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.5.6/native/envs/environment.ts
         ```
 
     - **Windows**
 
         ```
-        curl -L -o mentoring\src\.env https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/native/envs/non-citus/mentoring_env & ^
-        curl -L -o user\src\.env https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/native/envs/non-citus/user_env & ^
-        curl -L -o notification\src\.env https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/native/envs/non-citus/notification_env & ^
-        curl -L -o interface-service\src\.env https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/native/envs/interface_env & ^
-        curl -L -o scheduler\src\.env https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/native/envs/scheduler_env & ^
-        curl -L -o mentoring-mobile-app\src\environments\environment.ts https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/native/envs/environment.ts
+        curl -L -o mentoring\src\.env https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.5.6/native/envs/non-citus/mentoring_env & ^
+        curl -L -o user\src\.env https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.5.6/native/envs/non-citus/user_env & ^
+        curl -L -o notification\src\.env https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.5.6/native/envs/non-citus/notification_env & ^
+        curl -L -o interface-service\src\.env https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.5.6/native/envs/interface_env & ^
+        curl -L -o scheduler\src\.env https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.5.6/native/envs/scheduler_env & ^
+        curl -L -o mentoring-mobile-app\src\environments\environment.ts https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.5.6/native/envs/environment.ts
         ```
 
     > **Note:** Modify the environment files as necessary for your deployment using any text editor, ensuring that the values are appropriate for your environment. The default values provided in the current files are functional and serve as a good starting point. Refer to the sample env files provided at the [Mentoring](https://github.com/ELEVATE-Project/mentoring/blob/master/src/.env.sample), [User](https://github.com/ELEVATE-Project/user/blob/master/src/.env.sample), [Notification](https://github.com/ELEVATE-Project/notification/blob/master/src/.env.sample), [Scheduler](https://github.com/ELEVATE-Project/scheduler/blob/master/src/.env.sample), and [Interface](https://github.com/ELEVATE-Project/interface-service/blob/main/src/.env.sample) repositories for reference.
 
     > **Caution:** While the default values in the downloaded environment files enable the MentorEd Application to operate, certain features may not function correctly or could be impaired unless the adopter-specific environment variables are properly configured.
     >
-    > For detailed instructions on adjusting these values, please consult the **[MentorEd Environment Variable Modification Guide](../MentorEd-Env-Modification-README.md)**.
+    > For detailed instructions on adjusting these values, please consult the **[MentorEd Environment Variable Modification Guide](https://github.com/ELEVATE-Project/mentoring/blob/doc-fix-2.5/documentation/2.5.6/MentorEd-Env-Modication-README.md)**.
 
     > **Important:** As mentioned in the above linked document, the **User SignUp** functionality may be compromised if key environment variables are not set correctly during deployment. If you opt to skip this setup, consider using the sample user account generator detailed in the `Sample User Accounts Generation` section of this document.
 
@@ -660,7 +661,7 @@ Before setting up the following MentorEd application, dependencies given below s
     - **Ubuntu/Linux**
         1. Download `create-databases.sh` Script File:
             ```
-            curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/native/scripts/linux/create-databases.sh
+            curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.5.6/native/scripts/linux/create-databases.sh
             ```
         2. Make the executable by running the following command:
             ```
@@ -674,7 +675,7 @@ Before setting up the following MentorEd application, dependencies given below s
 
         1. Download `create-databases.sh` Script File:
             ```
-            curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/native/scripts/macos/create-databases.sh
+            curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.5.6/native/scripts/macos/create-databases.sh
             ```
         2. Make the executable by running the following command:
             ```
@@ -689,7 +690,7 @@ Before setting up the following MentorEd application, dependencies given below s
 
         1. Download `create-databases.bat` Script File:
             ```
-            curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/native/scripts/windows/create-databases.bat
+            curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.5.6/native/scripts/windows/create-databases.bat
             ```
         2. Run the script file from a command-prompt terminal:
             ```
@@ -732,13 +733,13 @@ Before setting up the following MentorEd application, dependencies given below s
     1. Download mentoring `distributionColumns.sql` file.
 
         ```
-        curl -o ./mentoring/distributionColumns.sql -JL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/distribution-columns/mentoring/distributionColumns.sql
+        curl -o ./mentoring/distributionColumns.sql -JL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.5.6/distribution-columns/mentoring/distributionColumns.sql
         ```
 
     2. Download user `distributionColumns.sql` file.
 
         ```
-        curl -o ./user/distributionColumns.sql -JL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/distribution-columns/user/distributionColumns.sql
+        curl -o ./user/distributionColumns.sql -JL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.5.6/distribution-columns/user/distributionColumns.sql
         ```
 
     3. Set up the `citus_setup` file by following the steps given below.
@@ -748,7 +749,7 @@ Before setting up the following MentorEd application, dependencies given below s
             1. Download the `citus_setup.sh` file:
 
                 ```
-                curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.6.1/native/scripts/linux/citus_setup.sh
+                curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/documentation/2.5.6/native/scripts/linux/citus_setup.sh
                 ```
 
             2. Make the setup file executable by running the following command:
@@ -942,7 +943,7 @@ In such cases, you can generate sample user accounts using the steps below. This
 -   **Ubuntu/Linux**
 
     ```
-    curl -o insert_sample_data.sh https://raw.githubusercontent.com/ELEVATE-Project/mentoring/doc-fix-2.5/documentation/2.6.1/native/scripts/linux/insert_sample_data.sh && \
+    curl -o insert_sample_data.sh https://raw.githubusercontent.com/ELEVATE-Project/mentoring/doc-fix-2.5/documentation/2.5.6/native/scripts/linux/insert_sample_data.sh && \
     chmod +x insert_sample_data.sh && \
     ./insert_sample_data.sh
     ```
@@ -950,7 +951,7 @@ In such cases, you can generate sample user accounts using the steps below. This
 -   **MacOS**
 
     ```
-    curl -o insert_sample_data.sh https://raw.githubusercontent.com/ELEVATE-Project/mentoring/doc-fix-2.5/documentation/2.6.1/native/scripts/macos/insert_sample_data.sh && \
+    curl -o insert_sample_data.sh https://raw.githubusercontent.com/ELEVATE-Project/mentoring/doc-fix-2.5/documentation/2.5.6/native/scripts/macos/insert_sample_data.sh && \
     chmod +x insert_sample_data.sh && \
     ./insert_sample_data.sh
     ```
@@ -958,7 +959,7 @@ In such cases, you can generate sample user accounts using the steps below. This
 -   **Windows**
 
     ```
-    curl -o insert_sample_data.bat https://raw.githubusercontent.com/ELEVATE-Project/mentoring/doc-fix-2.5/documentation/2.6.1/native/scripts/windows/insert_sample_data.bat && ^
+    curl -o insert_sample_data.bat https://raw.githubusercontent.com/ELEVATE-Project/mentoring/doc-fix-2.5/documentation/2.5.6/native/scripts/windows/insert_sample_data.bat && ^
     insert_sample_data.bat
     ```
 
@@ -970,11 +971,12 @@ After successfully running the script mentioned above, the following user accoun
 | arunimareddy@example.com | Password1@ | Mentor             |
 | devikasingh@example.com  | Password1@ | Organization Admin |
 
+
 </details>
 
 </br>
 
-BigBlueButton™ Service (Optional) can be setup using the following method:
+**BigBlueButton™ Service (Optional) can be setup using the following method:**
 
 <details><summary>Setting up the BigBlueButton Service (Optional)</summary>
 
