@@ -543,27 +543,28 @@ In such cases, you can generate sample user accounts using the steps below. This
 
 > **Warning:** Use this generator only immediately after the initial system setup and before any normal user accounts are created through the portal. It should not be used under any circumstances thereafter.
 
-    - **Ubuntu/Linux**
+-   **Ubuntu/Linux**
 
-        ```
-        curl -o insert_sample_data.sh https://raw.githubusercontent.com/ELEVATE-Project/mentoring/doc-fix-2.5/documentation/2.6.1/native/scripts/linux/insert_sample_data.sh && \
-        chmod +x insert_sample_data.sh && \
-        ./insert_sample_data.sh
-        ```
+    ```
+    curl -o insert_sample_data.sh https://raw.githubusercontent.com/ELEVATE-Project/mentoring/doc-fix-2.5/documentation/2.6.1/native/scripts/linux/insert_sample_data.sh && \
+    chmod +x insert_sample_data.sh && \
+    ./insert_sample_data.sh
+    ```
 
-    - **MacOS**
+-   **MacOS**
 
-        ```
-        curl -o insert_sample_data.sh https://raw.githubusercontent.com/ELEVATE-Project/mentoring/doc-fix-2.5/documentation/2.6.1/native/scripts/macos/insert_sample_data.sh && \
-        chmod +x insert_sample_data.sh && \
-        ./insert_sample_data.sh
-        ```
-    - **Windows**
+    ```
+    curl -o insert_sample_data.sh https://raw.githubusercontent.com/ELEVATE-Project/mentoring/doc-fix-2.5/documentation/2.6.1/native/scripts/macos/insert_sample_data.sh && \
+    chmod +x insert_sample_data.sh && \
+    ./insert_sample_data.sh
+    ```
 
-        ```
-        curl -o insert_sample_data.bat https://raw.githubusercontent.com/ELEVATE-Project/mentoring/doc-fix-2.5/documentation/2.6.1/native/scripts/windows/insert_sample_data.bat && ^
-        insert_sample_data.bat
-        ```
+-   **Windows**
+
+    ```
+    curl -o insert_sample_data.bat https://raw.githubusercontent.com/ELEVATE-Project/mentoring/doc-fix-2.5/documentation/2.6.1/native/scripts/windows/insert_sample_data.bat && ^
+    insert_sample_data.bat
+    ```
 
 After successfully running the script mentioned above, the following user accounts will be created and available for login:
 
