@@ -41,7 +41,7 @@ services:
     logging:
       driver: none
   mentoring:
-    image: shikshalokamqa/elevate-mentoring:latest
+    image: shikshalokamqa/elevate-mentoring:2.6.1
     ports:
       - '3000:3000'
     command: >
@@ -74,7 +74,7 @@ services:
       - ${mentoring_env}
 
   user:
-    image: shikshalokamqa/elevate-user:latest
+    image: shikshalokamqa/elevate-user:2.6.1
     ports:
       - '3001:3001'
     command: >
@@ -106,7 +106,7 @@ services:
       - ${users_env}
 
   notification:
-    image: shikshalokamqa/elevate-notification:latest
+    image: shikshalokamqa/elevate-notification:2.6.1
     ports:
       - '3002:3002'
     command: >
@@ -130,7 +130,7 @@ services:
 
   scheduler:
     # Update with latest image
-    image: shikshalokamqa/elevate-scheduler:latest
+    image: shikshalokamqa/elevate-scheduler:2.6.1
     ports:
       - '4000:4000'
     command: ['nodemon', 'app.js']
@@ -145,7 +145,7 @@ services:
       - ${scheduler_env}
   interface:
     # Update with latest image
-    image: shikshalokamqa/elevate-interface:latest
+    image: shikshalokamqa/elevate-interface:2.6.2
     ports:
       - '3569:3569'
     command: ['node', 'app.js']
@@ -187,7 +187,7 @@ services:
       driver: none
   portal:
     # Update with latest image
-    image: shikshalokamqa/mentoring-mobile-app:latest
+    image: shikshalokamqa/mentoring-mobile-app:2.6.1
     container_name: portal
     ports:
       - '8100:8100'
