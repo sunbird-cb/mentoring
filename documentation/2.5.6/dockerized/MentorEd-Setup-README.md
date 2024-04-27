@@ -57,6 +57,8 @@ To set up the MentorEd application, ensure you have Docker and Docker Compose in
     >
     > For detailed instructions on adjusting these values, please consult the **[MentorEd Environment Variable Modification Guide](./MentorEd-Env-Modification.md)**.
 
+    > Important: As mentioned in the above linked document, the **User SignUp** functionality may be compromised if key environment variables are not set correctly during deployment. If you opt to skip this setup, consider using the sample user account generator detailed in the `Sample User Accounts Generation` section of this document.
+
 4.  **Download `replace_volume_path` Script File**
 
     -   **Ubuntu/Linux/Mac**
@@ -250,3 +252,67 @@ To ensure the persistence of database data when running `docker compose down`, i
     ```
 
 By implementing these adjustments, the configuration ensures that when the `docker-compose down` command is executed, the database data is securely stored within the specified volumes. Consequently, this data will be retained and remain accessible, even after the containers are terminated and subsequently reinstated using the `docker-compose up` command.
+
+## Sample User Accounts Generation
+
+During the initial setup of MentorEd services with the default configuration, you may encounter issues creating new accounts through the regular SignUp flow on the MentorEd portal. This typically occurs because the default SignUp process includes OTP verification to prevent abuse. Until the notification service is configured correctly to send actual emails, you will not be able to create new accounts.
+
+In such cases, you can generate sample user accounts using the steps below. This allows you to explore the MentorEd services and portal immediately after setup.
+
+> **Warning:** Use this generator only immediately after the initial system setup and before any normal user accounts are created through the portal. It should not be used under any circumstances thereafter.
+
+1. **Download The `sampleData.sql` Files:**
+
+    - **Ubuntu/Linux/Mac**
+
+        ```
+        mkdir -p sample-data/mentoring sample-data/user && \
+        curl -L https://raw.githubusercontent.com/ELEVATE-Project/mentoring/doc-fix-2.5/documentation/2.5.6/sample-data/mac-linux/mentoring/sampleData.sql -o sample-data/mentoring/sampleData.sql && \
+        curl -L https://raw.githubusercontent.com/ELEVATE-Project/mentoring/doc-fix-2.5/documentation/2.5.6/sample-data/mac-linux/user/sampleData.sql -o sample-data/user/sampleData.sql
+        ```
+
+    - **Windows**
+
+        ```
+        mkdir sample-data\mentoring 2>nul & mkdir sample-data\user 2>nul & ^
+        curl -L "https://raw.githubusercontent.com/ELEVATE-Project/mentoring/doc-fix-2.5/documentation/2.5.6/sample-data/windows/mentoring/sampleData.sql" -o sample-data\mentoring\sampleData.sql & ^
+        curl -L "https://raw.githubusercontent.com/ELEVATE-Project/mentoring/doc-fix-2.5/documentation/2.5.6/sample-data/windows/user/sampleData.sql" -o sample-data\user\sampleData.sql
+        ```
+
+2. **Download The `insert_sample_data` Script File:**
+
+    - **Ubuntu/Linux/Mac**
+
+        ```
+        curl -L -o insert_sample_data.sh https://raw.githubusercontent.com/ELEVATE-Project/mentoring/doc-fix-2.5/documentation/2.5.6/dockerized/scripts/mac-linux/insert_sample_data.sh && chmod +x insert_sample_data.sh
+        ```
+
+    - **Windows**
+
+        ```
+        curl -L -o insert_sample_data.bat https://raw.githubusercontent.com/ELEVATE-Project/mentoring/doc-fix-2.5/documentation/2.5.6/dockerized/scripts/windows/insert_sample_data.bat
+        ```
+
+3. **Run The `insert_sample_data` Script File:**
+
+    - **Ubuntu/Linux/Mac**
+
+        ```
+        ./insert_sample_data.sh user postgres://postgres:postgres@citus_master:5432/user && \
+        ./insert_sample_data.sh mentoring postgres://postgres:postgres@citus_master:5432/mentoring
+        ```
+
+    - **Windows**
+
+        ```
+        insert_sample_data.bat user postgres://postgres:postgres@citus_master:5432/user & ^
+        insert_sample_data.bat mentoring postgres://postgres:postgres@citus_master:5432/mentoring
+        ```
+
+    After successfully running the script mentioned above, the following user accounts will be created and available for login:
+
+    | Email ID                 | Password   | Role               |
+    | ------------------------ | ---------- | ------------------ |
+    | aaravpatel@example.com   | Password1@ | Mentee             |
+    | arunimareddy@example.com | Password1@ | Mentor             |
+    | aaravpatel@example.com   | Password1@ | Organization Admin |
