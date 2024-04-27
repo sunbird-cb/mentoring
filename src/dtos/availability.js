@@ -40,7 +40,6 @@ exports.getAvailabilitiesByDay = ({ startEpoch, endEpoch, availabilities }) => {
 exports.buildUserAvailabilities = ({ startEpoch, endEpoch, userAvailabilities }) => {
 	try {
 		const allEvents = []
-
 		userAvailabilities.forEach((userAvailability) => {
 			if (userAvailability.repeat_unit == null) {
 				// if its a onetime event include it
@@ -100,9 +99,28 @@ exports.buildUserAvailabilities = ({ startEpoch, endEpoch, userAvailabilities })
 					) {
 						// If repeat_on is specified for monthly events, adjust the occurrenceDate to match the specified occurrence within the month
 						const dayOfWeek = moment.weekdays().indexOf(userAvailability.repeat_on[0])
+
+						const occurrenceDateTime = occurrenceDate.clone()
+						const occurrenceEndDateTime = occurrenceEndDate.clone()
+
 						occurrenceDate = occurrenceDate.clone().startOf('month').day(dayOfWeek)
+						occurrenceEndDate = occurrenceEndDate.clone().startOf('month').day(dayOfWeek)
+
 						const occurrenceWeek = userAvailability.occurrence_in_month // Adjust occurrence_in_month to array index
 						occurrenceDate.add(occurrenceWeek, 'weeks')
+						occurrenceEndDate.add(occurrenceWeek, 'weeks')
+
+						// Set the time components of occurrenceDate to match occurrenceDateTime
+						occurrenceDate.set({
+							hour: occurrenceDateTime.hour(),
+							minute: occurrenceDateTime.minute(),
+							second: occurrenceDateTime.second(),
+						})
+						occurrenceEndDate.set({
+							hour: occurrenceEndDateTime.hour(),
+							minute: occurrenceEndDateTime.minute(),
+							second: occurrenceEndDateTime.second(),
+						})
 					}
 				}
 			}
