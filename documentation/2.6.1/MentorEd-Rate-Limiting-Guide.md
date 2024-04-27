@@ -88,5 +88,3 @@ For a network with three proxies, set `RATE_LIMITER_NUMBER_OF_PROXIES` to `3`:
 Correctly setting `RATE_LIMITER_NUMBER_OF_PROXIES` is vital for ensuring effective and fair rate limiting in environments with multiple proxies. It helps protect the backend from potential abuse while ensuring legitimate users face no undue restrictions.
 
 For further details on troubleshooting and advanced configurations, refer to [GitHub Repository](https://github.com/express-rate-limit/express-rate-limit/wiki/Troubleshooting-Proxy-Issues) and the [Express Behind Proxies Documentation](https://expressjs.com/en/guide/behind-proxies.html).
-
-This guide is intended to help developers effectively understand and implement rate limiting across our services.
