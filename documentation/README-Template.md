@@ -66,7 +66,7 @@ The Mentor building block enables effective mentoring interactions between mento
 
 # Setup Options
 
-Elevate services can be setup in local using two methods:
+**Elevate services can be setup in local using two methods:**
 
 <details><summary>Dockerized Services & Dependencies Using Docker-Compose File</summary>
 
@@ -83,7 +83,7 @@ Elevate services can be setup in local using two methods:
 
 </br>
 
-BigBlueButton™ Service (Optional) can be setup using the following method:
+**BigBlueButton™ Service (Optional) can be setup using the following method:**
 
 <details><summary>Setting up the BigBlueButton Service (Optional)</summary>
 
