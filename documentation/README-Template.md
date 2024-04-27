@@ -151,6 +151,9 @@ sudo apt-get purge bbb-demo
 # Postman Collections
 
 -   [Mentoring Service](https://github.com/ELEVATE-Project/mentoring/tree/develop-2.5/src/api-doc)
+-   [User Service](https://github.com/ELEVATE-Project/mentoring/tree/develop-2.5/src/api-doc)
+-   [Notification Service](https://github.com/ELEVATE-Project/mentoring/tree/develop-2.5/src/api-doc)
+-   [Scheduler Service](https://github.com/ELEVATE-Project/mentoring/tree/develop-2.5/src/api-doc)
 
 # Dependencies
 
