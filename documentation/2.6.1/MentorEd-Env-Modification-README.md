@@ -104,3 +104,97 @@ This document acts as a reference for such functionalities/features and their re
     ```
 
     > **IMPORTANT:** As a prerequisite, the notification service must be configured with the proper SendGrid environment variables, as shown in the User SignUp section.
+
+4. **Email Encryption**
+
+    Since version 2.6.1, MentorEd has enhanced its security by implementing system-wide email encryption, now enabled by default. This update ensures that email IDs are not stored as plaintext in the database. Instead, they are encrypted using the `AES-256-CBC` algorithm. The encryption and decryption processes are governed by the following environment variables:
+
+    ### User Service
+
+    **Docker Setup:** `user_env`
+
+    **Manual Setup:** `user/src/.env`
+
+    **Variables:**
+
+    ```
+    EMAIL_ID_ENCRYPTION_KEY
+    EMAIL_ID_ENCRYPTION_IV
+    ```
+
+    > **CRITICAL:** The default environment files provided with the deployment guide contain default but valid values for the encryption variables mentioned above. It is crucial to replace these default values with unique ones for your deployment to ensure the security of your data. Failing to do so exposes you to the risk of using a publicly available KEY and IV pair for encrypting your email IDs.
+
+    To generate a new, valid pair of KEY and IV, you can use the following script: [Generate Encryption Keys](https://github.com/ELEVATE-Project/user/blob/master/src/scripts/generateEncyrptionKeys.js).
+
+5. **CAPTCHA**
+
+    Since version 2.6.1, MentorEd has introduced the option to implement CAPTCHA using [Google reCAPTCHA](https://www.google.com/recaptcha/about/) on various portal pages such as Login and SignUp. By default, this feature is disabled in the configuration settings found in the default environment files included in the deployment guide.
+
+    If you wish to enable CAPTCHA, you will need to obtain a `site key` and `secret key` from Google. To do this, follow the instructions provided in the [reCAPTCHA Developer Guide](https://developers.google.com/recaptcha/intro). Once you have your keys, update the following environment variables to activate CAPTCHA on your site.
+
+    ### User Service
+
+    **Docker Setup:** `user_env`
+
+    **Manual Setup:** `user/src/.env`
+
+    **Variables:**
+
+    ```
+    CAPTCHA_ENABLE                  -> Set it as true
+    RECAPTCHA_SECRET_KEY
+    ```
+
+    ### Portal
+
+    **Docker Setup:** `environment.ts`
+
+    **Manual Setup:** `src/environments/environment.ts`
+
+    **Variables:**
+
+    ```
+    recaptchaSiteKey                -> Eg. recaptchaSiteKey:"6ASfWasd68fAAAAACxKbas98df63BwbJkJas8df67IM_6Ea"
+    ```
+
+6. **Session Management**
+
+    Since version 2.6.1, MentorEd has implemented advanced features for user session management, such as inactivity timeouts, session tracking, and remote logout. These features are controlled by the following environment variables:
+
+    ### User Service
+
+    **Docker Setup:** `user_env`
+
+    **Manual Setup:** `user/src/.env`
+
+    **Variables:**
+
+    ```
+    ALLOWED_IDLE_TIME
+    ALLOWED_ACTIVE_SESSIONS
+    ```
+
+    **Explanation**:
+
+    - **ALLOWED_IDLE_TIME**: Specifies the maximum duration (in milliseconds) a user can remain idle before their session expires. If set to 5 minutes, for example, the session will expire after 5 minutes of inactivity. The default setting is zero, which means the session duration solely depends on the user token's expiration time.
+
+    - **ALLOWED_ACTIVE_SESSIONS**: Defines the limit on the number of concurrent sessions a user can have. By default, there is no limit, allowing an unlimited number of active sessions.
+
+7. **Rate Limiting**
+
+    Since version 2.6.1, Elevate has implemented rate-limiting to enhance system stability and prevent abuse. This feature regulates the number of requests a user can make to the services within a given timeframe. Rate-limiting is enabled by default.
+
+    ### User Service
+
+    **Docker Setup:** `interface_env`
+
+    **Manual Setup:** `interface-service/src/.env`
+
+    **Variables:**
+
+    ```
+    RATE_LIMITER_NUMBER_OF_PROXIES
+    RATE_LIMITER_ENABLED
+    ```
+
+    Refer to the [MentorEd Rate-Limiting Guide](./MentorEd-Rate-Limiting-Guide.md) for more information on how to set these variables.
