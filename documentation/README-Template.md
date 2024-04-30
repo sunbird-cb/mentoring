@@ -150,10 +150,10 @@ sudo apt-get purge bbb-demo
 
 # Postman Collections
 
--   [Mentoring Service](https://github.com/ELEVATE-Project/mentoring/tree/doc-fix-2.5/documentation/{{MENTORED_VERSION}}/postman-collections/mentoring)
--   [User Service](https://github.com/ELEVATE-Project/mentoring/tree/doc-fix-2.5/documentation/{{MENTORED_VERSION}}/postman-collections/mentoring)
--   [Notification Service](https://github.com/ELEVATE-Project/mentoring/tree/doc-fix-2.5/documentation/{{MENTORED_VERSION}}/postman-collections/mentoring)
--   [Scheduler Service](https://github.com/ELEVATE-Project/mentoring/tree/doc-fix-2.5/documentation/{{MENTORED_VERSION}}/postman-collections/mentoring)
+-   [Mentoring Service](https://github.com/ELEVATE-Project/mentoring/tree/master/documentation/{{MENTORED_VERSION}}/postman-collections/mentoring)
+-   [User Service](https://github.com/ELEVATE-Project/mentoring/tree/master/documentation/{{MENTORED_VERSION}}/postman-collections/mentoring)
+-   [Notification Service](https://github.com/ELEVATE-Project/mentoring/tree/master/documentation/{{MENTORED_VERSION}}/postman-collections/mentoring)
+-   [Scheduler Service](https://github.com/ELEVATE-Project/mentoring/tree/master/documentation/{{MENTORED_VERSION}}/postman-collections/mentoring)
 
 # Dependencies
 
