@@ -21,10 +21,10 @@ To set up the Elevate MentorEd application, ensure you have Docker and Docker Co
 
     > Example Command: `mkdir elevate &&	cd elevate/`
 
-2.  **Download Docker Compose File:** Retrieve the **[docker-compose-mentoring.yml](https://github.com/ELEVATE-Project/mentoring/blob/doc-fix-2.5/src/scripts/setup/docker-compose-mentoring.yml)** file from the Elevate Mentoring repository and save it to the backend directory.
+2.  **Download Docker Compose File:** Retrieve the **[docker-compose-mentoring.yml](https://github.com/ELEVATE-Project/mentoring/blob/master/src/scripts/setup/docker-compose-mentoring.yml)** file from the Elevate Mentoring repository and save it to the backend directory.
 
     ```
-    elevate/backend$ curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/docker-compose-mentoring.yml
+    elevate/backend$ curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/master/src/scripts/setup/docker-compose-mentoring.yml
     ```
 
     Directory structure:
@@ -432,13 +432,13 @@ Please refer to the Shikshalokam [Docker Hub repository](https://hub.docker.com/
        **docker-compose-up.sh**
 
         ```
-        elevate/backend$ curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/docker-compose-up.sh
+        elevate/backend$ curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/master/src/scripts/setup/docker-compose-up.sh
         ```
 
         **docker-compose-down.sh**
 
         ```
-        elevate/backend$ curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/docker-compose-down.sh
+        elevate/backend$ curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/master/src/scripts/setup/docker-compose-down.sh
         ```
 
     2. Make the files executable by running the following commands.
@@ -477,13 +477,13 @@ Please refer to the Shikshalokam [Docker Hub repository](https://hub.docker.com/
         **docker-compose-up.bat**
 
         ```
-        elevate\backend>curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/docker-compose-up.bat
+        elevate\backend>curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/master/src/scripts/setup/docker-compose-up.bat
         ```
 
         **docker-compose-down.bat**
 
         ```
-        elevate\backend>curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/docker-compose-down.bat
+        elevate\backend>curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/master/src/scripts/setup/docker-compose-down.bat
         ```
 
     2.  Follow the steps given below to execute associated Docker-Compose operations.
@@ -511,11 +511,11 @@ Please refer to the Shikshalokam [Docker Hub repository](https://hub.docker.com/
 
 1. Create a sub-directory named `mentoring` and download `distributionColumns.sql` into it.
     ```
-    elevate/backend$ mkdir -p mentoring && curl -o ./mentoring/distributionColumns.sql -L https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/distribution-columns/mentoring/distributionColumns.sql
+    elevate/backend$ mkdir -p mentoring && curl -o ./mentoring/distributionColumns.sql -L https://github.com/ELEVATE-Project/mentoring/raw/master/src/scripts/setup/distribution-columns/mentoring/distributionColumns.sql
     ```
 2. Create a sub-directory named `user` and download `distributionColumns.sql` into it.
     ```
-    mkdir -p user && curl -o ./user/distributionColumns.sql -JL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/distribution-columns/user/distributionColumns.sql
+    mkdir -p user && curl -o ./user/distributionColumns.sql -JL https://github.com/ELEVATE-Project/mentoring/raw/master/src/scripts/setup/distribution-columns/user/distributionColumns.sql
     ```
 3. Set up the citus_setup file by following the steps given below.
 
@@ -524,7 +524,7 @@ Please refer to the Shikshalokam [Docker Hub repository](https://hub.docker.com/
         1. Navigate to the elevate/backend directory and download the `citus_setup.sh` file:
 
             ```
-            elevate/backend$ curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/citus_setup.sh
+            elevate/backend$ curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/master/src/scripts/setup/citus_setup.sh
             ```
 
         2. Make the setup file executable by running the following command:
@@ -545,7 +545,7 @@ Please refer to the Shikshalokam [Docker Hub repository](https://hub.docker.com/
     - **Windows:**
         1. Navigate to the elevate/backend directory and download the `citus_setup.bat` file:
             ```
-             elevate\backend>curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/citus_setup.bat
+             elevate\backend>curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/master/src/scripts/setup/citus_setup.bat
             ```
         2. Enable Citus and set distribution columns for `elevate-mentoring` database by running the `citus_setup.bat`with the following arguments:
             ```
