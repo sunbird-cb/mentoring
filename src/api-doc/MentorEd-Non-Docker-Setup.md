@@ -10,9 +10,9 @@ Before setting up the following MentorEd application, dependencies given below s
 
     1. Download dependency management scripts:
         ```
-        curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/check-dependencies.sh && \
-        curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/install-dependencies.sh && \
-        curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/uninstall-dependencies.sh && \
+        curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/master/src/scripts/setup/check-dependencies.sh && \
+        curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/master/src/scripts/setup/install-dependencies.sh && \
+        curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/master/src/scripts/setup/uninstall-dependencies.sh && \
         chmod +x check-dependencies.sh && \
         chmod +x install-dependencies.sh && \
         chmod +x uninstall-dependencies.sh
@@ -77,12 +77,12 @@ Before setting up the following MentorEd application, dependencies given below s
     - **Ubuntu/Linux/Mac**
 
         ```
-        curl -L -o mentoring/src/.env https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/envs/local/mentoring_env && \
-        curl -L -o user/src/.env https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/envs/local/user_env && \
-        curl -L -o notification/src/.env https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/envs/local/notification_env && \
-        curl -L -o interface-service/src/.env https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/envs/local/interface_env && \
-        curl -L -o scheduler/src/.env https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/envs/local/scheduler_env && \
-        curl -L -o mentoring-mobile-app/src/environments/environment.ts https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/envs/environment.ts
+        curl -L -o mentoring/src/.env https://github.com/ELEVATE-Project/mentoring/raw/master/src/scripts/setup/envs/local/mentoring_env && \
+        curl -L -o user/src/.env https://github.com/ELEVATE-Project/mentoring/raw/master/src/scripts/setup/envs/local/user_env && \
+        curl -L -o notification/src/.env https://github.com/ELEVATE-Project/mentoring/raw/master/src/scripts/setup/envs/local/notification_env && \
+        curl -L -o interface-service/src/.env https://github.com/ELEVATE-Project/mentoring/raw/master/src/scripts/setup/envs/local/interface_env && \
+        curl -L -o scheduler/src/.env https://github.com/ELEVATE-Project/mentoring/raw/master/src/scripts/setup/envs/local/scheduler_env && \
+        curl -L -o mentoring-mobile-app/src/environments/environment.ts https://github.com/ELEVATE-Project/mentoring/raw/master/src/scripts/setup/envs/environment.ts
         ```
 
 5. **Create Databases**
@@ -90,7 +90,7 @@ Before setting up the following MentorEd application, dependencies given below s
     - **Ubuntu/Linux/Mac**
         1. Download `create-databases.sh` Script File:
             ```
-            curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/create-databases.sh
+            curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/master/src/scripts/setup/create-databases.sh
             ```
         2. Make the executable by running the following command:
             ```
@@ -122,13 +122,13 @@ Before setting up the following MentorEd application, dependencies given below s
     1. Download mentoring `distributionColumns.sql` file.
 
         ```
-        curl -o ./mentoring/distributionColumns.sql -L https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/distribution-columns/mentoring/distributionColumns.sql
+        curl -o ./mentoring/distributionColumns.sql -L https://github.com/ELEVATE-Project/mentoring/raw/master/src/scripts/setup/distribution-columns/mentoring/distributionColumns.sql
         ```
 
     2. Download user `distributionColumns.sql` file.
 
         ```
-        curl -o ./user/distributionColumns.sql -JL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/distribution-columns/user/distributionColumns.sql
+        curl -o ./user/distributionColumns.sql -JL https://github.com/ELEVATE-Project/mentoring/raw/master/src/scripts/setup/distribution-columns/user/distributionColumns.sql
         ```
 
     3. Set up the citus_setup_local file by following the steps given below.
@@ -138,7 +138,7 @@ Before setting up the following MentorEd application, dependencies given below s
             1. Download the `citus_setup_local.sh` file:
 
                 ```
-                curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/doc-fix-2.5/src/scripts/setup/citus_setup_local.sh
+                curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/master/src/scripts/setup/citus_setup_local.sh
                 ```
 
             2. Make the setup file executable by running the following command:
