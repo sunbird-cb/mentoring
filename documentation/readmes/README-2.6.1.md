@@ -389,6 +389,7 @@ In such cases, you can generate sample user accounts using the steps below. This
     | arunimareddy@example.com | Password1@ | Mentor             |
     | aaravpatel@example.com   | Password1@ | Organization Admin |
 
+
 </details>
 
 <details>
@@ -454,10 +455,18 @@ Before setting up the following MentorEd application, dependencies given below s
         brew install kafka
         ```
 
+        ```
+        brew services start kafka
+        ```
+
     3. Install PostgreSQL 16:
 
         ```
         brew install postgresql@16
+        ```
+
+        ```
+        brew services start postgresql@16
         ```
 
     4. Install PM2:
@@ -470,6 +479,10 @@ Before setting up the following MentorEd application, dependencies given below s
 
         ```
         brew install redis
+        ```
+
+        ```
+        brew services start redis
         ```
 
     6. Download `check-dependencies.sh` file:
@@ -969,6 +982,7 @@ After successfully running the script mentioned above, the following user accoun
 | aaravpatel@example.com   | Password1@ | Mentee             |
 | arunimareddy@example.com | Password1@ | Mentor             |
 | devikasingh@example.com  | Password1@ | Organization Admin |
+
 
 </details>
 
