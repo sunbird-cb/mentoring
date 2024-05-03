@@ -58,10 +58,18 @@ Before setting up the following MentorEd application, dependencies given below s
         brew install kafka
         ```
 
+        ```
+        brew services start kafka
+        ```
+
     3. Install PostgreSQL 16:
 
         ```
         brew install postgresql@16
+        ```
+
+        ```
+        brew services start postgresql@16
         ```
 
     4. Install PM2:
@@ -74,6 +82,10 @@ Before setting up the following MentorEd application, dependencies given below s
 
         ```
         brew install redis
+        ```
+
+        ```
+        brew services start redis
         ```
 
     6. Download `check-dependencies.sh` file:
