@@ -137,4 +137,6 @@ module.exports = {
 		JWT_ONLY: 'jwt_only',
 		USER_SERVICE: 'user_service_authenticated',
 	},
+	WRITE_ACCESS: 'w',
+	READ_ACCESS: 'r',
 }

@@ -267,6 +267,48 @@ let enviromentVariables = {
 		optional: true,
 		default: true,
 	},
+	DOWNLOAD_URL_EXPIRATION_DURATION: {
+		message: 'Required downloadable url expiration time',
+		optional: true,
+		default: 300,
+	},
+	SIGNED_URL_EXPIRY_IN_SECONDS: {
+		message: 'Required signed url expiration time in seconds',
+		optional: true,
+		default: 900,
+	},
+	CLOUD_STORAGE_PROVIDER: {
+		message: 'Require cloud storage provider, in azure,aws, gcloud,oci and s3',
+		optional: false,
+	},
+	CLOUD_STORAGE_SECRET: {
+		message: 'Require client storage provider identity',
+		optional: false,
+	},
+	CLOUD_STORAGE_BUCKETNAME: {
+		message: 'Require client storage bucket name',
+		optional: false,
+	},
+	CLOUD_STORAGE_BUCKET_TYPE: {
+		message: 'Require storage bucket type',
+		optional: false,
+	},
+	PUBLIC_ASSET_BUCKETNAME: {
+		message: 'Require asset storage bucket name',
+		optional: false,
+	},
+	CLOUD_STORAGE_REGION: {
+		message: 'Require storage region',
+		optional: true,
+	},
+	CLOUD_ENDPOINT: {
+		message: 'Require asset storage endpoint',
+		optional: true,
+	},
+	CLOUD_STORAGE_ACCOUNTNAME: {
+		message: 'Require account name',
+		optional: false,
+	},
 }
 
 let success = true
