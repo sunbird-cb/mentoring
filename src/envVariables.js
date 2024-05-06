@@ -36,54 +36,6 @@ let enviromentVariables = {
 		message: 'Required kafka topic',
 		optional: false,
 	},
-	CLOUD_STORAGE: {
-		message: 'Required cloud storage type ex: AWS/GCP/AZURE',
-		optional: false,
-	},
-	GCP_PATH: {
-		message: 'Required gcp file path ex: gcp.json',
-		optional: process.env.CLOUD_STORAGE === 'GCP' ? false : true,
-	},
-	DEFAULT_GCP_BUCKET_NAME: {
-		message: 'Required gcp bucket name',
-		optional: process.env.CLOUD_STORAGE === 'GCP' ? false : true,
-	},
-	GCP_PROJECT_ID: {
-		message: 'Required gcp project id',
-		optional: process.env.CLOUD_STORAGE === 'GCP' ? false : true,
-	},
-	AWS_ACCESS_KEY_ID: {
-		message: 'Required aws access key id',
-		optional: process.env.CLOUD_STORAGE === 'AWS' ? false : true,
-	},
-	AWS_SECRET_ACCESS_KEY: {
-		message: 'Required aws secret access key',
-		optional: process.env.CLOUD_STORAGE === 'AWS' ? false : true,
-	},
-	AWS_BUCKET_REGION: {
-		message: 'Required aws bucket region',
-		optional: process.env.CLOUD_STORAGE === 'AWS' ? false : true,
-	},
-	AWS_BUCKET_ENDPOINT: {
-		message: 'Required aws bucket endpoint',
-		optional: process.env.CLOUD_STORAGE === 'AWS' ? false : true,
-	},
-	DEFAULT_AWS_BUCKET_NAME: {
-		message: 'Required aws bucket name',
-		optional: process.env.CLOUD_STORAGE === 'AWS' ? false : true,
-	},
-	AZURE_ACCOUNT_NAME: {
-		message: 'Required azure account name',
-		optional: process.env.CLOUD_STORAGE === 'AZURE' ? false : true,
-	},
-	AZURE_ACCOUNT_KEY: {
-		message: 'Required azure account key',
-		optional: process.env.CLOUD_STORAGE === 'AZURE' ? false : true,
-	},
-	DEFAULT_AZURE_CONTAINER_NAME: {
-		message: 'Required azure container name',
-		optional: process.env.CLOUD_STORAGE === 'AZURE' ? false : true,
-	},
 	USER_SERVICE_HOST: {
 		message: 'Required user service host',
 		optional: false,
@@ -139,26 +91,6 @@ let enviromentVariables = {
 	BIG_BLUE_BUTTON_SESSION_END_URL: {
 		message: 'Big blue button session end url.',
 		optional: false,
-	},
-	OCI_ACCESS_KEY_ID: {
-		message: 'Required oci access key id',
-		optional: process.env.CLOUD_STORAGE === 'OCI' ? false : true,
-	},
-	OCI_SECRET_ACCESS_KEY: {
-		message: 'Required oci secret access key',
-		optional: process.env.CLOUD_STORAGE === 'OCI' ? false : true,
-	},
-	OCI_BUCKET_REGION: {
-		message: 'Required oci bucket region',
-		optional: process.env.CLOUD_STORAGE === 'OCI' ? false : true,
-	},
-	OCI_BUCKET_ENDPOINT: {
-		message: 'Required oci bucket endpoint',
-		optional: process.env.CLOUD_STORAGE === 'OCI' ? false : true,
-	},
-	DEFAULT_OCI_BUCKET_NAME: {
-		message: 'Required oci bucket name',
-		optional: process.env.CLOUD_STORAGE === 'OCI' ? false : true,
 	},
 	ERROR_LOG_LEVEL: {
 		message: 'Required Error log level',
