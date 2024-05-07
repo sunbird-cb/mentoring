@@ -52,7 +52,6 @@ module.exports = class FilesHelper {
 
 	static async getDownloadableUrl(path, isAssetBucket = false) {
 		try {
-			console.log(isAssetBucket, '>>>>>>>>>>>>>>>>>>>>>>>')
 			let bucketName = process.env.CLOUD_STORAGE_BUCKETNAME
 			let response
 			let expiryInSeconds = parseInt(process.env.SIGNED_URL_EXPIRY_IN_SECONDS) || 300
