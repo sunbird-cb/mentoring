@@ -27,6 +27,7 @@
 		"bcryptjs": "^2.4.3",
 		"body-parser": "^1.19.0",
 		"cli-table": "^0.3.11",
+		"client-cloud-services": "^8.0.0",
 		"cors": "^2.8.5",
 		"crypto": "^1.0.1",
 		"deep-object-diff": "^1.1.9",
@@ -97,6 +98,7 @@
 		"@validators": "validators",
 		"@database": "database",
 		"@requests": "requests",
-		"@helpers": "helpers"
+		"@helpers": "helpers",
+		"@dtos": "dtos"
 	}
 }

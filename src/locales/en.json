@@ -158,5 +158,12 @@
 	"SESSION_MENTOR_ADDED_TO_MENTEE_LIST": "You have added the Session Mentor in the Mentee list. Please go back and select another mentee.",
 	"INVALID_DATA_PASSED": "Invalid data passed for creation",
 	"PROFILE_UPDATE_FAILED": "Profile update failed. Please try again.",
-	"SIGNED_URL_FAILED_FOR_DEFAULT_ORG": "signed url cannot be created for default org_id"
+	"SIGNED_URL_FAILED_FOR_DEFAULT_ORG": "signed url cannot be created for default org_id",
+	"AVAILABILITY_CREATED_SUCCESSFULLY": "Availability created successfully",
+	"MIN_DURATION": "Selected duration less than the defined value",
+	"AVAILABILITY_NOT_FOUND": "Availability not found",
+	"AVAILABILITY_UPDATED_SUCCESSFULLY": "Availability updated successfully",
+	"AVAILABILITY_DELETED_SUCCESSFULLY": "Availability deleted successfully",
+	"AVAILABILITIES_FETCHED": "Availability fetched successfully",
+	"ORG_POLICIES_SET_SUCCESSFULLY": "Org policies set successfully"
 }

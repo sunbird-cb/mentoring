@@ -37,6 +37,8 @@ module.exports = (sequelize, DataTypes) => {
 				allowNull: true,
 				type: DataTypes.STRING,
 			},
+			mentee_visibility_policy: { type: DataTypes.STRING },
+			external_mentee_visibility_policy: { type: DataTypes.STRING },
 		},
 		{
 			sequelize,
