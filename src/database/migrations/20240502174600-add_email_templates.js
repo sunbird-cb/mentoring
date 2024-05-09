@@ -76,7 +76,10 @@ module.exports = {
 					subject: 'MentorED - Your scheduled session starts in 1 hour',
 				},
 				{
-					body: "<div style='margin:auto;width:100%;max-width:650px;'><p style='text-align:center'><img class='img_path' style='width:200px; max-width:100%; height:auto;' alt='MentorED' src='https://mentoring-dev-storage.s3.ap-south-1.amazonaws.com/email/image/emailLogo.png'></p><div style='text-align:left;'>",
+					body:
+						"<div style='margin:auto;width:100%;max-width:650px;'><p style='text-align:center'><img class='img_path' style='width:200px; max-width:100%; height:auto;' alt='MentorED' src='" +
+						logoURL +
+						"'></p><div style='text-align:left;'>",
 					code: 'email_header',
 					subject: '',
 				},
