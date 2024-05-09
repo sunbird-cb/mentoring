@@ -22,7 +22,7 @@ module.exports = class FilesHelper {
 			if (dynamicPath != '') {
 				destFilePath = dynamicPath + '/' + fileName
 			} else {
-				destFilePath = `users/${id}-${new Date().getTime()}-${fileName}`
+				destFilePath = `session/${id}-${new Date().getTime()}-${fileName}`
 			}
 			// decide on which bucket has to be passed based on api call
 			if (isAssetBucket) {
@@ -30,8 +30,9 @@ module.exports = class FilesHelper {
 			} else {
 				cloudBucket = process.env.CLOUD_STORAGE_BUCKETNAME
 			}
-			let expiryInSeconds = parseInt(process.env.SIGNED_URL_EXPIRY_IN_SECONDS) || 300
-			let response = await cloudServices.getSignedUrl(
+
+			const expiryInSeconds = parseInt(process.env.SIGNED_URL_EXPIRY_IN_SECONDS) || 900
+			const response = await cloudServices.getSignedUrl(
 				cloudBucket,
 				destFilePath,
 				common.WRITE_ACCESS,
@@ -51,7 +52,6 @@ module.exports = class FilesHelper {
 
 	static async getDownloadableUrl(path, isAssetBucket = false) {
 		try {
-			console.log(isAssetBucket, '>>>>>>>>>>>>>>>>>>>>>>>')
 			let bucketName = process.env.CLOUD_STORAGE_BUCKETNAME
 			let response
 			let expiryInSeconds = parseInt(process.env.SIGNED_URL_EXPIRY_IN_SECONDS) || 300
