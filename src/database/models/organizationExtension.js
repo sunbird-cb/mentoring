@@ -33,6 +33,10 @@ module.exports = (sequelize, DataTypes) => {
 				type: DataTypes.STRING,
 				defaultValue: 'MENTOR_QS2',
 			},
+			sample_csv_path: {
+				allowNull: true,
+				type: DataTypes.STRING,
+			},
 		},
 		{
 			sequelize,

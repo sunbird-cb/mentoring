@@ -106,7 +106,7 @@ module.exports = class SessionsHelper {
 			// If time slot not available return corresponding error
 			if (timeSlot.isTimeSlotAvailable === false) {
 				const errorMessage = isSessionCreatedByManager
-					? 'INVALID_TIME_SELECTION_FOR_GIVEN_MENTOR'
+					? 'SESSION_CREATION_LIMIT_EXCEDED_FOR_GIVEN_MENTOR'
 					: { key: 'INVALID_TIME_SELECTION', interpolation: { sessionName: timeSlot.sessionName } }
 
 				return responses.failureResponse({
@@ -151,6 +151,7 @@ module.exports = class SessionsHelper {
 					statusCode: httpStatusCode.bad_request,
 					responseCode: 'CLIENT_ERROR',
 				})
+			console.log('================================', defaultOrgId)
 			const sessionModelName = await sessionQueries.getModelName()
 
 			let entityTypes = await entityTypeQueries.findUserEntityTypesAndEntities({
@@ -159,11 +160,12 @@ module.exports = class SessionsHelper {
 					[Op.in]: [orgId, defaultOrgId],
 				},
 				model_names: { [Op.contains]: [sessionModelName] },
+				required: true,
 			})
 
 			//validationData = utils.removeParentEntityTypes(JSON.parse(JSON.stringify(validationData)))
 			const validationData = removeDefaultOrgEntityTypes(entityTypes, orgId)
-
+			bodyData.status = common.PUBLISHED_STATUS
 			let res = utils.validateInput(bodyData, validationData, sessionModelName)
 			if (!res.success) {
 				return responses.failureResponse({
@@ -381,15 +383,16 @@ module.exports = class SessionsHelper {
 				userId = sessionDetail.mentor_id
 			}
 
-			let mentorExtension = await mentorExtensionQueries.getMentorExtension(userId)
-			if (!mentorExtension) {
-				return responses.failureResponse({
-					message: 'INVALID_PERMISSION',
-					statusCode: httpStatusCode.bad_request,
-					responseCode: 'CLIENT_ERROR',
-				})
+			if (method != common.DELETE_METHOD) {
+				let mentorExtension = await mentorExtensionQueries.getMentorExtension(userId)
+				if (!mentorExtension) {
+					return responses.failureResponse({
+						message: 'INVALID_PERMISSION',
+						statusCode: httpStatusCode.bad_request,
+						responseCode: 'CLIENT_ERROR',
+					})
+				}
 			}
-
 			let isEditingAllowedAtAnyTime = process.env.SESSION_EDIT_WINDOW_MINUTES == 0
 
 			const currentDate = moment.utc()
@@ -407,13 +410,19 @@ module.exports = class SessionsHelper {
 				})
 			}
 
-			const timeSlot = await this.isTimeSlotAvailable(userId, bodyData.start_date, bodyData.end_date, sessionId)
-			if (timeSlot.isTimeSlotAvailable === false) {
-				return responses.failureResponse({
-					message: { key: 'INVALID_TIME_SELECTION', interpolation: { sessionName: timeSlot.sessionName } },
-					statusCode: httpStatusCode.bad_request,
-					responseCode: 'CLIENT_ERROR',
-				})
+			if (method != common.DELETE_METHOD) {
+				//	const timeSlot = await this.isTimeSlotAvailable(userId, bodyData.start_date, bodyData.end_date, sessionId)
+				const timeSlot = true
+				if (timeSlot.isTimeSlotAvailable === false) {
+					return responses.failureResponse({
+						message: {
+							key: 'INVALID_TIME_SELECTION',
+							interpolation: { sessionName: timeSlot.sessionName },
+						},
+						statusCode: httpStatusCode.bad_request,
+						responseCode: 'CLIENT_ERROR',
+					})
+				}
 			}
 
 			const { getDefaultOrgId } = require('@helpers/getDefaultOrgId')
@@ -433,23 +442,27 @@ module.exports = class SessionsHelper {
 					[Op.in]: [orgId, defaultOrgId],
 				},
 				model_names: { [Op.contains]: [sessionModelName] },
+				required: true,
 			})
 
-			//validationData = utils.removeParentEntityTypes(JSON.parse(JSON.stringify(validationData)))
-			const validationData = removeDefaultOrgEntityTypes(entityTypes, orgId)
+			if (method != common.DELETE_METHOD) {
+				//validationData = utils.removeParentEntityTypes(JSON.parse(JSON.stringify(validationData)))
+				const validationData = removeDefaultOrgEntityTypes(entityTypes, orgId)
+				let res = utils.validateInput(bodyData, validationData, sessionModelName)
 
-			let res = utils.validateInput(bodyData, validationData, sessionModelName)
+				if (!res.success) {
+					return responses.failureResponse({
+						message: 'SESSION_CREATION_FAILED',
+						statusCode: httpStatusCode.bad_request,
+						responseCode: 'CLIENT_ERROR',
+						result: res.errors,
+					})
+				}
 
-			if (!res.success) {
-				return responses.failureResponse({
-					message: 'SESSION_CREATION_FAILED',
-					statusCode: httpStatusCode.bad_request,
-					responseCode: 'CLIENT_ERROR',
-					result: res.errors,
-				})
+				let sessionModel = await sessionQueries.getColumns()
+				bodyData = utils.restructureBody(bodyData, validationData, sessionModel)
 			}
-			let sessionModel = await sessionQueries.getColumns()
-			bodyData = utils.restructureBody(bodyData, validationData, sessionModel)
+
 			let isSessionDataChanged = false
 			let updatedSessionData = {}
 
@@ -1757,7 +1770,7 @@ module.exports = class SessionsHelper {
 	static async isTimeSlotAvailable(id, startDate, endDate, sessionId) {
 		try {
 			const sessions = await sessionQueries.getSessionByUserIdAndTime(id, startDate, endDate, sessionId)
-			if (!sessions) {
+			if (!sessions || sessions.startDateResponse.length < process.csv.SESSION_CREATION_MENTOR_LIMIT) {
 				return true
 			}
 

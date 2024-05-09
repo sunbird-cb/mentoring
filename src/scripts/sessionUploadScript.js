@@ -4,10 +4,12 @@ const path = require('path')
 const fileService = require('@services/files')
 const request = require('request')
 const common = require('@constants/common')
+const organisationExtensionQueries = require('../database/queries/organisationExtension')
+const { getDefaultOrgId } = require('../helpers/getDefaultOrgId')
 
 ;(async () => {
 	try {
-		const fileName = 'sample.csv'
+		const fileName = 'BulkSessionCreationNew.csv'
 		const filePath = path.join(__dirname, '../', fileName)
 
 		//check file exist
@@ -44,7 +46,20 @@ const common = require('@constants/common')
 			},
 			body: fileData,
 		})
-
+		const defaultOrgId = await getDefaultOrgId()
+		if (!defaultOrgId)
+			return responses.failureResponse({
+				message: 'DEFAULT_ORG_ID_NOT_SET',
+				statusCode: httpStatusCode.bad_request,
+				responseCode: 'CLIENT_ERROR',
+			})
+		const data = { sample_csv_path: getSignedUrl.result.destFilePath }
+		const upadteCsvInOrgExtention = await organisationExtensionQueries.update(data, defaultOrgId)
+		if (upadteCsvInOrgExtention === 0) {
+			console.log('updating csv_path for default org_id failed')
+		} else {
+			console.log('updating csv_path for default org_id completed')
+		}
 		console.log('file path: ' + getSignedUrl.result.destFilePath)
 		console.log('completed')
 	} catch (error) {

@@ -271,6 +271,16 @@ let enviromentVariables = {
 		optional: true,
 		default: common.AUTH_METHOD.JWT_ONLY,
 	},
+	CSV_MAX_ROW: {
+		message: 'Required Csv length',
+		optional: false,
+		default: 20,
+	},
+	SESSION_CREATION_MENTOR_LIMIT: {
+		message: 'Required mentor limit for session creation',
+		optional: false,
+		default: 20,
+	},
 }
 
 let success = true

@@ -16,9 +16,10 @@ module.exports = class CloudServices {
 	 */
 	async getSignedUrl(req) {
 		try {
-			const signedUrlResponse = await filesService.getSignedUrl(
+			const signedUrlResponse = await filesService.getSignedUrlByOrgId(
 				req.query.fileName,
 				req.decodedToken.id,
+				req.decodedToken.organization_id,
 				req.query.dynamicPath ? req.query.dynamicPath : ''
 			)
 			return signedUrlResponse
@@ -52,7 +53,7 @@ module.exports = class CloudServices {
 	 */
 	async getSampleCSV(req) {
 		try {
-			const downloadUrlResponse = await filesService.getDownloadableUrl(process.env.SAMPLE_CSV_FILE_PATH)
+			const downloadUrlResponse = await filesService.getDownloadableUrlByOrgId(req.decodedToken.organization_id)
 			return downloadUrlResponse
 		} catch (error) {
 			return error

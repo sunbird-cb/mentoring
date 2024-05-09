@@ -18,6 +18,13 @@ const responses = require('@helpers/responses')
 const { Queue } = require('bullmq')
 const fileUploadQueries = require('@database/queries/fileUpload')
 const { email } = require('oci-sdk')
+const fileService = require('@services/files')
+const fs = require('fs')
+const path = require('path')
+const csv = require('csvtojson')
+const axios = require('axios')
+const ProjectRootDir = path.join(__dirname, '../')
+const inviteeFileDir = ProjectRootDir + common.tempFolderForBulkUpload
 
 module.exports = class OrgAdminService {
 	/**
@@ -596,6 +603,16 @@ module.exports = class OrgAdminService {
 	static async bulkSessionCreate(filePath, tokenInformation) {
 		try {
 			const { id, organization_id } = tokenInformation
+			const downloadCsv = await this.downloadCSV(filePath)
+			const csvData = await csv().fromFile(downloadCsv.result.downloadPath)
+
+			if (csvData.length > process.env.CSV_MAX_ROW) {
+				return responses.failureResponse({
+					message: 'CSV_ROW_LIMIT_EXCEEDED',
+					statusCode: httpStatusCode.bad_request,
+					responseCode: 'CLIENT_ERROR',
+				})
+			}
 			const creationData = {
 				name: utils.extractFilename(filePath),
 				input_path: filePath,
@@ -645,6 +662,46 @@ module.exports = class OrgAdminService {
 		} catch (error) {
 			console.log(error)
 			throw error
+		}
+	}
+
+	static async downloadCSV(filePath) {
+		try {
+			const downloadableUrl = await utils.getDownloadableUrl(filePath)
+			let fileName = path.basename(downloadableUrl)
+
+			// Find the index of the first occurrence of '?'
+			const index = fileName.indexOf('?')
+			// Extract the portion of the string before the '?' if it exists, otherwise use the entire string
+			fileName = index !== -1 ? fileName.substring(0, index) : fileName
+			const downloadPath = path.join(inviteeFileDir, fileName)
+			const response = await axios.get(downloadableUrl, {
+				responseType: common.responseType,
+			})
+
+			const writeStream = fs.createWriteStream(downloadPath)
+			response.data.pipe(writeStream)
+
+			await new Promise((resolve, reject) => {
+				writeStream.on('finish', resolve)
+				writeStream.on('error', (err) => {
+					reject(new Error('FAILED_TO_DOWNLOAD_FILE'))
+				})
+			})
+
+			return {
+				success: true,
+				result: {
+					destPath: inviteeFileDir,
+					fileName,
+					downloadPath,
+				},
+			}
+		} catch (error) {
+			return {
+				success: false,
+				message: error.message,
+			}
 		}
 	}
 }

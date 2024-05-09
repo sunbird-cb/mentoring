@@ -159,4 +159,20 @@ module.exports = class OrgAdmin {
 			return error
 		}
 	}
+
+	/**
+	 * Upload sample csv based on org id
+	 * @method
+	 * @name UploadSampleCsv
+	 * @param {String} req.body.file_path -Uploaded filr path .
+	 * @returns {Object} - uploaded file response.
+	 */
+	async bulkSessionCreate(req) {
+		try {
+			const sessionUploadRes = await orgAdminService.bulkSessionCreate(req.body.file_path, req.decodedToken)
+			return sessionUploadRes
+		} catch (error) {
+			return error
+		}
+	}
 }

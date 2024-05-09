@@ -176,8 +176,25 @@ function isNumeric(value) {
 function validateInput(input, validationData, modelName) {
 	const errors = []
 	for (const field of validationData) {
-		const fieldValue = input[field.value]
+		if (field.required === true && !input.hasOwnProperty(field.value)) {
+			errors.push({
+				param: field.value,
+				msg: `${field.value} is required but missing in the input data.`,
+			})
+		}
+	}
+	// Continue with further validation only if all required fields are present
+	if (errors.length > 0) {
+		return {
+			success: false,
+			errors: errors,
+		}
+	}
 
+	for (const field of validationData) {
+		const fieldValue = input[field.value] // Get the value of the current field from the input data
+
+		// Check if the field is not allowed for the current model and has a value
 		if (modelName && !field.model_names.includes(modelName) && input[field.value]) {
 			errors.push({
 				param: field.value,
@@ -193,45 +210,64 @@ function validateInput(input, validationData, modelName) {
 		}
 
 		if (fieldValue !== undefined) {
-			const dataType = field.data_type
+			// Check if the field value is defined in the input data
+			const dataType = field.data_type // Get the data type of the field from validation data
 
 			switch (dataType) {
 				case 'ARRAY[STRING]':
 					if (Array.isArray(fieldValue)) {
 						fieldValue.forEach((element) => {
 							if (typeof element !== 'string') {
-								addError(field, element, dataType, 'It should be a string')
-							} else if (field.allow_custom_entities && /[^A-Za-z0-9\s_]/.test(element)) {
-								addError(
-									field,
-									element,
-									dataType,
-									'It should not contain special characters except underscore.'
-								)
+								addError(field.value, element, dataType, 'It should be a string')
+							} else if (field.allow_custom_entities) {
+								if (field.regex && !new RegExp(field.regex).test(element)) {
+									addError(
+										field.value,
+										element,
+										dataType,
+										`Does not match the required pattern: ${field.regex}`
+									)
+								} else if (!field.regex && /[^A-Za-z0-9\s_]/.test(element)) {
+									addError(
+										field.value,
+										element,
+										dataType,
+										'It should not contain special characters except underscore.'
+									)
+								}
 							}
 						})
 					} else {
-						addError(field, field.value, dataType, '')
+						addError(field.value, field.value, dataType, '')
 					}
 					break
 
 				case 'STRING':
 					if (typeof fieldValue !== 'string') {
-						addError(field, fieldValue, dataType, 'It should be a string')
-					} else if (field.allow_custom_entities && /[^A-Za-z0-9\s_]/.test(fieldValue)) {
-						addError(
-							field,
-							fieldValue,
-							dataType,
-							'It should not contain special characters except underscore.'
-						)
+						addError(field.value, fieldValue, dataType, 'It should be a string')
+					} else if (field.allow_custom_entities) {
+						if (field.regex && !new RegExp(field.regex).test(fieldValue)) {
+							addError(
+								field.value,
+								fieldValue,
+								dataType,
+								`Does not match the required pattern: ${field.regex}`
+							)
+						} else if (!field.regex && /[^A-Za-z0-9\s_]/.test(fieldValue)) {
+							addError(
+								field.value,
+								fieldValue,
+								dataType,
+								'It should not contain special characters except underscore.'
+							)
+						}
 					}
 					break
 
 				case 'NUMBER':
 					console.log('Type of', typeof fieldValue)
 					if (typeof fieldValue !== 'number') {
-						addError(field, fieldValue, dataType, '')
+						addError(field.value, fieldValue, dataType, '')
 					}
 					break
 
@@ -246,8 +282,10 @@ function validateInput(input, validationData, modelName) {
 		}
 
 		if (Array.isArray(fieldValue)) {
+			// Check if the field value is an array
 			for (const value of fieldValue) {
 				if (!field.entities.some((entity) => entity.value === value)) {
+					// Check if the value is a valid entity
 					errors.push({
 						param: field.value,
 						msg: `${value} is not a valid entity.`,
@@ -634,7 +672,7 @@ function generateCSVContent(data) {
 				const value = row[fieldName]
 				if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
 					// Stringify object values and enclose them in double quotes
-					return JSON.stringify(value)
+					return '"' + JSON.stringify(value) + '"'
 				} else if (Array.isArray(value)) {
 					// Join array values with comma and space, and enclose them in double quotes
 					return '"' + value.join(', ') + '"'
@@ -644,7 +682,6 @@ function generateCSVContent(data) {
 			})
 			.join(',')
 	})
-
 	return [headers.join(','), ...csvRows].join('\n')
 }
 
