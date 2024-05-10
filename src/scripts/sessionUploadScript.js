@@ -4,13 +4,13 @@ const path = require('path')
 const fileService = require('@services/files')
 const request = require('request')
 const common = require('@constants/common')
-const organisationExtensionQueries = require('../database/queries/organisationExtension')
-const { getDefaultOrgId } = require('../helpers/getDefaultOrgId')
+const organisationExtensionQueries = require('@database/queries/organisationExtension')
+const { getDefaultOrgId } = require('@helpers/getDefaultOrgId')
 
 ;(async () => {
 	try {
 		const fileName = 'BulkSessionCreationNew.csv'
-		const filePath = path.join(__dirname, '../', fileName)
+		const filePath = path.join(__dirname, '../assets', fileName)
 
 		//check file exist
 		fs.access(filePath, fs.constants.F_OK, (err) => {

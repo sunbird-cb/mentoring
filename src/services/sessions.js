@@ -151,7 +151,6 @@ module.exports = class SessionsHelper {
 					statusCode: httpStatusCode.bad_request,
 					responseCode: 'CLIENT_ERROR',
 				})
-			console.log('================================', defaultOrgId)
 			const sessionModelName = await sessionQueries.getModelName()
 
 			let entityTypes = await entityTypeQueries.findUserEntityTypesAndEntities({

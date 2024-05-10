@@ -1,6 +1,7 @@
 // Dependencies
 const _ = require('lodash')
 const utils = require('@generics/utils')
+const httpStatusCode = require('@generics/http-status')
 const fs = require('fs')
 const path = require('path')
 const csv = require('csvtojson')
@@ -54,7 +55,7 @@ module.exports = class UserInviteHelper {
 					output_path,
 					updated_by: userId,
 					status:
-						createResponse.result.isErrorOccured == true ? common.FAILED_STATUS : common.PROCESSED_STATUS,
+						createResponse.result.isErrorOccured == true ? common.STATUS.FAILED : common.STATUS.PROCESSED,
 				}
 				//update output path in file uploads
 				const rowsAffected = await fileUploadQueries.update(
@@ -282,8 +283,7 @@ module.exports = class UserInviteHelper {
 				if (session.mentees && Array.isArray(session.mentees)) {
 					for (let i = 0; i < session.mentees.length; i++) {
 						const menteeEmail = session.mentees[i].toLowerCase()
-						const encryptedMenteeEmail = utils.encrypt(menteeEmail)
-						const menteeId = await userRequests.getListOfUserDetailsByEmail(encryptedMenteeEmail)
+						const menteeId = await userRequests.getListOfUserDetailsByEmail(menteeEmail)
 
 						if (!menteeId.result.id) {
 							session.mentees[i] = menteeEmail
@@ -297,8 +297,7 @@ module.exports = class UserInviteHelper {
 				}
 
 				const mentorEmail = session.mentor_id.toLowerCase()
-				const encryptedMentorEmail = utils.encrypt(mentorEmail)
-				const mentorId = await userRequests.getListOfUserDetailsByEmail(encryptedMentorEmail)
+				const mentorId = await userRequests.getListOfUserDetailsByEmail(mentorEmail)
 
 				if (Array.isArray(mentorId.result) && mentorId.result.length === 0) {
 					session.status = 'Invalid'
@@ -515,11 +514,7 @@ module.exports = class UserInviteHelper {
 				if (data.action == 'Create') {
 					data.status = common.PUBLISHED_STATUS
 					const sessionCreation = await sessionService.create(data, userId, orgId, isMentor, notifyUser)
-					if (
-						sessionCreation.responseCode === common.CREATEDRESPONSECODE &&
-						sessionCreation.statusCode === common.STATUSCODE &&
-						sessionCreation.message === common.STATUSMESSAGE
-					) {
+					if (sessionCreation.statusCode === httpStatusCode.created) {
 						data.status = sessionCreation.message
 						data.session_id = sessionCreation.result.id
 						output.push(data)
@@ -536,11 +531,7 @@ module.exports = class UserInviteHelper {
 						orgId,
 						notifyUser
 					)
-					if (
-						sessionUpdateOrDelete.responseCode === common.CREATEDRESPONSECODE &&
-						sessionUpdateOrDelete.statusCode === common.STATUSCODE &&
-						sessionUpdateOrDelete.message === common.STATUSMESSAGE
-					) {
+					if (sessionUpdateOrDelete.statusCode === httpStatusCode.accepted) {
 						data.status = sessionUpdateOrDelete.message
 						output.push(data)
 					} else {

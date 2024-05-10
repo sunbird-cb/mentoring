@@ -147,22 +147,6 @@ module.exports = class OrgAdmin {
 	}
 
 	/**
-	 * Bulk create session
-	 * @method
-	 * @name bulkSessionCreate
-	 * @param {String} req.body.file_path -Uploaded filr path .
-	 * @returns {Object} - uploaded file response.
-	 */
-	async bulkSessionCreate(req) {
-		try {
-			const sessionUploadRes = await orgAdminService.bulkSessionCreate(req.body.file_path, req.decodedToken)
-			return sessionUploadRes
-		} catch (error) {
-			return error
-		}
-	}
-
-	/**
 	 * Upload sample csv based on org id
 	 * @method
 	 * @name UploadSampleCsv
