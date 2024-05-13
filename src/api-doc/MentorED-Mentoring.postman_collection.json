@@ -934,6 +934,21 @@
 							"body": "\"Name\",\"Designation\",\"Organization\",\"E-mail ID\",\"Enrollment Type\"\n\"priyanka\",\"Block education officer, District education officer\",\"Default Organization\",\"f9359474815816b30fcb515a2e935322c7e6a376367bb9792d1f1a11c78181be\",\n\"Nevil M\",\"test\",\"Default Organization\",\"nevil@tunerlabs.com\","
 						}
 					]
+				},
+				{
+					"name": "SessionSampleCSV",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-auth-token",
+								"value": "bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": "{{MentoringBaseUrl}}mentoring/v1/sessions/getSampleCSV"
+					},
+					"response": []
 				}
 			]
 		},
@@ -2114,6 +2129,55 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "UploadSampleCSV",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-auth-token",
+								"value": "bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{MentoringBaseUrl}}mentoring/v1/org-admin/uploadCustomCSV?fileName=BulkSessionMentorCheck.csv",
+							"host": ["{{MentoringBaseUrl}}mentoring"],
+							"path": ["v1", "org-admin", "uploadCustomCSV"],
+							"query": [
+								{
+									"key": "fileName",
+									"value": "BulkSessionMentorCheck.csv"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "BulkSessionCreate",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-auth-token",
+								"value": "bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"file_path\" : \"session/33-1715170205039-BulkSessionActionssEdit.csv\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{MentoringBaseUrl}}mentoring/v1/org-admin/bulkSessionCreate"
+					},
+					"response": []
 				}
 			]
 		},
@@ -2905,6 +2969,73 @@
 							"raw": "{{MentoringBaseUrl}}mentoring/v1/role-permission-mapping/list",
 							"host": ["{{MentoringBaseUrl}}mentoring"],
 							"path": ["v1", "role-permission-mapping", "list"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "File-upload",
+			"item": [
+				{
+					"name": "Get Signed Url",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-auth-token",
+								"value": "bearer {{token}}",
+								"type": "text"
+							},
+							{
+								"key": "",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{MentoringBaseUrl}}mentoring/v1/cloud-services/getSignedUrl?fileName=laptop1.jpg",
+							"host": ["{{MentoringBaseUrl}}mentoring"],
+							"path": ["v1", "cloud-services", "getSignedUrl"],
+							"query": [
+								{
+									"key": "fileName",
+									"value": "laptop1.jpg"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Downloable Url",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-auth-token",
+								"value": "bearer {{token}}",
+								"type": "text"
+							},
+							{
+								"key": "",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{MentoringBaseUrl}}mentoring/v1/cloud-services/getDownloadableUrl?filePath=users/2-1695710833829-user_creation.csv",
+							"host": ["{{MentoringBaseUrl}}mentoring"],
+							"path": ["v1", "cloud-services", "getDownloadableUrl"],
+							"query": [
+								{
+									"key": "filePath",
+									"value": "users/2-1695710833829-user_creation.csv"
+								}
+							]
 						}
 					},
 					"response": []
