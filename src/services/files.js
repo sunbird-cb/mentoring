@@ -76,48 +76,4 @@ module.exports = class FilesHelper {
 			throw error
 		}
 	}
-
-	static async getSignedUrlByOrgId(fileName, id, orgId, dynamicPath) {
-		try {
-			let destFilePath
-			if (dynamicPath != '') {
-				destFilePath = dynamicPath + '/' + fileName
-			} else {
-				destFilePath = `session/${id}-${new Date().getTime()}-${fileName}`
-			}
-			let response
-			if (process.env.CLOUD_STORAGE === 'GCP') {
-				response = await cloudServices.getGcpSignedUrl(destFilePath)
-			} else if (process.env.CLOUD_STORAGE === 'AWS') {
-				response = await cloudServices.getAwsSignedUrl(destFilePath)
-			} else if (process.env.CLOUD_STORAGE === 'AZURE') {
-				response = await cloudServices.getAzureSignedUrl(destFilePath)
-			} else if (process.env.CLOUD_STORAGE === 'OCI') {
-				response = await cloudServices.getOciSignedUrl(destFilePath)
-			}
-			const defaultOrgId = await getDefaultOrgId()
-			if (!defaultOrgId) {
-				return responses.failureResponse({
-					message: 'DEFAULT_ORG_ID_NOT_SET',
-					statusCode: httpStatusCode.bad_request,
-					responseCode: 'CLIENT_ERROR',
-				})
-			}
-
-			const data = { sample_csv_path: destFilePath }
-			if (orgId != defaultOrgId) {
-				await organisationExtensionQueries.update(data, orgId)
-			}
-
-			response.destFilePath = destFilePath
-			return responses.successResponse({
-				message: 'SIGNED_URL_GENERATED_SUCCESSFULLY',
-				statusCode: httpStatusCode.ok,
-				responseCode: 'OK',
-				result: response,
-			})
-		} catch (error) {
-			throw error
-		}
-	}
 }

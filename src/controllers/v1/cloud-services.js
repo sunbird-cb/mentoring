@@ -19,7 +19,6 @@ module.exports = class CloudServices {
 			const signedUrlResponse = await filesService.getSignedUrl(
 				req.query.fileName,
 				req.decodedToken.id,
-				req.decodedToken.organization_id,
 				req.query.dynamicPath ? req.query.dynamicPath : '',
 				req.query.public && req.query.public == 'true' ? true : false
 			)

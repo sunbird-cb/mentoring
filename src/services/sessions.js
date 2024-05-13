@@ -35,6 +35,14 @@ const entityTypeService = require('@services/entity-type')
 const mentorsService = require('./mentors')
 const { getEnrolledMentees } = require('@helpers/getEnrolledMentees')
 const responses = require('@helpers/responses')
+const path = require('path')
+const ProjectRootDir = path.join(__dirname, '../')
+const inviteeFileDir = ProjectRootDir + common.tempFolderForBulkUpload
+const fileUploadQueries = require('@database/queries/fileUpload')
+const { Queue } = require('bullmq')
+const fs = require('fs')
+const csv = require('csvtojson')
+const axios = require('axios')
 
 module.exports = class SessionsHelper {
 	/**
@@ -159,7 +167,6 @@ module.exports = class SessionsHelper {
 					[Op.in]: [orgId, defaultOrgId],
 				},
 				model_names: { [Op.contains]: [sessionModelName] },
-				required: true,
 			})
 
 			//validationData = utils.removeParentEntityTypes(JSON.parse(JSON.stringify(validationData)))
@@ -2418,6 +2425,80 @@ module.exports = class SessionsHelper {
 		}
 	}
 
+	/**
+	 * Bulk create users
+	 * @method
+	 * @name bulkUserCreate
+	 * @param {Array} users - user details.
+	 * @param {Object} tokenInformation - token details.
+	 * @returns {CSV} - created users.
+	 */
+
+	static async bulkSessionCreate(filePath, tokenInformation) {
+		try {
+			const { id, organization_id } = tokenInformation
+			const downloadCsv = await this.downloadCSV(filePath)
+			const csvData = await csv().fromFile(downloadCsv.result.downloadPath)
+
+			if (csvData.length > process.env.CSV_MAX_ROW) {
+				return responses.failureResponse({
+					message: 'CSV_ROW_LIMIT_EXCEEDED',
+					statusCode: httpStatusCode.bad_request,
+					responseCode: 'CLIENT_ERROR',
+				})
+			}
+			const creationData = {
+				name: utils.extractFilename(filePath),
+				input_path: filePath,
+				type: common.FILE_TYPE_CSV,
+				organization_id,
+				created_by: id,
+			}
+			const result = await fileUploadQueries.create(creationData)
+			if (!result?.id) {
+				return responses.successResponse({
+					responseCode: 'CLIENT_ERROR',
+					statusCode: httpStatusCode.bad_request,
+					message: 'SESSION_CSV_UPLOADED_FAILED',
+				})
+			}
+
+			const userDetail = await userRequests.details('', id)
+			//push to queue
+			const redisConfiguration = utils.generateRedisConfigForQueue()
+			const sessionQueue = new Queue(process.env.DEFAULT_QUEUE, redisConfiguration)
+			const session = await sessionQueue.add(
+				'upload_sessions',
+				{
+					fileDetails: result,
+					user: {
+						id,
+						name: userDetail.data.result.name,
+						email: userDetail.data.result.email,
+						organization_id,
+						org_name: userDetail.data.result.organization.name,
+					},
+				},
+				{
+					removeOnComplete: true,
+					attempts: common.NO_OF_ATTEMPTS,
+					backoff: {
+						type: 'fixed',
+						delay: common.BACK_OFF_RETRY_QUEUE, // Wait 10 min between attempts
+					},
+				}
+			)
+			return responses.successResponse({
+				statusCode: httpStatusCode.ok,
+				message: 'SESSION_CSV_UPLOADED',
+				result: result,
+			})
+		} catch (error) {
+			console.log(error)
+			throw error
+		}
+	}
+
 	static async getSampleCSV(orgId) {
 		try {
 			const defaultOrgId = await getDefaultOrgId()
@@ -2443,6 +2524,46 @@ module.exports = class SessionsHelper {
 			return response
 		} catch (error) {
 			throw error
+		}
+	}
+
+	static async downloadCSV(filePath) {
+		try {
+			const downloadableUrl = await fileService.getDownloadableUrl(filePath)
+			let fileName = path.basename(downloadableUrl.result)
+
+			// Find the index of the first occurrence of '?'
+			const index = fileName.indexOf('?')
+			// Extract the portion of the string before the '?' if it exists, otherwise use the entire string
+			fileName = index !== -1 ? fileName.substring(0, index) : fileName
+			const downloadPath = path.join(inviteeFileDir, fileName)
+			const response = await axios.get(downloadableUrl.result, {
+				responseType: common.responseType,
+			})
+
+			const writeStream = fs.createWriteStream(downloadPath)
+			response.data.pipe(writeStream)
+
+			await new Promise((resolve, reject) => {
+				writeStream.on('finish', resolve)
+				writeStream.on('error', (err) => {
+					reject(new Error('FAILED_TO_DOWNLOAD_FILE'))
+				})
+			})
+
+			return {
+				success: true,
+				result: {
+					destPath: inviteeFileDir,
+					fileName,
+					downloadPath,
+				},
+			}
+		} catch (error) {
+			return {
+				success: false,
+				message: error.message,
+			}
 		}
 	}
 }

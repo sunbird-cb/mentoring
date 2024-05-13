@@ -187,7 +187,7 @@ let enviromentVariables = {
 	SESSION_UPLOAD_EMAIL_TEMPLATE_CODE: {
 		message: 'Required email template name for bulk session upload by session manager',
 		optional: true,
-		default: 'bulk_session_upload_by_session_manager_email_template',
+		default: 'bulk_upload_session',
 	},
 	DEFAULT_QUEUE: {
 		message: 'Required default queue',

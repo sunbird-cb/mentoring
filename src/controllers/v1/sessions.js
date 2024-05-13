@@ -355,6 +355,22 @@ module.exports = class Sessions {
 	}
 
 	/**
+	 * Bulk session upload
+	 * @method
+	 * @name BulkSessionCreation
+	 * @param {String} req.body.file_path -Uploaded filr path .
+	 * @returns {Object} - uploaded file response.
+	 */
+	async bulkSessionCreate(req) {
+		try {
+			const sessionUploadRes = await sessionService.bulkSessionCreate(req.body.file_path, req.decodedToken)
+			return sessionUploadRes
+		} catch (error) {
+			return error
+		}
+	}
+
+	/**
 	 * Get sample bulk upload csv downloadable Url
 	 * @method
 	 * @name getSampleCSV

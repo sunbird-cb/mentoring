@@ -15,17 +15,9 @@ const questionSetQueries = require('../database/queries/question-set')
 const { Op } = require('sequelize')
 const user = require('@health-checks/user')
 const responses = require('@helpers/responses')
-const { Queue } = require('bullmq')
-const fileUploadQueries = require('@database/queries/fileUpload')
 const { email } = require('oci-sdk')
 const fileService = require('@services/files')
-const fs = require('fs')
-const path = require('path')
-const csv = require('csvtojson')
-const axios = require('axios')
 const { getDefaultOrgId } = require('@helpers/getDefaultOrgId')
-const ProjectRootDir = path.join(__dirname, '../')
-const inviteeFileDir = ProjectRootDir + common.tempFolderForBulkUpload
 
 module.exports = class OrgAdminService {
 	/**
@@ -599,83 +591,7 @@ module.exports = class OrgAdminService {
 		}
 	}
 
-	/**
-	 * Bulk create users
-	 * @method
-	 * @name bulkUserCreate
-	 * @param {Array} users - user details.
-	 * @param {Object} tokenInformation - token details.
-	 * @returns {CSV} - created users.
-	 */
-
-	static async bulkSessionCreate(filePath, tokenInformation) {
-		try {
-			const { id, organization_id } = tokenInformation
-			const downloadCsv = await this.downloadCSV(filePath)
-			const csvData = await csv().fromFile(downloadCsv.result.downloadPath)
-
-			if (csvData.length > process.env.CSV_MAX_ROW) {
-				return responses.failureResponse({
-					message: 'CSV_ROW_LIMIT_EXCEEDED',
-					statusCode: httpStatusCode.bad_request,
-					responseCode: 'CLIENT_ERROR',
-				})
-			}
-			const creationData = {
-				name: utils.extractFilename(filePath),
-				input_path: filePath,
-				type: common.fileTypeCSV,
-				organization_id,
-				created_by: id,
-			}
-			const result = await fileUploadQueries.create(creationData)
-			if (!result?.id) {
-				return responses.successResponse({
-					responseCode: 'CLIENT_ERROR',
-					statusCode: httpStatusCode.bad_request,
-					message: 'SESSION_CSV_UPLOADED_FAILED',
-				})
-			}
-
-			const userDetail = await userRequests.details('', id)
-			//push to queue
-			const redisConfiguration = utils.generateRedisConfigForQueue()
-			const sessionQueue = new Queue(process.env.DEFAULT_QUEUE, redisConfiguration)
-			const session = await sessionQueue.add(
-				'upload_sessions',
-				{
-					fileDetails: result,
-					user: {
-						id,
-						name: userDetail.data.result.name,
-						email: userDetail.data.result.email,
-						organization_id,
-						org_name: userDetail.data.result.organization.name,
-					},
-				},
-				{
-					removeOnComplete: true,
-					attempts: common.NO_OF_ATTEMPTS,
-					backoff: {
-						type: 'fixed',
-						delay: common.BACK_OFF_RETRY_QUEUE, // Wait 10 min between attempts
-					},
-				}
-			)
-			return responses.successResponse({
-				statusCode: httpStatusCode.ok,
-				message: 'SESSION_CSV_UPLOADED',
-				result: result,
-			})
-		} catch (error) {
-			console.log(error)
-			throw error
-		}
-	}
-
-	static async uploadCustomCSV(filename, id, orgId, dynamicPath) {
-		const uploadPath = await fileService.getSignedUrl(filename, id, orgId, dynamicPath)
-
+	static async uploadSampleCSV(filepath, orgId) {
 		const defaultOrgId = await getDefaultOrgId()
 		if (!defaultOrgId) {
 			return responses.failureResponse({
@@ -685,58 +601,18 @@ module.exports = class OrgAdminService {
 			})
 		}
 
-		const newData = { uploads: { session_csv_path: uploadPath.result.destFilePath } }
+		const newData = { uploads: { session_csv_path: filepath } }
 		if (orgId != defaultOrgId) {
 			let result = await organisationExtensionQueries.update(newData, orgId)
 			return responses.successResponse({
 				statusCode: httpStatusCode.ok,
-				message: 'CUSTOM_CSV_UPLOADED',
+				message: 'CSV_UPLOADED_SUCCESSFULLY',
 			})
 		}
 		return responses.failureResponse({
-			message: 'CUSTOM_CSV_CANNOT_UPLOAD',
+			message: 'UPLOAD_CSV_FAILED',
 			statusCode: httpStatusCode.bad_request,
 			responseCode: 'CLIENT_ERROR',
 		})
-	}
-
-	static async downloadCSV(filePath) {
-		try {
-			const downloadableUrl = await fileService.getDownloadableUrl(filePath)
-			let fileName = path.basename(downloadableUrl.result)
-
-			// Find the index of the first occurrence of '?'
-			const index = fileName.indexOf('?')
-			// Extract the portion of the string before the '?' if it exists, otherwise use the entire string
-			fileName = index !== -1 ? fileName.substring(0, index) : fileName
-			const downloadPath = path.join(inviteeFileDir, fileName)
-			const response = await axios.get(downloadableUrl.result, {
-				responseType: common.responseType,
-			})
-
-			const writeStream = fs.createWriteStream(downloadPath)
-			response.data.pipe(writeStream)
-
-			await new Promise((resolve, reject) => {
-				writeStream.on('finish', resolve)
-				writeStream.on('error', (err) => {
-					reject(new Error('FAILED_TO_DOWNLOAD_FILE'))
-				})
-			})
-
-			return {
-				success: true,
-				result: {
-					destPath: inviteeFileDir,
-					fileName,
-					downloadPath,
-				},
-			}
-		} catch (error) {
-			return {
-				success: false,
-				message: error.message,
-			}
-		}
 	}
 }

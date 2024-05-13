@@ -153,25 +153,14 @@ module.exports = class OrgAdmin {
 	 * @param {String} req.body.file_path -Uploaded filr path .
 	 * @returns {Object} - uploaded file response.
 	 */
-	async bulkSessionCreate(req) {
-		try {
-			const sessionUploadRes = await orgAdminService.bulkSessionCreate(req.body.file_path, req.decodedToken)
-			return sessionUploadRes
-		} catch (error) {
-			return error
-		}
-	}
 
-	async uploadCustomCSV(req) {
+	async uploadSampleCSV(req) {
 		try {
-			const signedUrlResponse = await orgAdminService.uploadCustomCSV(
-				req.query.fileName,
-				req.decodedToken.id,
-				req.decodedToken.organization_id,
-				req.query.dynamicPath ? req.query.dynamicPath : '',
-				req.query.public && req.query.public == 'true' ? true : false
+			const updatePath = await orgAdminService.uploadSampleCSV(
+				req.body.file_path,
+				req.decodedToken.organization_id
 			)
-			return signedUrlResponse
+			return updatePath
 		} catch (error) {
 			return error
 		}

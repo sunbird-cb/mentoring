@@ -112,13 +112,37 @@ module.exports = {
 				{
 					role_title: common.SESSION_MANAGER_ROLE,
 					permission_id: await getPermissionId(
+						'sessions',
+						['POST'],
+						'/mentoring/v1/sessions/bulkSessionCreate'
+					),
+					module: 'sessions',
+					request_type: ['POST'],
+					api_path: '/mentoring/v1/sessions/bulkSessionCreate',
+					created_at: new Date(),
+					updated_at: new Date(),
+					created_by: 0,
+				},
+				{
+					role_title: common.SESSION_MANAGER_ROLE,
+					permission_id: await getPermissionId('sessions', ['GET'], '/mentoring/v1/sessions/getSampleCSV'),
+					module: 'sessions',
+					request_type: ['GET'],
+					api_path: '/mentoring/v1/sessions/getSampleCSV',
+					created_at: new Date(),
+					updated_at: new Date(),
+					created_by: 0,
+				},
+				{
+					role_title: common.ORG_ADMIN_ROLE,
+					permission_id: await getPermissionId(
 						'org-admin',
 						['POST'],
-						'/mentoring/v1/org-admin/bulkSessionCreate'
+						'/mentoring/v1/org-admin/uploadCustomCSV'
 					),
 					module: 'org-admin',
 					request_type: ['POST'],
-					api_path: '/mentoring/v1/org-admin/bulkSessionCreate',
+					api_path: '/mentoring/v1/org-admin/uploadCustomCSV',
 					created_at: new Date(),
 					updated_at: new Date(),
 					created_by: 0,

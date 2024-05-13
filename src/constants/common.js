@@ -123,7 +123,7 @@ module.exports = {
 	INVITED: 'INVITED',
 	ENROLLED: 'ENROLLED',
 	UNIT_OF_TIME: 'minutes',
-	fileTypeCSV: 'text/csv',
+	FILE_TYPE_CSV: 'text/csv',
 	NO_OF_ATTEMPTS: 3,
 	BACK_OFF_RETRY_QUEUE: 600000,
 	tempFolderForBulkUpload: 'public/invites',
