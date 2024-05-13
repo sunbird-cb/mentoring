@@ -949,6 +949,30 @@
 						"url": "{{MentoringBaseUrl}}mentoring/v1/sessions/getSampleCSV"
 					},
 					"response": []
+				},
+				{
+					"name": "BulkSessionCreate",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-auth-token",
+								"value": "bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"file_path\" : \"15/BulkSessionMentorCheck.csv\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{MentoringBaseUrl}}mentoring/v1/sessions/bulkSessionCreate"
+					},
+					"response": []
 				}
 			]
 		},
@@ -2152,30 +2176,6 @@
 								}
 							]
 						}
-					},
-					"response": []
-				},
-				{
-					"name": "BulkSessionCreate",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "X-auth-token",
-								"value": "bearer {{token}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"file_path\" : \"session/33-1715170205039-BulkSessionActionssEdit.csv\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": "{{MentoringBaseUrl}}mentoring/v1/org-admin/bulkSessionCreate"
 					},
 					"response": []
 				}
