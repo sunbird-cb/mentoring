@@ -161,4 +161,19 @@ module.exports = class OrgAdmin {
 			return error
 		}
 	}
+
+	async uploadCustomCSV(req) {
+		try {
+			const signedUrlResponse = await orgAdminService.uploadCustomCSV(
+				req.query.fileName,
+				req.decodedToken.id,
+				req.decodedToken.organization_id,
+				req.query.dynamicPath ? req.query.dynamicPath : '',
+				req.query.public && req.query.public == 'true' ? true : false
+			)
+			return signedUrlResponse
+		} catch (error) {
+			return error
+		}
+	}
 }

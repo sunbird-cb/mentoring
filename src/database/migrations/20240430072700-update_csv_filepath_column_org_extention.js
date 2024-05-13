@@ -2,12 +2,12 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
 	async up(queryInterface, Sequelize) {
-		await queryInterface.addColumn('organization_extension', 'sample_csv_path', {
-			type: Sequelize.STRING,
+		await queryInterface.addColumn('organization_extension', 'uploads', {
+			type: Sequelize.JSONB,
 			allowNull: true,
 		})
 	},
 	async down(queryInterface, Sequelize) {
-		await queryInterface.removeColumn('organization_extension', 'sample_csv_path')
+		await queryInterface.removeColumn('organization_extension', 'uploads')
 	},
 }

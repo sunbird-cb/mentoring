@@ -353,4 +353,20 @@ module.exports = class Sessions {
 			return error
 		}
 	}
+
+	/**
+	 * Get sample bulk upload csv downloadable Url
+	 * @method
+	 * @name getSampleCSV
+	 * @param {JSON} req  request body.
+	 * @returns {JSON} Response with status message and result.
+	 */
+	async getSampleCSV(req) {
+		try {
+			const downloadUrlResponse = await sessionService.getSampleCSV(req.decodedToken.organization_id)
+			return downloadUrlResponse
+		} catch (error) {
+			return error
+		}
+	}
 }

@@ -20,7 +20,7 @@ const { Op } = require('sequelize')
 const notificationQueries = require('@database/queries/notificationTemplate')
 
 const schedulerRequest = require('@requests/scheduler')
-
+const fileService = require('@services/files')
 const bigBlueButtonRequests = require('@requests/bigBlueButton')
 const userRequests = require('@requests/user')
 const utils = require('@generics/utils')
@@ -1769,7 +1769,7 @@ module.exports = class SessionsHelper {
 	static async isTimeSlotAvailable(id, startDate, endDate, sessionId) {
 		try {
 			const sessions = await sessionQueries.getSessionByUserIdAndTime(id, startDate, endDate, sessionId)
-			if (!sessions || sessions.startDateResponse.length < process.csv.SESSION_CREATION_MENTOR_LIMIT) {
+			if (!sessions || sessions.startDateResponse.length < process.env.SESSION_CREATION_MENTOR_LIMIT) {
 				return true
 			}
 
@@ -2415,6 +2415,34 @@ module.exports = class SessionsHelper {
 		return {
 			menteesToRemove,
 			menteesToAdd,
+		}
+	}
+
+	static async getSampleCSV(orgId) {
+		try {
+			const defaultOrgId = await getDefaultOrgId()
+			if (!defaultOrgId) {
+				return responses.failureResponse({
+					message: 'DEFAULT_ORG_ID_NOT_SET',
+					statusCode: httpStatusCode.bad_request,
+					responseCode: 'CLIENT_ERROR',
+				})
+			}
+			let path = process.env.SAMPLE_CSV_FILE_PATH
+			if (orgId != defaultOrgId) {
+				const result = await organisationExtensionQueries.findOne(
+					{ organization_id: orgId },
+					{ attributes: ['uploads'] }
+				)
+				if (result && result.uploads.session_csv_path) {
+					path = result.uploads.session_csv_path
+				}
+			}
+
+			const response = await fileService.getDownloadableUrl(path)
+			return response
+		} catch (error) {
+			throw error
 		}
 	}
 }

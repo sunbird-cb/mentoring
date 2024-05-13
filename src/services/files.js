@@ -120,38 +120,4 @@ module.exports = class FilesHelper {
 			throw error
 		}
 	}
-
-	static async getDownloadableUrlByOrgId(orgId) {
-		try {
-			const defaultOrgId = await getDefaultOrgId()
-			if (!defaultOrgId) {
-				return responses.failureResponse({
-					message: 'DEFAULT_ORG_ID_NOT_SET',
-					statusCode: httpStatusCode.bad_request,
-					responseCode: 'CLIENT_ERROR',
-				})
-			}
-			let path = process.env.SAMPLE_CSV_FILE_PATH
-			console.log('organization_id ', organization_id)
-			if (orgId != defaultOrgId) {
-				const result = await organisationExtensionQueries.findOne(
-					{ orgId },
-					{ attributes: ['sample_csv_path'] }
-				)
-				if (result && result.sample_csv_path) {
-					path = result.sample_csv_path
-				}
-			}
-
-			const response = await utils.getDownloadableUrl(path)
-			return responses.successResponse({
-				message: 'DOWNLOAD_URL_GENERATED_SUCCESSFULLY',
-				statusCode: httpStatusCode.ok,
-				responseCode: 'OK',
-				result: response,
-			})
-		} catch (error) {
-			throw error
-		}
-	}
 }

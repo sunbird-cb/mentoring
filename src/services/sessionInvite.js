@@ -15,6 +15,7 @@ const { isAMentor } = require('@generics/utils')
 const ProjectRootDir = path.join(__dirname, '../')
 const fileUploadQueries = require('@database/queries/fileUpload')
 const notificationTemplateQueries = require('@database/queries/notificationTemplate')
+const moment = require('moment')
 const inviteeFileDir = ProjectRootDir + common.tempFolderForBulkUpload
 
 module.exports = class UserInviteHelper {
@@ -276,10 +277,19 @@ module.exports = class UserInviteHelper {
 			} else {
 				validRowsCount++
 				session.status = 'Valid'
-				session.start_date = utils.convertToEpochTime(session.date, session.time24hrs, session.time_zone)
-				const durationTime = utils.addDurationToTime(session.time24hrs, session.duration)
-				session.end_date = utils.convertToEpochTime(session.date, durationTime, session.time_zone)
-
+				const [day, month, year] = session.date.split('-')
+				const startDateTimeString = `${year}-${month}-${day}T${session.time24hrs}`
+				const start = startDateTimeString.replace(' Hrs', '')
+				if (session.time_zone == 'UTC') {
+					session.time_zone = '+00:00'
+				}
+				const momentStartDateTime = moment.tz(start, session.time_zone)
+				session.start_date = momentStartDateTime.unix()
+				const momentEndDateTime = momentStartDateTime.add(session.duration, 'minutes')
+				session.end_date = momentEndDateTime.unix()
+				if (session.time_zone === '+00:00') {
+					session.time_zone = 'UTC'
+				}
 				if (session.mentees && Array.isArray(session.mentees)) {
 					for (let i = 0; i < session.mentees.length; i++) {
 						const menteeEmail = session.mentees[i].toLowerCase()
@@ -453,7 +463,10 @@ module.exports = class UserInviteHelper {
 
 				const meetingPlatform = meeting_info.platform
 				const meetingLinkOrId = meeting_info.link
-				const meetingPasscode = meeting_info.meta.password ? meeting_info.meta.password.match(/\d+/)[0] : ''
+				let meetingPasscode = ''
+				if (meetingPlatform == 'Zoom') {
+					meetingPasscode = meeting_info.meta.password ? meeting_info.meta.password.match(/\d+/)[0] : ''
+				}
 
 				const mappedRow = {
 					Action: action,
@@ -474,7 +487,7 @@ module.exports = class UserInviteHelper {
 					'Meeting Link or Meeting ID': meetingLinkOrId,
 					'Meeting Passcode (if needed)': meetingPasscode,
 					Status: status,
-					'Status Message': statusMessage,
+					//	'Status Message': statusMessage,
 				}
 				OutputCSVData.push(mappedRow)
 			})

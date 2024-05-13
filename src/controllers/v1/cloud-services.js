@@ -16,7 +16,7 @@ module.exports = class CloudServices {
 	 */
 	async getSignedUrl(req) {
 		try {
-			const signedUrlResponse = await filesService.getSignedUrlByOrgId(
+			const signedUrlResponse = await filesService.getSignedUrl(
 				req.query.fileName,
 				req.decodedToken.id,
 				req.decodedToken.organization_id,
@@ -42,22 +42,6 @@ module.exports = class CloudServices {
 				req.query.filePath,
 				req.query.public && req.query.public == 'true' ? true : false
 			)
-		} catch (error) {
-			return error
-		}
-	}
-
-	/**
-	 * Get sample bulk upload csv downloadable Url
-	 * @method
-	 * @name getSampleCSV
-	 * @param {JSON} req  request body.
-	 * @returns {JSON} Response with status message and result.
-	 */
-	async getSampleCSV(req) {
-		try {
-			const downloadUrlResponse = await filesService.getDownloadableUrlByOrgId(req.decodedToken.organization_id)
-			return downloadUrlResponse
 		} catch (error) {
 			return error
 		}

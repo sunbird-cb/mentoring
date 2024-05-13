@@ -159,16 +159,7 @@ function validateInput(input, validationData, modelName) {
 				msg: `${field.value} is required but missing in the input data.`,
 			})
 		}
-	}
-	// Continue with further validation only if all required fields are present
-	if (errors.length > 0) {
-		return {
-			success: false,
-			errors: errors,
-		}
-	}
 
-	for (const field of validationData) {
 		const fieldValue = input[field.value] // Get the value of the current field from the input data
 
 		// Check if the field is not allowed for the current model and has a value
@@ -638,45 +629,6 @@ function generateCSVContent(data) {
 	return [headers.join(','), ...csvRows].join('\n')
 }
 
-const addDurationToTime = (timeString, durationMinutes) => {
-	// Parse the time string
-	const trimmedTimeString = timeString.replace(' Hrs', '')
-	const [hoursStr, minutesStr] = trimmedTimeString.split(':')
-	let hours = parseInt(hoursStr, 10)
-	let minutes = parseInt(minutesStr, 10)
-	// Add the duration to the hours and minutes
-	hours += Math.floor(durationMinutes / 60)
-	minutes += durationMinutes % 60 // Remainder gives updated minutes
-	// Format the updated time
-	const updatedTimeString = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`
-	return updatedTimeString
-}
-
-function convertToEpochTime(dateString, timeString, timeZone) {
-	const trimmedTimeString = timeString.replace(' Hrs', '')
-	const offsets = { IST: '+05:30', UTC: '+00:00' }
-	const timezoneOffset = offsets[timeZone] || '+00:00'
-	const dateTimeString = `${dateString}T${trimmedTimeString}:00${timezoneOffset}`
-	const [datePart, timePart] = dateTimeString.split('T')
-	const dateParts = datePart.split('-')
-	const timeParts = timePart.split(':')
-	const utcDate = new Date(
-		Date.UTC(
-			parseInt(dateParts[2], 10), // Year
-			parseInt(dateParts[1], 10) - 1, // Month (0-indexed)
-			parseInt(dateParts[0], 10), // Day
-			parseInt(timeParts[0], 10), // Hours
-			parseInt(timeParts[1], 10), // Minutes
-			parseInt(timeParts[2], 10) // Seconds
-		)
-	)
-	utcDate.setHours(utcDate.getHours() - 5) // Subtract 5 hours for IST
-	utcDate.setMinutes(utcDate.getMinutes() - 30) // Subtract 30 minutes for IST
-
-	const epochTime = utcDate.getTime() / 1000
-	return epochTime
-}
-
 const clearFile = (filePath) => {
 	fs.unlink(filePath, (err) => {
 		if (err) logger.error(err)
@@ -719,13 +671,9 @@ module.exports = {
 	generateWhereClause,
 	validateFilters,
 	processQueryParametersWithExclusions,
-	encrypt,
-	decrypt,
 	extractFilename,
 	generateRedisConfigForQueue,
 	generateFileName,
 	generateCSVContent,
-	convertToEpochTime,
-	addDurationToTime,
 	clearFile,
 }

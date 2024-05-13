@@ -23,6 +23,7 @@ const fs = require('fs')
 const path = require('path')
 const csv = require('csvtojson')
 const axios = require('axios')
+const { getDefaultOrgId } = require('@helpers/getDefaultOrgId')
 const ProjectRootDir = path.join(__dirname, '../')
 const inviteeFileDir = ProjectRootDir + common.tempFolderForBulkUpload
 
@@ -672,17 +673,44 @@ module.exports = class OrgAdminService {
 		}
 	}
 
+	static async uploadCustomCSV(filename, id, orgId, dynamicPath) {
+		const uploadPath = await fileService.getSignedUrl(filename, id, orgId, dynamicPath)
+
+		const defaultOrgId = await getDefaultOrgId()
+		if (!defaultOrgId) {
+			return responses.failureResponse({
+				message: 'DEFAULT_ORG_ID_NOT_SET',
+				statusCode: httpStatusCode.bad_request,
+				responseCode: 'CLIENT_ERROR',
+			})
+		}
+
+		const newData = { uploads: { session_csv_path: uploadPath.result.destFilePath } }
+		if (orgId != defaultOrgId) {
+			let result = await organisationExtensionQueries.update(newData, orgId)
+			return responses.successResponse({
+				statusCode: httpStatusCode.ok,
+				message: 'CUSTOM_CSV_UPLOADED',
+			})
+		}
+		return responses.failureResponse({
+			message: 'CUSTOM_CSV_CANNOT_UPLOAD',
+			statusCode: httpStatusCode.bad_request,
+			responseCode: 'CLIENT_ERROR',
+		})
+	}
+
 	static async downloadCSV(filePath) {
 		try {
-			const downloadableUrl = await utils.getDownloadableUrl(filePath)
-			let fileName = path.basename(downloadableUrl)
+			const downloadableUrl = await fileService.getDownloadableUrl(filePath)
+			let fileName = path.basename(downloadableUrl.result)
 
 			// Find the index of the first occurrence of '?'
 			const index = fileName.indexOf('?')
 			// Extract the portion of the string before the '?' if it exists, otherwise use the entire string
 			fileName = index !== -1 ? fileName.substring(0, index) : fileName
 			const downloadPath = path.join(inviteeFileDir, fileName)
-			const response = await axios.get(downloadableUrl, {
+			const response = await axios.get(downloadableUrl.result, {
 				responseType: common.responseType,
 			})
 
