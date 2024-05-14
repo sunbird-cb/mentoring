@@ -448,7 +448,6 @@ module.exports = class SessionsHelper {
 					[Op.in]: [orgId, defaultOrgId],
 				},
 				model_names: { [Op.contains]: [sessionModelName] },
-				required: true,
 			})
 
 			if (method != common.DELETE_METHOD) {

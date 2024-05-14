@@ -101,19 +101,13 @@ module.exports = class OrganizationExtensionQueries {
 			if (!organization_id) {
 				throw new Error('Missing organization_id in data')
 			}
-
-			const [rowsUpdated, updatedRecords] = await OrganizationExtension.update(data, {
+			const [updatedRecords] = await OrganizationExtension.update(data, {
 				where: {
 					organization_id: organization_id,
 				},
-				returning: true, // Include this to get the updated records
+				returning: true,
 			})
-
-			if (rowsUpdated === 0) {
-				throw new Error('No records were updated')
-			}
-
-			return updatedRecords // Return the updated records
+			return updatedRecords
 		} catch (error) {
 			throw new Error(`Error updating organization extension: ${error.message}`)
 		}

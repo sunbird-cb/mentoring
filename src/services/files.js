@@ -4,8 +4,6 @@ const httpStatusCode = require('@generics/http-status')
 const common = require('@constants/common')
 const utils = require('@generics/utils')
 const responses = require('@helpers/responses')
-const { getDefaultOrgId } = require('@helpers/getDefaultOrgId')
-const organisationExtensionQueries = require('@database/queries/organisationExtension')
 
 module.exports = class FilesHelper {
 	/**

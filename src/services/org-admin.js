@@ -13,10 +13,7 @@ const utils = require('@generics/utils')
 const _ = require('lodash')
 const questionSetQueries = require('../database/queries/question-set')
 const { Op } = require('sequelize')
-const user = require('@health-checks/user')
 const responses = require('@helpers/responses')
-const { email } = require('oci-sdk')
-const fileService = require('@services/files')
 const { getDefaultOrgId } = require('@helpers/getDefaultOrgId')
 
 module.exports = class OrgAdminService {
@@ -604,6 +601,13 @@ module.exports = class OrgAdminService {
 		const newData = { uploads: { session_csv_path: filepath } }
 		if (orgId != defaultOrgId) {
 			let result = await organisationExtensionQueries.update(newData, orgId)
+			if (!result) {
+				return responses.failureResponse({
+					message: 'UPDATE_FAILED',
+					statusCode: httpStatusCode.bad_request,
+					responseCode: 'CLIENT_ERROR',
+				})
+			}
 			return responses.successResponse({
 				statusCode: httpStatusCode.ok,
 				message: 'CSV_UPLOADED_SUCCESSFULLY',
