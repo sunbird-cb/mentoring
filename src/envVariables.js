@@ -179,10 +179,34 @@ let enviromentVariables = {
 		optional: true,
 		default: 3600000,
 	},
+	SESSION_UPLOAD_EMAIL_TEMPLATE_CODE: {
+		message: 'Required email template name for bulk session upload by session manager',
+		optional: true,
+		default: 'bulk_upload_session',
+	},
+	DEFAULT_QUEUE: {
+		message: 'Required default queue',
+		optional: false,
+	},
+	SAMPLE_CSV_FILE_PATH: {
+		message: 'Required sample csv file path',
+		optional: false,
+		default: 'sample/bulk_session_creation.csv',
+	},
 	AUTH_METHOD: {
 		message: 'Required authentication method',
 		optional: true,
 		default: common.AUTH_METHOD.JWT_ONLY,
+	},
+	CSV_MAX_ROW: {
+		message: 'Required Csv length',
+		optional: false,
+		default: 20,
+	},
+	SESSION_CREATION_MENTOR_LIMIT: {
+		message: 'Required mentor limit for session creation',
+		optional: false,
+		default: 20,
 	},
 	MINIMUM_DURATION_FOR_AVAILABILITY: {
 		message: 'Required minimum duration for availability',

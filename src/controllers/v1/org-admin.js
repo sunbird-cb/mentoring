@@ -1,4 +1,5 @@
 const orgAdminService = require('@services/org-admin')
+const common = require('@constants/common')
 
 module.exports = class OrgAdmin {
 	/**
@@ -140,6 +141,26 @@ module.exports = class OrgAdmin {
 	async setDefaultQuestionSets(req) {
 		try {
 			return await orgAdminService.setDefaultQuestionSets(req.body, req.decodedToken)
+		} catch (error) {
+			return error
+		}
+	}
+
+	/**
+	 * Upload sample csv based on org id
+	 * @method
+	 * @name UploadSampleCsv
+	 * @param {String} req.body.file_path -Uploaded filr path .
+	 * @returns {Object} - uploaded file response.
+	 */
+
+	async uploadSampleCSV(req) {
+		try {
+			const updatePath = await orgAdminService.uploadSampleCSV(
+				req.body.file_path,
+				req.decodedToken.organization_id
+			)
+			return updatePath
 		} catch (error) {
 			return error
 		}

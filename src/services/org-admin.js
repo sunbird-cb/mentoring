@@ -13,8 +13,8 @@ const utils = require('@generics/utils')
 const _ = require('lodash')
 const questionSetQueries = require('../database/queries/question-set')
 const { Op } = require('sequelize')
-const user = require('@health-checks/user')
 const responses = require('@helpers/responses')
+const { getDefaultOrgId } = require('@helpers/getDefaultOrgId')
 
 module.exports = class OrgAdminService {
 	/**
@@ -586,5 +586,37 @@ module.exports = class OrgAdminService {
 		} catch (error) {
 			console.log(error)
 		}
+	}
+
+	static async uploadSampleCSV(filepath, orgId) {
+		const defaultOrgId = await getDefaultOrgId()
+		if (!defaultOrgId) {
+			return responses.failureResponse({
+				message: 'DEFAULT_ORG_ID_NOT_SET',
+				statusCode: httpStatusCode.bad_request,
+				responseCode: 'CLIENT_ERROR',
+			})
+		}
+
+		const newData = { uploads: { session_csv_path: filepath } }
+		if (orgId != defaultOrgId) {
+			let result = await organisationExtensionQueries.update(newData, orgId)
+			if (!result) {
+				return responses.failureResponse({
+					message: 'UPDATE_FAILED',
+					statusCode: httpStatusCode.bad_request,
+					responseCode: 'CLIENT_ERROR',
+				})
+			}
+			return responses.successResponse({
+				statusCode: httpStatusCode.ok,
+				message: 'CSV_UPLOADED_SUCCESSFULLY',
+			})
+		}
+		return responses.failureResponse({
+			message: 'UPLOAD_CSV_FAILED',
+			statusCode: httpStatusCode.bad_request,
+			responseCode: 'CLIENT_ERROR',
+		})
 	}
 }

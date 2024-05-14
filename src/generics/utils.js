@@ -11,6 +11,7 @@ const momentTimeZone = require('moment-timezone')
 const moment = require('moment')
 const path = require('path')
 const md5 = require('md5')
+const fs = require('fs')
 const { RedisCache, InternalCache } = require('elevate-node-cache')
 const startCase = require('lodash/startCase')
 const common = require('@constants/common')
@@ -152,8 +153,16 @@ function isNumeric(value) {
 function validateInput(input, validationData, modelName) {
 	const errors = []
 	for (const field of validationData) {
-		const fieldValue = input[field.value]
+		if (field.required === true && !input.hasOwnProperty(field.value)) {
+			errors.push({
+				param: field.value,
+				msg: `${field.value} is required but missing in the input data.`,
+			})
+		}
 
+		const fieldValue = input[field.value] // Get the value of the current field from the input data
+
+		// Check if the field is not allowed for the current model and has a value
 		if (modelName && !field.model_names.includes(modelName) && input[field.value]) {
 			errors.push({
 				param: field.value,
@@ -169,45 +178,64 @@ function validateInput(input, validationData, modelName) {
 		}
 
 		if (fieldValue !== undefined) {
-			const dataType = field.data_type
+			// Check if the field value is defined in the input data
+			const dataType = field.data_type // Get the data type of the field from validation data
 
 			switch (dataType) {
 				case 'ARRAY[STRING]':
 					if (Array.isArray(fieldValue)) {
 						fieldValue.forEach((element) => {
 							if (typeof element !== 'string') {
-								addError(field, element, dataType, 'It should be a string')
-							} else if (field.allow_custom_entities && /[^A-Za-z0-9\s_]/.test(element)) {
-								addError(
-									field,
-									element,
-									dataType,
-									'It should not contain special characters except underscore.'
-								)
+								addError(field.value, element, dataType, 'It should be a string')
+							} else if (field.allow_custom_entities) {
+								if (field.regex && !new RegExp(field.regex).test(element)) {
+									addError(
+										field.value,
+										element,
+										dataType,
+										`Does not match the required pattern: ${field.regex}`
+									)
+								} else if (!field.regex && /[^A-Za-z0-9\s_]/.test(element)) {
+									addError(
+										field.value,
+										element,
+										dataType,
+										'It should not contain special characters except underscore.'
+									)
+								}
 							}
 						})
 					} else {
-						addError(field, field.value, dataType, '')
+						addError(field.value, field.value, dataType, '')
 					}
 					break
 
 				case 'STRING':
 					if (typeof fieldValue !== 'string') {
-						addError(field, fieldValue, dataType, 'It should be a string')
-					} else if (field.allow_custom_entities && /[^A-Za-z0-9\s_]/.test(fieldValue)) {
-						addError(
-							field,
-							fieldValue,
-							dataType,
-							'It should not contain special characters except underscore.'
-						)
+						addError(field.value, fieldValue, dataType, 'It should be a string')
+					} else if (field.allow_custom_entities) {
+						if (field.regex && !new RegExp(field.regex).test(fieldValue)) {
+							addError(
+								field.value,
+								fieldValue,
+								dataType,
+								`Does not match the required pattern: ${field.regex}`
+							)
+						} else if (!field.regex && /[^A-Za-z0-9\s_]/.test(fieldValue)) {
+							addError(
+								field.value,
+								fieldValue,
+								dataType,
+								'It should not contain special characters except underscore.'
+							)
+						}
 					}
 					break
 
 				case 'NUMBER':
 					console.log('Type of', typeof fieldValue)
 					if (typeof fieldValue !== 'number') {
-						addError(field, fieldValue, dataType, '')
+						addError(field.value, fieldValue, dataType, '')
 					}
 					break
 
@@ -222,8 +250,10 @@ function validateInput(input, validationData, modelName) {
 		}
 
 		if (Array.isArray(fieldValue)) {
+			// Check if the field value is an array
 			for (const value of fieldValue) {
 				if (!field.entities.some((entity) => entity.value === value)) {
+					// Check if the value is a valid entity
 					errors.push({
 						param: field.value,
 						msg: `${value} is not a valid entity.`,
@@ -552,6 +582,59 @@ function validateFilters(input, validationData, modelName) {
 	return input
 }
 
+function extractFilename(fileString) {
+	const match = fileString.match(/([^/]+)(?=\.\w+$)/)
+	return match ? match[0] : null
+}
+
+const generateRedisConfigForQueue = () => {
+	const parseURL = new URL(process.env.REDIS_HOST)
+	return {
+		connection: {
+			host: parseURL.hostname,
+			port: parseURL.port,
+		},
+	}
+}
+
+const generateFileName = (name, extension) => {
+	const currentDate = new Date()
+	const fileExtensionWithTime = moment(currentDate).tz('Asia/Kolkata').format('YYYY_MM_DD_HH_mm') + extension
+	return name + fileExtensionWithTime
+}
+
+function generateCSVContent(data) {
+	if (data.length === 0) {
+		return 'No Data Found'
+	}
+
+	const headers = Object.keys(data[0])
+
+	const csvRows = data.map((row) => {
+		return headers
+			.map((fieldName) => {
+				const value = row[fieldName]
+				if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+					// Stringify object values and enclose them in double quotes
+					return '"' + JSON.stringify(value) + '"'
+				} else if (Array.isArray(value)) {
+					// Join array values with comma and space, and enclose them in double quotes
+					return '"' + value.join(', ') + '"'
+				} else {
+					return JSON.stringify(value)
+				}
+			})
+			.join(',')
+	})
+	return [headers.join(','), ...csvRows].join('\n')
+}
+
+const clearFile = (filePath) => {
+	fs.unlink(filePath, (err) => {
+		if (err) logger.error(err)
+	})
+}
+
 module.exports = {
 	hash: hash,
 	getCurrentMonthRange,
@@ -588,4 +671,9 @@ module.exports = {
 	generateWhereClause,
 	validateFilters,
 	processQueryParametersWithExclusions,
+	extractFilename,
+	generateRedisConfigForQueue,
+	generateFileName,
+	generateCSVContent,
+	clearFile,
 }
