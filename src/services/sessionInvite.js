@@ -297,9 +297,7 @@ module.exports = class UserInviteHelper {
 
 						if (!menteeId.result.id) {
 							session.mentees[i] = menteeEmail
-							session.status = 'Invalid'
 							session.statusMessage = 'Invalid Mentee Email'
-							invalidRowsCount++
 						} else {
 							session.mentees[i] = menteeId.result.id
 						}
@@ -350,7 +348,7 @@ module.exports = class UserInviteHelper {
 					}
 				} else if (session.action === 'Edit') {
 					if (session.session_id === '') {
-						session.statusMessage = 'Session ID is empty'
+						session.statusMessage = 'Mandatory fields Session ID not filled'
 						session.status = 'Invalid'
 						rowsWithStatus.push(session)
 					} else {
@@ -366,7 +364,7 @@ module.exports = class UserInviteHelper {
 					}
 				} else if (session.action === 'Delete') {
 					if (session.session_id === '') {
-						session.statusMessage = 'Session ID is empty'
+						session.statusMessage = 'Mandatory fields Session ID not filled'
 						session.status = 'Invalid'
 						rowsWithStatus.push(session)
 					} else {
@@ -487,7 +485,7 @@ module.exports = class UserInviteHelper {
 					'Meeting Link or Meeting ID': meetingLinkOrId,
 					'Meeting Passcode (if needed)': meetingPasscode,
 					Status: status,
-					//	'Status Message': statusMessage,
+					'Status Message': statusMessage,
 				}
 				OutputCSVData.push(mappedRow)
 			})
@@ -528,11 +526,12 @@ module.exports = class UserInviteHelper {
 					data.status = common.PUBLISHED_STATUS
 					const sessionCreation = await sessionService.create(data, userId, orgId, isMentor, notifyUser)
 					if (sessionCreation.statusCode === httpStatusCode.created) {
-						data.status = sessionCreation.message
+						data.statusMessage = sessionCreation.message
 						data.session_id = sessionCreation.result.id
 						output.push(data)
 					} else {
-						data.status = sessionCreation.message
+						data.status = 'Invalid'
+						data.statusMessage = sessionCreation.message
 						output.push(data)
 					}
 				} else if (data.action == 'Edit' || data.action == 'Delete') {
@@ -545,10 +544,11 @@ module.exports = class UserInviteHelper {
 						notifyUser
 					)
 					if (sessionUpdateOrDelete.statusCode === httpStatusCode.accepted) {
-						data.status = sessionUpdateOrDelete.message
+						data.statusMessage = sessionUpdateOrDelete.message
 						output.push(data)
 					} else {
-						data.status = sessionUpdateOrDelete.message
+						data.status = 'Invalid'
+						data.statusMessage = sessionUpdateOrDelete.message
 						output.push(data)
 					}
 				}
