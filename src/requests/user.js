@@ -131,7 +131,7 @@ const getListOfUserDetailsByEmail = function (emailIds) {
 
 		const apiUrl = userBaseUrl + endpoints.LIST_ACCOUNTS_BY_EMAIL
 		try {
-			await request.get(apiUrl, options, callback)
+			await request.post(apiUrl, options, callback)
 			function callback(err, data) {
 				if (err) {
 					reject({
