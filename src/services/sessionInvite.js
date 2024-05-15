@@ -230,7 +230,7 @@ module.exports = class UserInviteHelper {
 						parsedCSVData[parsedCSVData.length - 1].meeting_info.platform = 'BigBlueButton'
 					} else {
 						parsedCSVData[parsedCSVData.length - 1].status = 'Invalid'
-						parsedCSVData[parsedCSVData.length - 1].statusMessage = 'Invlaid Meeting Link'
+						parsedCSVData[parsedCSVData.length - 1].statusMessage += 'Invlaid Meeting Link'
 					}
 				})
 			}
@@ -264,32 +264,52 @@ module.exports = class UserInviteHelper {
 		]
 
 		const missingFields = requiredFields.filter((field) => !session[field])
-
+		session.statusMessage = ''
 		if (missingFields.length > 0) {
 			session.status = 'Invalid'
-			session.statusMessage = `Mandatory fields ${missingFields.join(', ')} not filled`
+			session.statusMessage += ` Mandatory fields ${missingFields.join(', ')} not filled`
 			invalidRowsCount++
 		} else {
 			if (session.meeting_info.platform !== 'BigBlueButton' && session.meeting_info.link === '') {
 				session.status = 'Invalid'
-				session.statusMessage = 'Meeting Link or ID is required for platforms other than Big Blue Button'
+				session.statusMessage += ' Meeting Link or ID is required for platforms other than Big Blue Button'
 				invalidRowsCount++
 			} else {
 				validRowsCount++
 				session.status = 'Valid'
-				const [day, month, year] = session.date.split('-')
-				const startDateTimeString = `${year}-${month}-${day}T${session.time24hrs}`
-				const start = startDateTimeString.replace(' Hrs', '')
-				if (session.time_zone == 'UTC') {
-					session.time_zone = '+00:00'
+				const currentDate = new Date()
+				const day = currentDate.getDate().toString().padStart(2, '0')
+				const month = (currentDate.getMonth() + 1).toString().padStart(2, '0')
+				const year = currentDate.getFullYear().toString()
+
+				const formattedDate = `${day}-${month}-${year}`
+				console.log('formattedDate', formattedDate)
+				if (session.date == formattedDate) {
+					const [day, month, year] = session.date.split('-')
+					const startDateTimeString = `${year}-${month}-${day}T${session.time24hrs}`
+					const start = startDateTimeString.replace(' Hrs', '')
+					if (session.time_zone == 'UTC') {
+						session.time_zone = '+00:00'
+					}
+					const momentStartDateTime = moment.tz(start, session.time_zone)
+					const currentEpochTime = Date.now()
+					const timeDiff = momentStartDateTime - currentEpochTime
+					if (timeDiff >= 0) {
+						session.start_date = momentStartDateTime.unix()
+						const momentEndDateTime = momentStartDateTime.add(session.duration, 'minutes')
+						session.end_date = momentEndDateTime.unix()
+						if (session.time_zone === '+00:00') {
+							session.time_zone = 'UTC'
+						}
+					} else {
+						session.status = 'Invalid'
+						session.statusMessage += ' Invalid Time'
+					}
+				} else {
+					session.status = 'Invalid'
+					session.statusMessage += 'Invalid Date'
 				}
-				const momentStartDateTime = moment.tz(start, session.time_zone)
-				session.start_date = momentStartDateTime.unix()
-				const momentEndDateTime = momentStartDateTime.add(session.duration, 'minutes')
-				session.end_date = momentEndDateTime.unix()
-				if (session.time_zone === '+00:00') {
-					session.time_zone = 'UTC'
-				}
+
 				if (session.mentees && Array.isArray(session.mentees)) {
 					for (let i = 0; i < session.mentees.length; i++) {
 						const menteeEmail = session.mentees[i].toLowerCase()
@@ -297,7 +317,7 @@ module.exports = class UserInviteHelper {
 
 						if (!menteeId.result.id) {
 							session.mentees[i] = menteeEmail
-							session.statusMessage = 'Invalid Mentee Email'
+							session.statusMessage += ' Invalid Mentee Email'
 						} else {
 							session.mentees[i] = menteeId.result.id
 						}
@@ -309,7 +329,7 @@ module.exports = class UserInviteHelper {
 
 				if (Array.isArray(mentorId.result) && mentorId.result.length === 0) {
 					session.status = 'Invalid'
-					session.statusMessage = 'Invalid Mentor Email'
+					session.statusMessage += 'Invalid Mentor Email'
 					invalidRowsCount++
 				} else {
 					session.mentor_id = mentorId.result.id
