@@ -2514,7 +2514,7 @@ module.exports = class SessionsHelper {
 					{ organization_id: orgId },
 					{ attributes: ['uploads'] }
 				)
-				if (result && result.uploads.session_csv_path) {
+				if (result && result.uploads) {
 					path = result.uploads.session_csv_path
 				}
 			}

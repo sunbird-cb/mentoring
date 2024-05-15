@@ -247,6 +247,7 @@ module.exports = class UserInviteHelper {
 	}
 
 	static async processSession(session, validRowsCount, invalidRowsCount) {
+		console.log('session', session)
 		const requiredFields = [
 			'action',
 			'title',
@@ -277,37 +278,22 @@ module.exports = class UserInviteHelper {
 			} else {
 				validRowsCount++
 				session.status = 'Valid'
-				const currentDate = new Date()
-				const day = currentDate.getDate().toString().padStart(2, '0')
-				const month = (currentDate.getMonth() + 1).toString().padStart(2, '0')
-				const year = currentDate.getFullYear().toString()
 
-				const formattedDate = `${day}-${month}-${year}`
-				console.log('formattedDate', formattedDate)
-				if (session.date == formattedDate) {
-					const [day, month, year] = session.date.split('-')
-					const startDateTimeString = `${year}-${month}-${day}T${session.time24hrs}`
-					const start = startDateTimeString.replace(' Hrs', '')
-					if (session.time_zone == 'UTC') {
-						session.time_zone = '+00:00'
-					}
-					const momentStartDateTime = moment.tz(start, session.time_zone)
-					const currentEpochTime = Date.now()
-					const timeDiff = momentStartDateTime - currentEpochTime
-					if (timeDiff >= 0) {
-						session.start_date = momentStartDateTime.unix()
-						const momentEndDateTime = momentStartDateTime.add(session.duration, 'minutes')
-						session.end_date = momentEndDateTime.unix()
-						if (session.time_zone === '+00:00') {
-							session.time_zone = 'UTC'
-						}
-					} else {
-						session.status = 'Invalid'
-						session.statusMessage += ' Invalid Time'
-					}
+				const { date, time_zone, time24hrs } = session
+
+				const time = time24hrs.replace(' Hrs', '')
+				const dateTimeString = date + ' ' + time
+				const momentFromJSON = moment.tz(dateTimeString, 'DD-MM-YYYY HH:mm', time_zone)
+
+				const currentMoment = moment().tz(time_zone)
+				const isDateValid = momentFromJSON.isSameOrAfter(currentMoment, 'day')
+				if (isDateValid) {
+					session.start_date = momentFromJSON.unix()
+					const momentEndDateTime = momentFromJSON.add(session.duration, 'minutes')
+					session.end_date = momentEndDateTime.unix()
 				} else {
 					session.status = 'Invalid'
-					session.statusMessage += 'Invalid Date'
+					session.statusMessage += ' Invalid Date AND Time'
 				}
 
 				if (session.mentees && Array.isArray(session.mentees)) {
