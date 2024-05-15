@@ -247,7 +247,6 @@ module.exports = class UserInviteHelper {
 	}
 
 	static async processSession(session, validRowsCount, invalidRowsCount) {
-		console.log('session', session)
 		const requiredFields = [
 			'action',
 			'title',
@@ -280,20 +279,25 @@ module.exports = class UserInviteHelper {
 				session.status = 'Valid'
 
 				const { date, time_zone, time24hrs } = session
-
 				const time = time24hrs.replace(' Hrs', '')
 				const dateTimeString = date + ' ' + time
-				const momentFromJSON = moment.tz(dateTimeString, 'DD-MM-YYYY HH:mm', time_zone)
-
-				const currentMoment = moment().tz(time_zone)
-				const isDateValid = momentFromJSON.isSameOrAfter(currentMoment, 'day')
+				const timeZone = time_zone == 'IST' ? 'Asia/Kolkata' : '+00:00'
+				const momentFromJSON = moment.tz(dateTimeString, 'DD-MM-YYYY HH:mm', timeZone)
+				const currentMoment = moment().tz(timeZone)
+				const isDateValid = momentFromJSON.isSame(currentMoment, 'day')
 				if (isDateValid) {
-					session.start_date = momentFromJSON.unix()
-					const momentEndDateTime = momentFromJSON.add(session.duration, 'minutes')
-					session.end_date = momentEndDateTime.unix()
+					const differenceTime = momentFromJSON.unix() - currentMoment.unix()
+					if (differenceTime >= 0) {
+						session.start_date = momentFromJSON.unix()
+						const momentEndDateTime = momentFromJSON.add(session.duration, 'minutes')
+						session.end_date = momentEndDateTime.unix()
+					} else {
+						session.status = 'Invalid'
+						session.statusMessage += ' Invalid Time'
+					}
 				} else {
 					session.status = 'Invalid'
-					session.statusMessage += ' Invalid Date AND Time'
+					session.statusMessage += ' Invalid Date'
 				}
 
 				if (session.mentees && Array.isArray(session.mentees)) {
@@ -315,7 +319,7 @@ module.exports = class UserInviteHelper {
 
 				if (Array.isArray(mentorId.result) && mentorId.result.length === 0) {
 					session.status = 'Invalid'
-					session.statusMessage += 'Invalid Mentor Email'
+					session.statusMessage += ' Invalid Mentor Email'
 					invalidRowsCount++
 				} else {
 					session.mentor_id = mentorId.result.id
@@ -349,12 +353,12 @@ module.exports = class UserInviteHelper {
 						rowsWithStatus.push(session)
 					} else {
 						session.status = 'Invalid'
-						session.statusMessage = 'Invalid Row Action'
+						session.statusMessage = ' Invalid Row Action'
 						rowsWithStatus.push(session)
 					}
 				} else if (session.action === 'Edit') {
 					if (session.session_id === '') {
-						session.statusMessage = 'Mandatory fields Session ID not filled'
+						session.statusMessage = ' Mandatory fields Session ID not filled'
 						session.status = 'Invalid'
 						rowsWithStatus.push(session)
 					} else {
@@ -370,7 +374,7 @@ module.exports = class UserInviteHelper {
 					}
 				} else if (session.action === 'Delete') {
 					if (session.session_id === '') {
-						session.statusMessage = 'Mandatory fields Session ID not filled'
+						session.statusMessage = ' Mandatory fields Session ID not filled'
 						session.status = 'Invalid'
 						rowsWithStatus.push(session)
 					} else {
@@ -387,7 +391,7 @@ module.exports = class UserInviteHelper {
 					}
 				} else {
 					session.status = 'Invalid'
-					session.statusMessage = 'Action is empty or wrong'
+					session.statusMessage = ' Action is empty or wrong'
 				}
 			}
 			const BodyDataArray = rowsWithStatus.map((item) => ({
