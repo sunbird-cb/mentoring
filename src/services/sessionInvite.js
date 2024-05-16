@@ -285,7 +285,7 @@ module.exports = class UserInviteHelper {
 				const timeZone = time_zone == common.TIMEZONE ? common.IST_TIMEZONE : common.UTC_TIMEZONE
 				const momentFromJSON = moment.tz(dateTimeString, common.CSV_DATE_FORMAT, timeZone)
 				const currentMoment = moment().tz(timeZone)
-				const isDateValid = momentFromJSON.isSame(currentMoment, 'day')
+				const isDateValid = momentFromJSON.isSameOrAfter(currentMoment, 'day')
 				if (isDateValid) {
 					const differenceTime = momentFromJSON.unix() - currentMoment.unix()
 					if (differenceTime >= 0) {
@@ -343,7 +343,7 @@ module.exports = class UserInviteHelper {
 			let invalidRowsCount = 0
 			for (const session of csvData) {
 				if (session.action === 'Create') {
-					if (session.session_id === '') {
+					if (!session.session_id) {
 						const { validRowsCount: valid, invalidRowsCount: invalid } = await this.processSession(
 							session,
 							validRowsCount,

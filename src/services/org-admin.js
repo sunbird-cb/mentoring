@@ -603,7 +603,7 @@ module.exports = class OrgAdminService {
 			let result = await organisationExtensionQueries.update(newData, orgId)
 			if (!result) {
 				return responses.failureResponse({
-					message: 'UPDATE_FAILED',
+					message: 'CSV_UPDATE_FAILED',
 					statusCode: httpStatusCode.bad_request,
 					responseCode: 'CLIENT_ERROR',
 				})
@@ -614,7 +614,7 @@ module.exports = class OrgAdminService {
 			})
 		}
 		return responses.failureResponse({
-			message: 'UPLOAD_CSV_FAILED',
+			message: 'CSV_UPDATE_FAILED',
 			statusCode: httpStatusCode.bad_request,
 			responseCode: 'CLIENT_ERROR',
 		})
