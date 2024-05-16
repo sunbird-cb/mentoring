@@ -16,7 +16,7 @@ module.exports = {
 
 		let notificationTemplateData = []
 		emailTemplates.forEach(async function (emailTemplate) {
-			emailTemplate['status'] = 'ACTIVE'
+			emailTemplate['status'] = 'active'
 			emailTemplate['type'] = 'email'
 			emailTemplate['updated_at'] = moment().format()
 			emailTemplate['created_at'] = moment().format()
