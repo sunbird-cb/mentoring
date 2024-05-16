@@ -165,5 +165,10 @@
 	"AVAILABILITY_UPDATED_SUCCESSFULLY": "Availability updated successfully",
 	"AVAILABILITY_DELETED_SUCCESSFULLY": "Availability deleted successfully",
 	"AVAILABILITIES_FETCHED": "Availability fetched successfully",
-	"ORG_POLICIES_SET_SUCCESSFULLY": "Org policies set successfully"
+	"ORG_POLICIES_SET_SUCCESSFULLY": "Org policies set successfully",
+	"SESSION_CSV_UPLOADED": "Bulk Session Creation CSV Uploaded Successfully",
+	"CSV_UPLOADED_SUCCESSFULLY": "Sample Session Creation CSV Uploaded Successfully",
+	"CSV_UPDATE_FAILED": "Sample Session Creation CSV Upload Failed",
+	"SESSION_CSV_UPLOADED_FAILED": "Bulk Session Creation CSV Upload Failed",
+	"CSV_ROW_LIMIT_EXCEEDED": "CSV row limit exceeded. Please reduce the number of rows in your CSV file."
 }
