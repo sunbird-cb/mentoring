@@ -281,8 +281,8 @@ module.exports = class UserInviteHelper {
 				const { date, time_zone, time24hrs } = session
 				const time = time24hrs.replace(' Hrs', '')
 				const dateTimeString = date + ' ' + time
-				const timeZone = time_zone == 'IST' ? 'Asia/Kolkata' : '+00:00'
-				const momentFromJSON = moment.tz(dateTimeString, 'DD-MM-YYYY HH:mm', timeZone)
+				const timeZone = time_zone == common.TIMEZONE ? common.IST_TIMEZONE : common.UTC_TIMEZONE
+				const momentFromJSON = moment.tz(dateTimeString, common.CSV_DATE_FORMAT, timeZone)
 				const currentMoment = moment().tz(timeZone)
 				const isDateValid = momentFromJSON.isSame(currentMoment, 'day')
 				if (isDateValid) {
