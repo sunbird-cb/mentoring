@@ -15,6 +15,7 @@ const { isAMentor } = require('@generics/utils')
 const ProjectRootDir = path.join(__dirname, '../')
 const fileUploadQueries = require('@database/queries/fileUpload')
 const notificationTemplateQueries = require('@database/queries/notificationTemplate')
+const kafkaCommunication = require('@generics/kafka-communication')
 const moment = require('moment')
 const inviteeFileDir = ProjectRootDir + common.tempFolderForBulkUpload
 
