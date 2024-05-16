@@ -184,7 +184,7 @@ module.exports = class SessionsHelper {
 			let sessionModel = await sessionQueries.getColumns()
 			bodyData = utils.restructureBody(bodyData, validationData, sessionModel)
 
-			if (!bodyData.meeting_info.link) {
+			if (!bodyData.meeting_info) {
 				bodyData.meeting_info = {
 					platform: process.env.DEFAULT_MEETING_SERVICE,
 					value: process.env.DEFAULT_MEETING_SERVICE,
@@ -2514,7 +2514,7 @@ module.exports = class SessionsHelper {
 					{ organization_id: orgId },
 					{ attributes: ['uploads'] }
 				)
-				if (result && result.uploads.session_csv_path) {
+				if (result && result.uploads) {
 					path = result.uploads.session_csv_path
 				}
 			}

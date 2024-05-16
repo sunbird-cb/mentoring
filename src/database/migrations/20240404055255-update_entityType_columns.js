@@ -15,7 +15,7 @@ module.exports = {
 		})
 
 		// Update the 'required' column for existing data to true
-		await queryInterface.sequelize.query('UPDATE entity_types SET required = true;')
+		await queryInterface.sequelize.query('UPDATE entity_types SET required = false;')
 	},
 	async down(queryInterface, Sequelize) {
 		// Remove the 'required' and 'regex' columns from the table

@@ -1,5 +1,6 @@
+require('module-alias/register')
 const fs = require('fs')
-require('dotenv').config({ path: './.env' })
+require('dotenv').config({ path: '../.env' })
 const path = require('path')
 const fileService = require('@services/files')
 const request = require('request')
@@ -26,7 +27,7 @@ const { getDefaultOrgId } = require('@helpers/getDefaultOrgId')
 		const uploadFileName = path.basename(uploadFilePath)
 
 		//get signed url
-		const getSignedUrl = await fileService.getSignedUrl(uploadFileName, '', uploadFolder)
+		const getSignedUrl = await fileService.getSignedUrl(uploadFileName, '', uploadFolder, false)
 
 		if (!getSignedUrl.result) {
 			throw new Error('FAILED_TO_GENERATE_SIGNED_URL')
@@ -53,7 +54,8 @@ const { getDefaultOrgId } = require('@helpers/getDefaultOrgId')
 				statusCode: httpStatusCode.bad_request,
 				responseCode: 'CLIENT_ERROR',
 			})
-		const data = { sample_csv_path: getSignedUrl.result.destFilePath }
+
+		const data = { uploads: { session_csv_path: getSignedUrl.result.destFilePath } }
 		const upadteCsvInOrgExtention = await organisationExtensionQueries.update(data, defaultOrgId)
 		if (upadteCsvInOrgExtention === 0) {
 			console.log('updating csv_path for default org_id failed')

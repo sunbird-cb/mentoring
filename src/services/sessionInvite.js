@@ -230,7 +230,7 @@ module.exports = class UserInviteHelper {
 						parsedCSVData[parsedCSVData.length - 1].meeting_info.platform = 'BigBlueButton'
 					} else {
 						parsedCSVData[parsedCSVData.length - 1].status = 'Invalid'
-						parsedCSVData[parsedCSVData.length - 1].statusMessage = 'Invlaid Meeting Link'
+						parsedCSVData[parsedCSVData.length - 1].statusMessage += 'Invlaid Meeting Link'
 					}
 				})
 			}
@@ -264,32 +264,42 @@ module.exports = class UserInviteHelper {
 		]
 
 		const missingFields = requiredFields.filter((field) => !session[field])
-
+		session.statusMessage = ''
 		if (missingFields.length > 0) {
 			session.status = 'Invalid'
-			session.statusMessage = `Mandatory fields ${missingFields.join(', ')} not filled`
+			session.statusMessage += ` Mandatory fields ${missingFields.join(', ')} not filled`
 			invalidRowsCount++
 		} else {
 			if (session.meeting_info.platform !== 'BigBlueButton' && session.meeting_info.link === '') {
 				session.status = 'Invalid'
-				session.statusMessage = 'Meeting Link or ID is required for platforms other than Big Blue Button'
+				session.statusMessage += ' Meeting Link or ID is required for platforms other than Big Blue Button'
 				invalidRowsCount++
 			} else {
 				validRowsCount++
 				session.status = 'Valid'
-				const [day, month, year] = session.date.split('-')
-				const startDateTimeString = `${year}-${month}-${day}T${session.time24hrs}`
-				const start = startDateTimeString.replace(' Hrs', '')
-				if (session.time_zone == 'UTC') {
-					session.time_zone = '+00:00'
+
+				const { date, time_zone, time24hrs } = session
+				const time = time24hrs.replace(' Hrs', '')
+				const dateTimeString = date + ' ' + time
+				const timeZone = time_zone == common.TIMEZONE ? common.IST_TIMEZONE : common.UTC_TIMEZONE
+				const momentFromJSON = moment.tz(dateTimeString, common.CSV_DATE_FORMAT, timeZone)
+				const currentMoment = moment().tz(timeZone)
+				const isDateValid = momentFromJSON.isSame(currentMoment, 'day')
+				if (isDateValid) {
+					const differenceTime = momentFromJSON.unix() - currentMoment.unix()
+					if (differenceTime >= 0) {
+						session.start_date = momentFromJSON.unix()
+						const momentEndDateTime = momentFromJSON.add(session.duration, 'minutes')
+						session.end_date = momentEndDateTime.unix()
+					} else {
+						session.status = 'Invalid'
+						session.statusMessage += ' Invalid Time'
+					}
+				} else {
+					session.status = 'Invalid'
+					session.statusMessage += ' Invalid Date'
 				}
-				const momentStartDateTime = moment.tz(start, session.time_zone)
-				session.start_date = momentStartDateTime.unix()
-				const momentEndDateTime = momentStartDateTime.add(session.duration, 'minutes')
-				session.end_date = momentEndDateTime.unix()
-				if (session.time_zone === '+00:00') {
-					session.time_zone = 'UTC'
-				}
+
 				if (session.mentees && Array.isArray(session.mentees)) {
 					for (let i = 0; i < session.mentees.length; i++) {
 						const menteeEmail = session.mentees[i].toLowerCase()
@@ -297,7 +307,7 @@ module.exports = class UserInviteHelper {
 
 						if (!menteeId.result.id) {
 							session.mentees[i] = menteeEmail
-							session.statusMessage = 'Invalid Mentee Email'
+							session.statusMessage += ' Invalid Mentee Email'
 						} else {
 							session.mentees[i] = menteeId.result.id
 						}
@@ -309,7 +319,7 @@ module.exports = class UserInviteHelper {
 
 				if (Array.isArray(mentorId.result) && mentorId.result.length === 0) {
 					session.status = 'Invalid'
-					session.statusMessage = 'Invalid Mentor Email'
+					session.statusMessage += ' Invalid Mentor Email'
 					invalidRowsCount++
 				} else {
 					session.mentor_id = mentorId.result.id
@@ -343,12 +353,12 @@ module.exports = class UserInviteHelper {
 						rowsWithStatus.push(session)
 					} else {
 						session.status = 'Invalid'
-						session.statusMessage = 'Invalid Row Action'
+						session.statusMessage = ' Invalid Row Action'
 						rowsWithStatus.push(session)
 					}
 				} else if (session.action === 'Edit') {
 					if (session.session_id === '') {
-						session.statusMessage = 'Mandatory fields Session ID not filled'
+						session.statusMessage = ' Mandatory fields Session ID not filled'
 						session.status = 'Invalid'
 						rowsWithStatus.push(session)
 					} else {
@@ -364,7 +374,7 @@ module.exports = class UserInviteHelper {
 					}
 				} else if (session.action === 'Delete') {
 					if (session.session_id === '') {
-						session.statusMessage = 'Mandatory fields Session ID not filled'
+						session.statusMessage = ' Mandatory fields Session ID not filled'
 						session.status = 'Invalid'
 						rowsWithStatus.push(session)
 					} else {
@@ -381,7 +391,7 @@ module.exports = class UserInviteHelper {
 					}
 				} else {
 					session.status = 'Invalid'
-					session.statusMessage = 'Action is empty or wrong'
+					session.statusMessage = ' Action is empty or wrong'
 				}
 			}
 			const BodyDataArray = rowsWithStatus.map((item) => ({
