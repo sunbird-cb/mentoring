@@ -10,7 +10,7 @@ module.exports = {
 			{
 				code: 'bulk_upload_session',
 				subject: 'Session Creation Bulk upload Status',
-				body: '<p>Dear {name},</p> Please find attached the status of your bulk upload activity for session creations.<a href={inviteeUploadURL}>link</a>',
+				body: '<p>Dear {name},</p> Please find attached the status of your bulk upload activity for session creations.',
 			},
 		]
 
