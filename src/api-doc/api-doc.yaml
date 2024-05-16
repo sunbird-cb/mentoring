@@ -1540,14 +1540,13 @@ paths:
   /mentoring/v1/sessions/update:
     post:
       summary: Create Session
-      tags:
-        - Session APIs
+      tags: []
       description: |-
         You can use this API to create a session 
          - The API Endpoint for creating a session is: `/mentoring/v1/sessions/update` 
          - It is mandatory to provide values for parameters marked with `required` 
          - Mandatory parameter cannot be empty or null.
-      parameters:
+      parameters: &ref_0
         - name: X-auth-token
           in: header
           description: >-
@@ -1714,7 +1713,7 @@ paths:
                       id: 1
                       created_at: 2023-09-20T11:56:42.257Z,
                       updated_at: '2023-09-20T11:56:42.412Z'
-        '400':
+        '400': &ref_1
           description: Bad Request. Create Session Error
           content:
             application.json:
@@ -5087,8 +5086,9 @@ paths:
       summary: Get entity type and organization filter
       tags:
         - Profile APIs
-      description: |-
-        To obtain the list of filters used in the mentee/mentor list, use this API.
+      description: >-
+        To obtain the list of filters used in the mentee/mentor list, use this
+        API.
          - The API Endpoint for get the filter is `/mentoring/v1/profile/filterList` 
          - It is mandatory to provide values for parameters which are marked as `required` 
          - This is a mandatory parameter and cannot be empty or null.
@@ -7739,7 +7739,7 @@ paths:
          - The API Endpoint for updating a Sample CSV is: `/mentoring/v1/org-admin/uploadSampleCSV` 
          - It is mandatory to provide values for parameters marked with `required` 
          - Mandatory parameter cannot be empty or null.
-      parameters:
+      parameters: *ref_0
       requestBody:
         content:
           application.json:
@@ -7835,19 +7835,20 @@ paths:
                           version: 0
                       correlation: 8d1d9ec0-68c4-4def-9dad-2cac06ed71a2
                       meetingPlatform: BBB
-        '400':
+        '400': *ref_1
   /mentoring/v1/sessions/getSampleCSV:
     post:
       summary: Get Sample CSV
       tags:
-        - Session APIs
+        - Sessions
       description: |-
         You can use this API to create a session 
          - The API Endpoint for get a Sample CSV is: `/mentoring/v1/sessions/getSampleCSV` 
          - It is mandatory to provide values for parameters marked with `required` 
          - Mandatory parameter cannot be empty or null.
-      parameters:
-      requestBody: {}
+      parameters: *ref_0
+      requestBody:
+        $ref: ''
       responses:
         '200':
           description: Uploaded
@@ -7934,18 +7935,18 @@ paths:
                           version: 0
                       correlation: b19561dd-ef26-4b24-9ed8-e3592ab52b39
                       meetingPlatform: BBB
-        '400':
+        '400': *ref_1
   /mentoring/v1/sessions/bulkSessionCreate:
     post:
       summary: Bulk Session Upload
       tags:
-        - Session APIs
+        - Sessions
       description: |-
         You can use this API to create a session 
          - The API Endpoint for creating bulk sessions is: `/mentoring/v1/sessions/bulkSessionCreate` 
          - It is mandatory to provide values for parameters marked with `required` 
          - Mandatory parameter cannot be empty or null.
-      parameters:
+      parameters: *ref_0
       requestBody:
         content:
           application/json:
@@ -8064,7 +8065,7 @@ paths:
                           version: 0
                       correlation: 110c2e7f-eaf1-43fb-a622-157296dd5090
                       meetingPlatform: BBB
-        '400':
+        '400': *ref_1
 components:
   schemas:
     form:
@@ -10397,10 +10398,10 @@ components:
         properties:
           responseCode:
             type: string
-            example: 'OK'
+            example: OK
           message:
             type: string
-            example: 'Filter list fetched successfully.'
+            example: Filter list fetched successfully.
           result:
             type: object
             properties:
@@ -10414,13 +10415,13 @@ components:
                       example: 24
                     name:
                       type: string
-                      example: 'Tunerlabs'
+                      example: Tunerlabs
                     code:
                       type: string
-                      example: 'tl'
+                      example: tl
                     description:
                       type: string
-                      example: 'Tunerlabs'
+                      example: Tunerlabs
               entity_types:
                 type: object
                 properties:
@@ -10428,7 +10429,6 @@ components:
                     type: array
                     items:
                       $ref: '#/components/schemas/users/FilterDesignation'
-
       FilterDesignation:
         type: object
         properties:
@@ -10437,10 +10437,10 @@ components:
             example: 5
           label:
             type: string
-            example: 'Designation'
+            example: Designation
           value:
             type: string
-            example: 'designation'
+            example: designation
           parent_id:
             type: integer
             nullable: true
@@ -10460,16 +10460,16 @@ components:
                   example: 5
                 value:
                   type: string
-                  example: 'beo'
+                  example: beo
                 label:
                   type: string
-                  example: 'Block education officer'
+                  example: Block education officer
                 status:
                   type: string
-                  example: 'ACTIVE'
+                  example: ACTIVE
                 type:
                   type: string
-                  example: 'SYSTEM'
+                  example: SYSTEM
                 created_by:
                   type: integer
                   example: 0
