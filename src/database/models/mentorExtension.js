@@ -32,7 +32,7 @@ module.exports = (sequelize, DataTypes) => {
 			configs: {
 				type: DataTypes.JSON,
 			},
-			visibility: {
+			mentor_visibility: {
 				type: DataTypes.STRING,
 			},
 			visible_to_organizations: {
@@ -53,6 +53,14 @@ module.exports = (sequelize, DataTypes) => {
 			organization_id: {
 				type: DataTypes.INTEGER,
 				allowNull: false,
+			},
+			external_mentee_visibility: {
+				type: DataTypes.STRING,
+				defaultValue: 'CURRENT',
+			},
+			mentee_visibility: {
+				type: DataTypes.STRING,
+				defaultValue: 'CURRENT',
 			},
 		},
 		{

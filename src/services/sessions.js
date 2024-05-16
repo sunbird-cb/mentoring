@@ -20,7 +20,7 @@ const { Op } = require('sequelize')
 const notificationQueries = require('@database/queries/notificationTemplate')
 
 const schedulerRequest = require('@requests/scheduler')
-
+const fileService = require('@services/files')
 const bigBlueButtonRequests = require('@requests/bigBlueButton')
 const userRequests = require('@requests/user')
 const utils = require('@generics/utils')
@@ -35,6 +35,14 @@ const entityTypeService = require('@services/entity-type')
 const mentorsService = require('./mentors')
 const { getEnrolledMentees } = require('@helpers/getEnrolledMentees')
 const responses = require('@helpers/responses')
+const path = require('path')
+const ProjectRootDir = path.join(__dirname, '../')
+const inviteeFileDir = ProjectRootDir + common.tempFolderForBulkUpload
+const fileUploadQueries = require('@database/queries/fileUpload')
+const { Queue } = require('bullmq')
+const fs = require('fs')
+const csv = require('csvtojson')
+const axios = require('axios')
 
 module.exports = class SessionsHelper {
 	/**
@@ -106,7 +114,7 @@ module.exports = class SessionsHelper {
 			// If time slot not available return corresponding error
 			if (timeSlot.isTimeSlotAvailable === false) {
 				const errorMessage = isSessionCreatedByManager
-					? 'INVALID_TIME_SELECTION_FOR_GIVEN_MENTOR'
+					? 'SESSION_CREATION_LIMIT_EXCEDED_FOR_GIVEN_MENTOR'
 					: { key: 'INVALID_TIME_SELECTION', interpolation: { sessionName: timeSlot.sessionName } }
 
 				return responses.failureResponse({
@@ -163,7 +171,7 @@ module.exports = class SessionsHelper {
 
 			//validationData = utils.removeParentEntityTypes(JSON.parse(JSON.stringify(validationData)))
 			const validationData = removeDefaultOrgEntityTypes(entityTypes, orgId)
-
+			bodyData.status = common.PUBLISHED_STATUS
 			let res = utils.validateInput(bodyData, validationData, sessionModelName)
 			if (!res.success) {
 				return responses.failureResponse({
@@ -176,14 +184,16 @@ module.exports = class SessionsHelper {
 			let sessionModel = await sessionQueries.getColumns()
 			bodyData = utils.restructureBody(bodyData, validationData, sessionModel)
 
-			bodyData.meeting_info = {
-				platform: process.env.DEFAULT_MEETING_SERVICE,
-				value: process.env.DEFAULT_MEETING_SERVICE,
-			}
-			if (process.env.DEFAULT_MEETING_SERVICE === common.BBB_VALUE) {
+			if (!bodyData.meeting_info) {
 				bodyData.meeting_info = {
-					platform: common.BBB_PLATFORM,
-					value: common.BBB_VALUE,
+					platform: process.env.DEFAULT_MEETING_SERVICE,
+					value: process.env.DEFAULT_MEETING_SERVICE,
+				}
+				if (process.env.DEFAULT_MEETING_SERVICE === common.BBB_VALUE) {
+					bodyData.meeting_info = {
+						platform: common.BBB_PLATFORM,
+						value: common.BBB_VALUE,
+					}
 				}
 			}
 
@@ -379,15 +389,16 @@ module.exports = class SessionsHelper {
 				userId = sessionDetail.mentor_id
 			}
 
-			let mentorExtension = await mentorExtensionQueries.getMentorExtension(userId)
-			if (!mentorExtension) {
-				return responses.failureResponse({
-					message: 'INVALID_PERMISSION',
-					statusCode: httpStatusCode.bad_request,
-					responseCode: 'CLIENT_ERROR',
-				})
+			if (method != common.DELETE_METHOD) {
+				let mentorExtension = await mentorExtensionQueries.getMentorExtension(userId)
+				if (!mentorExtension) {
+					return responses.failureResponse({
+						message: 'INVALID_PERMISSION',
+						statusCode: httpStatusCode.bad_request,
+						responseCode: 'CLIENT_ERROR',
+					})
+				}
 			}
-
 			let isEditingAllowedAtAnyTime = process.env.SESSION_EDIT_WINDOW_MINUTES == 0
 
 			const currentDate = moment.utc()
@@ -405,13 +416,19 @@ module.exports = class SessionsHelper {
 				})
 			}
 
-			const timeSlot = await this.isTimeSlotAvailable(userId, bodyData.start_date, bodyData.end_date, sessionId)
-			if (timeSlot.isTimeSlotAvailable === false) {
-				return responses.failureResponse({
-					message: { key: 'INVALID_TIME_SELECTION', interpolation: { sessionName: timeSlot.sessionName } },
-					statusCode: httpStatusCode.bad_request,
-					responseCode: 'CLIENT_ERROR',
-				})
+			if (method != common.DELETE_METHOD) {
+				//	const timeSlot = await this.isTimeSlotAvailable(userId, bodyData.start_date, bodyData.end_date, sessionId)
+				const timeSlot = true
+				if (timeSlot.isTimeSlotAvailable === false) {
+					return responses.failureResponse({
+						message: {
+							key: 'INVALID_TIME_SELECTION',
+							interpolation: { sessionName: timeSlot.sessionName },
+						},
+						statusCode: httpStatusCode.bad_request,
+						responseCode: 'CLIENT_ERROR',
+					})
+				}
 			}
 
 			const { getDefaultOrgId } = require('@helpers/getDefaultOrgId')
@@ -433,21 +450,24 @@ module.exports = class SessionsHelper {
 				model_names: { [Op.contains]: [sessionModelName] },
 			})
 
-			//validationData = utils.removeParentEntityTypes(JSON.parse(JSON.stringify(validationData)))
-			const validationData = removeDefaultOrgEntityTypes(entityTypes, orgId)
+			if (method != common.DELETE_METHOD) {
+				//validationData = utils.removeParentEntityTypes(JSON.parse(JSON.stringify(validationData)))
+				const validationData = removeDefaultOrgEntityTypes(entityTypes, orgId)
+				let res = utils.validateInput(bodyData, validationData, sessionModelName)
 
-			let res = utils.validateInput(bodyData, validationData, sessionModelName)
+				if (!res.success) {
+					return responses.failureResponse({
+						message: 'SESSION_CREATION_FAILED',
+						statusCode: httpStatusCode.bad_request,
+						responseCode: 'CLIENT_ERROR',
+						result: res.errors,
+					})
+				}
 
-			if (!res.success) {
-				return responses.failureResponse({
-					message: 'SESSION_CREATION_FAILED',
-					statusCode: httpStatusCode.bad_request,
-					responseCode: 'CLIENT_ERROR',
-					result: res.errors,
-				})
+				let sessionModel = await sessionQueries.getColumns()
+				bodyData = utils.restructureBody(bodyData, validationData, sessionModel)
 			}
-			let sessionModel = await sessionQueries.getColumns()
-			bodyData = utils.restructureBody(bodyData, validationData, sessionModel)
+
 			let isSessionDataChanged = false
 			let updatedSessionData = {}
 
@@ -1755,7 +1775,7 @@ module.exports = class SessionsHelper {
 	static async isTimeSlotAvailable(id, startDate, endDate, sessionId) {
 		try {
 			const sessions = await sessionQueries.getSessionByUserIdAndTime(id, startDate, endDate, sessionId)
-			if (!sessions) {
+			if (!sessions || sessions.startDateResponse.length < process.env.SESSION_CREATION_MENTOR_LIMIT) {
 				return true
 			}
 
@@ -2401,6 +2421,148 @@ module.exports = class SessionsHelper {
 		return {
 			menteesToRemove,
 			menteesToAdd,
+		}
+	}
+
+	/**
+	 * Bulk create users
+	 * @method
+	 * @name bulkUserCreate
+	 * @param {Array} users - user details.
+	 * @param {Object} tokenInformation - token details.
+	 * @returns {CSV} - created users.
+	 */
+
+	static async bulkSessionCreate(filePath, tokenInformation) {
+		try {
+			const { id, organization_id } = tokenInformation
+			const downloadCsv = await this.downloadCSV(filePath)
+			const csvData = await csv().fromFile(downloadCsv.result.downloadPath)
+
+			if (csvData.length > process.env.CSV_MAX_ROW) {
+				return responses.failureResponse({
+					message: 'CSV_ROW_LIMIT_EXCEEDED',
+					statusCode: httpStatusCode.bad_request,
+					responseCode: 'CLIENT_ERROR',
+				})
+			}
+			const creationData = {
+				name: utils.extractFilename(filePath),
+				input_path: filePath,
+				type: common.FILE_TYPE_CSV,
+				organization_id,
+				created_by: id,
+			}
+			const result = await fileUploadQueries.create(creationData)
+			if (!result?.id) {
+				return responses.successResponse({
+					responseCode: 'CLIENT_ERROR',
+					statusCode: httpStatusCode.bad_request,
+					message: 'SESSION_CSV_UPLOADED_FAILED',
+				})
+			}
+
+			const userDetail = await userRequests.details('', id)
+			//push to queue
+			const redisConfiguration = utils.generateRedisConfigForQueue()
+			const sessionQueue = new Queue(process.env.DEFAULT_QUEUE, redisConfiguration)
+			const session = await sessionQueue.add(
+				'upload_sessions',
+				{
+					fileDetails: result,
+					user: {
+						id,
+						name: userDetail.data.result.name,
+						email: userDetail.data.result.email,
+						organization_id,
+						org_name: userDetail.data.result.organization.name,
+					},
+				},
+				{
+					removeOnComplete: true,
+					attempts: common.NO_OF_ATTEMPTS,
+					backoff: {
+						type: 'fixed',
+						delay: common.BACK_OFF_RETRY_QUEUE, // Wait 10 min between attempts
+					},
+				}
+			)
+			return responses.successResponse({
+				statusCode: httpStatusCode.ok,
+				message: 'SESSION_CSV_UPLOADED',
+				result: result,
+			})
+		} catch (error) {
+			console.log(error)
+			throw error
+		}
+	}
+
+	static async getSampleCSV(orgId) {
+		try {
+			const defaultOrgId = await getDefaultOrgId()
+			if (!defaultOrgId) {
+				return responses.failureResponse({
+					message: 'DEFAULT_ORG_ID_NOT_SET',
+					statusCode: httpStatusCode.bad_request,
+					responseCode: 'CLIENT_ERROR',
+				})
+			}
+			let path = process.env.SAMPLE_CSV_FILE_PATH
+			if (orgId != defaultOrgId) {
+				const result = await organisationExtensionQueries.findOne(
+					{ organization_id: orgId },
+					{ attributes: ['uploads'] }
+				)
+				if (result && result.uploads) {
+					path = result.uploads.session_csv_path
+				}
+			}
+
+			const response = await fileService.getDownloadableUrl(path)
+			return response
+		} catch (error) {
+			throw error
+		}
+	}
+
+	static async downloadCSV(filePath) {
+		try {
+			const downloadableUrl = await fileService.getDownloadableUrl(filePath)
+			let fileName = path.basename(downloadableUrl.result)
+
+			// Find the index of the first occurrence of '?'
+			const index = fileName.indexOf('?')
+			// Extract the portion of the string before the '?' if it exists, otherwise use the entire string
+			fileName = index !== -1 ? fileName.substring(0, index) : fileName
+			const downloadPath = path.join(inviteeFileDir, fileName)
+			const response = await axios.get(downloadableUrl.result, {
+				responseType: common.responseType,
+			})
+
+			const writeStream = fs.createWriteStream(downloadPath)
+			response.data.pipe(writeStream)
+
+			await new Promise((resolve, reject) => {
+				writeStream.on('finish', resolve)
+				writeStream.on('error', (err) => {
+					reject(new Error('FAILED_TO_DOWNLOAD_FILE'))
+				})
+			})
+
+			return {
+				success: true,
+				result: {
+					destPath: inviteeFileDir,
+					fileName,
+					downloadPath,
+				},
+			}
+		} catch (error) {
+			return {
+				success: false,
+				message: error.message,
+			}
 		}
 	}
 }

@@ -180,10 +180,12 @@ module.exports = class MenteeExtensionQueries {
 					stats: null,
 					tags: [],
 					configs: null,
-					visibility: null,
+					mentor_visibility: null,
 					visible_to_organizations: [],
 					external_session_visibility: null,
 					external_mentor_visibility: null,
+					external_mentee_visibility: null,
+					mentee_visibility: null,
 					deleted_at: Date.now(),
 				},
 				{
@@ -245,7 +247,7 @@ module.exports = class MenteeExtensionQueries {
 			}
 
 			let projectionClause =
-				'user_id,meta,visibility,organization_id,designation,area_of_expertise,education_qualification'
+				'user_id,meta,mentee_visibility,organization_id,designation,area_of_expertise,education_qualification'
 
 			if (returnOnlyUserId) {
 				projectionClause = 'user_id'
