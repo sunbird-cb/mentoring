@@ -224,8 +224,8 @@ module.exports = class UserInviteHelper {
 					} else if (meetingPlatform.includes('WhatsApp')) {
 						parsedCSVData[parsedCSVData.length - 1].meeting_info.value = 'WhatsApp'
 					} else if (meetingPlatform.includes('Google Meet')) {
-						parsedCSVData[parsedCSVData.length - 1].meeting_info.value = 'Google Meet'
-						parsedCSVData[parsedCSVData.length - 1].meeting_info.platform = 'Gmeet'
+						parsedCSVData[parsedCSVData.length - 1].meeting_info.value = 'Gmeet'
+						parsedCSVData[parsedCSVData.length - 1].meeting_info.platform = 'Google Meet'
 					} else if (meetingPlatform.includes('Big Blue Button')) {
 						parsedCSVData[parsedCSVData.length - 1].meeting_info.value = 'BBB'
 						parsedCSVData[parsedCSVData.length - 1].meeting_info.platform = 'BigBlueButton'
@@ -553,6 +553,10 @@ module.exports = class UserInviteHelper {
 						output.push(data)
 					} else {
 						data.status = 'Invalid'
+						data.time_zone =
+							data.time_zone == common.IST_TIMEZONE
+								? (data.time_zone = common.TIMEZONE)
+								: (data.time_zone = common.TIMEZONE_UTC)
 						data.statusMessage = sessionCreation.message
 						output.push(data)
 					}
@@ -584,6 +588,10 @@ module.exports = class UserInviteHelper {
 						output.push(data)
 					} else {
 						data.status = 'Invalid'
+						data.time_zone =
+							data.time_zone == common.IST_TIMEZONE
+								? (data.time_zone = common.TIMEZONE)
+								: (data.time_zone = common.TIMEZONE_UTC)
 						data.statusMessage = sessionUpdateOrDelete.message
 						output.push(data)
 					}
