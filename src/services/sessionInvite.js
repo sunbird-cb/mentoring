@@ -535,10 +535,21 @@ module.exports = class UserInviteHelper {
 			if (data.status != 'Invalid') {
 				if (data.action == 'Create') {
 					data.status = common.PUBLISHED_STATUS
+					data.time_zone =
+						data.time_zone == common.TIMEZONE
+							? (data.time_zone = common.IST_TIMEZONE)
+							: (data.time_zone = common.UTC_TIMEZONE)
 					const sessionCreation = await sessionService.create(data, userId, orgId, isMentor, notifyUser)
 					if (sessionCreation.statusCode === httpStatusCode.created) {
 						data.statusMessage = sessionCreation.message
 						data.session_id = sessionCreation.result.id
+						data.recommended_for = sessionCreation.result.recommended_for.map((item) => item.label)
+						data.categories = sessionCreation.result.categories.map((item) => item.label)
+						data.medium = sessionCreation.result.medium.map((item) => item.label)
+						data.time_zone =
+							data.time_zone == common.IST_TIMEZONE
+								? (data.time_zone = common.TIMEZONE)
+								: (data.time_zone = common.TIMEZONE_UTC)
 						output.push(data)
 					} else {
 						data.status = 'Invalid'
@@ -546,6 +557,13 @@ module.exports = class UserInviteHelper {
 						output.push(data)
 					}
 				} else if (data.action == 'Edit' || data.action == 'Delete') {
+					data.time_zone =
+						data.time_zone == common.TIMEZONE
+							? (data.time_zone = common.IST_TIMEZONE)
+							: (data.time_zone = common.UTC_TIMEZONE)
+					const recommends = data.recommended_for
+					const categoriess = data.categories
+					const mediums = data.medium
 					const sessionUpdateOrDelete = await sessionService.update(
 						data.session_id,
 						data,
@@ -556,6 +574,13 @@ module.exports = class UserInviteHelper {
 					)
 					if (sessionUpdateOrDelete.statusCode === httpStatusCode.accepted) {
 						data.statusMessage = sessionUpdateOrDelete.message
+						data.recommended_for = recommends
+						data.categories = categoriess
+						data.medium = mediums
+						data.time_zone =
+							data.time_zone == common.IST_TIMEZONE
+								? (data.time_zone = common.TIMEZONE)
+								: (data.time_zone = common.TIMEZONE_UTC)
 						output.push(data)
 					} else {
 						data.status = 'Invalid'
