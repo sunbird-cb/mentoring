@@ -133,9 +133,11 @@ module.exports = {
 	azureBlobType: 'BlockBlob',
 	STATUS: { FAILED: 'FAILED', PROCESSED: 'PROCESSED', UPLOADED: 'UPLOADED' },
 	notificationEmailType: 'email',
-	IST_TIMEZONE: 'Asia/Kolkata',
+	IST_TIMEZONE: 'Asia/Calcutta',
 	UTC_TIMEZONE: '+00:00',
 	TIMEZONE: 'IST',
+	TIMEZONE_UTC: 'UTC',
+	VALID_STATUS: 'Valid',
 	CSV_DATE_FORMAT: 'DD-MM-YYYY HH:mm',
 	SESSION_TYPE: {
 		PUBLIC: 'PUBLIC',
