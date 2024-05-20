@@ -225,7 +225,7 @@ module.exports = class UserInviteHelper {
 						parsedCSVData[parsedCSVData.length - 1].meeting_info.value = 'WhatsApp'
 					} else if (meetingPlatform.includes('Google Meet')) {
 						parsedCSVData[parsedCSVData.length - 1].meeting_info.value = 'Gmeet'
-						parsedCSVData[parsedCSVData.length - 1].meeting_info.platform = 'Google Meet'
+						parsedCSVData[parsedCSVData.length - 1].meeting_info.platform = 'Google meet'
 					} else if (meetingPlatform.includes('Big Blue Button')) {
 						parsedCSVData[parsedCSVData.length - 1].meeting_info.value = 'BBB'
 						parsedCSVData[parsedCSVData.length - 1].meeting_info.platform = 'BigBlueButton'
