@@ -214,21 +214,22 @@ module.exports = class UserInviteHelper {
 						},
 					})
 
-					if (meetingPlatform.includes('Zoom')) {
-						parsedCSVData[parsedCSVData.length - 1].meeting_info.value = 'Zoom'
+					if (meetingPlatform.includes(common.MEETING_VALUES.ZOOM_MEET)) {
+						parsedCSVData[parsedCSVData.length - 1].meeting_info.value = common.MEETING_VALUES.ZOOM_MEET
 						const isNumeric = /^\d+$/.test(meetingLinkOrId)
 						if (isNumeric) {
 							parsedCSVData[parsedCSVData.length - 1].meeting_info.meta.meetingId = meetingLinkOrId
 							parsedCSVData[parsedCSVData.length - 1].meeting_info.meta.password = `"${meetingPasscode}"`
 						}
-					} else if (meetingPlatform.includes('WhatsApp')) {
-						parsedCSVData[parsedCSVData.length - 1].meeting_info.value = 'WhatsApp'
-					} else if (meetingPlatform.includes('Google Meet')) {
-						parsedCSVData[parsedCSVData.length - 1].meeting_info.value = 'Google Meet'
-						parsedCSVData[parsedCSVData.length - 1].meeting_info.platform = 'Gmeet'
-					} else if (meetingPlatform.includes('Big Blue Button')) {
-						parsedCSVData[parsedCSVData.length - 1].meeting_info.value = 'BBB'
-						parsedCSVData[parsedCSVData.length - 1].meeting_info.platform = 'BigBlueButton'
+					} else if (meetingPlatform.includes(common.MEETING_VALUES.WHATSAPP_MEET)) {
+						parsedCSVData[parsedCSVData.length - 1].meeting_info.value = common.MEETING_VALUES.WHATSAPP_MEET
+					} else if (meetingPlatform.includes(common.MEETING_VALUES.GOOGLE_MEET_VALUE)) {
+						parsedCSVData[parsedCSVData.length - 1].meeting_info.value = common.MEETING_VALUES.GOOGLE_VALUE
+						parsedCSVData[parsedCSVData.length - 1].meeting_info.platform =
+							common.MEETING_VALUES.GOOGLE_MEET
+					} else if (meetingPlatform.includes(common.MEETING_VALUES.BBB_PLATFORM_VALUE)) {
+						parsedCSVData[parsedCSVData.length - 1].meeting_info.value = common.BBB_VALUE
+						parsedCSVData[parsedCSVData.length - 1].meeting_info.platform = common.MEETING_VALUES.BBB_MEET
 					} else {
 						parsedCSVData[parsedCSVData.length - 1].status = 'Invalid'
 						parsedCSVData[parsedCSVData.length - 1].statusMessage += 'Invlaid Meeting Link'
@@ -271,7 +272,7 @@ module.exports = class UserInviteHelper {
 			session.statusMessage += ` Mandatory fields ${missingFields.join(', ')} not filled`
 			invalidRowsCount++
 		} else {
-			if (session.meeting_info.platform !== 'BigBlueButton' && session.meeting_info.link === '') {
+			if (session.meeting_info.platform !== common.MEETING_VALUES.BBB_MEET && session.meeting_info.link === '') {
 				session.status = 'Invalid'
 				session.statusMessage += ' Meeting Link or ID is required for platforms other than Big Blue Button'
 				invalidRowsCount++
@@ -342,7 +343,7 @@ module.exports = class UserInviteHelper {
 			let validRowsCount = 0
 			let invalidRowsCount = 0
 			for (const session of csvData) {
-				if (session.action === 'Create') {
+				if (session.action === common.ACTIONS.CREATE) {
 					if (!session.session_id) {
 						const { validRowsCount: valid, invalidRowsCount: invalid } = await this.processSession(
 							session,
@@ -357,7 +358,7 @@ module.exports = class UserInviteHelper {
 						session.statusMessage = ' Invalid Row Action'
 						rowsWithStatus.push(session)
 					}
-				} else if (session.action === 'Edit') {
+				} else if (session.action === common.ACTIONS.EDIT) {
 					if (session.session_id === '') {
 						session.statusMessage = ' Mandatory fields Session ID not filled'
 						session.status = 'Invalid'
@@ -373,7 +374,7 @@ module.exports = class UserInviteHelper {
 						session.method = 'POST'
 						rowsWithStatus.push(session)
 					}
-				} else if (session.action === 'Delete') {
+				} else if (session.action === common.ACTIONS.DELETE) {
 					if (session.session_id === '') {
 						session.statusMessage = ' Mandatory fields Session ID not filled'
 						session.status = 'Invalid'
@@ -473,7 +474,7 @@ module.exports = class UserInviteHelper {
 				const meetingPlatform = meeting_info.platform
 				const meetingLinkOrId = meeting_info.link
 				let meetingPasscode = ''
-				if (meetingPlatform == 'Zoom') {
+				if (meetingPlatform == common.MEETING_VALUES.ZOOM_MEET) {
 					meetingPasscode = meeting_info.meta.password ? meeting_info.meta.password.match(/\d+/)[0] : ''
 				}
 
@@ -533,19 +534,41 @@ module.exports = class UserInviteHelper {
 		const output = []
 		for (const data of dataArray) {
 			if (data.status != 'Invalid') {
-				if (data.action == 'Create') {
+				if (data.action == common.ACTIONS.CREATE) {
 					data.status = common.PUBLISHED_STATUS
+					data.time_zone =
+						data.time_zone == common.TIMEZONE
+							? (data.time_zone = common.IST_TIMEZONE)
+							: (data.time_zone = common.UTC_TIMEZONE)
 					const sessionCreation = await sessionService.create(data, userId, orgId, isMentor, notifyUser)
 					if (sessionCreation.statusCode === httpStatusCode.created) {
 						data.statusMessage = sessionCreation.message
 						data.session_id = sessionCreation.result.id
+						data.recommended_for = sessionCreation.result.recommended_for.map((item) => item.label)
+						data.categories = sessionCreation.result.categories.map((item) => item.label)
+						data.medium = sessionCreation.result.medium.map((item) => item.label)
+						data.time_zone =
+							data.time_zone == common.IST_TIMEZONE
+								? (data.time_zone = common.TIMEZONE)
+								: (data.time_zone = common.TIMEZONE_UTC)
 						output.push(data)
 					} else {
 						data.status = 'Invalid'
+						data.time_zone =
+							data.time_zone == common.IST_TIMEZONE
+								? (data.time_zone = common.TIMEZONE)
+								: (data.time_zone = common.TIMEZONE_UTC)
 						data.statusMessage = sessionCreation.message
 						output.push(data)
 					}
-				} else if (data.action == 'Edit' || data.action == 'Delete') {
+				} else if (data.action == common.ACTIONS.EDIT || data.action == common.ACTIONS.DELETE) {
+					data.time_zone =
+						data.time_zone == common.TIMEZONE
+							? (data.time_zone = common.IST_TIMEZONE)
+							: (data.time_zone = common.UTC_TIMEZONE)
+					const recommends = data.recommended_for
+					const categoriess = data.categories
+					const mediums = data.medium
 					const sessionUpdateOrDelete = await sessionService.update(
 						data.session_id,
 						data,
@@ -556,9 +579,20 @@ module.exports = class UserInviteHelper {
 					)
 					if (sessionUpdateOrDelete.statusCode === httpStatusCode.accepted) {
 						data.statusMessage = sessionUpdateOrDelete.message
+						data.recommended_for = recommends
+						data.categories = categoriess
+						data.medium = mediums
+						data.time_zone =
+							data.time_zone == common.IST_TIMEZONE
+								? (data.time_zone = common.TIMEZONE)
+								: (data.time_zone = common.TIMEZONE_UTC)
 						output.push(data)
 					} else {
 						data.status = 'Invalid'
+						data.time_zone =
+							data.time_zone == common.IST_TIMEZONE
+								? (data.time_zone = common.TIMEZONE)
+								: (data.time_zone = common.TIMEZONE_UTC)
 						data.statusMessage = sessionUpdateOrDelete.message
 						output.push(data)
 					}

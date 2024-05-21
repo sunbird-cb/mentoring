@@ -452,6 +452,9 @@ module.exports = class SessionsHelper {
 
 			if (method != common.DELETE_METHOD) {
 				//validationData = utils.removeParentEntityTypes(JSON.parse(JSON.stringify(validationData)))
+				if (bodyData.status == common.VALID_STATUS) {
+					bodyData.status = sessionDetail.status
+				}
 				const validationData = removeDefaultOrgEntityTypes(entityTypes, orgId)
 				let res = utils.validateInput(bodyData, validationData, sessionModelName)
 

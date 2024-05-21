@@ -30,7 +30,7 @@ module.exports = class UserHelper {
 				})
 			} else if (userType == common.MENTOR_ROLE) {
 				extensionDetails = await mentorQueries.getMentorsByUserIds(ids, {
-					attributes: ['user_id', 'rating', 'visibility', 'organization_id'],
+					attributes: ['user_id', 'rating', 'mentor_visibility', 'organization_id'],
 				})
 				// Inside your function
 				extensionDetails = extensionDetails.filter((item) => item.mentor_visibility && item.organization_id)
