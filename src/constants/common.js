@@ -138,6 +138,16 @@ module.exports = {
 	TIMEZONE: 'IST',
 	TIMEZONE_UTC: 'UTC',
 	VALID_STATUS: 'Valid',
+	MEETING_VALUES: {
+		GOOGLE_MEET: 'Google meet',
+		ZOOM_MEET: 'Zoom',
+		BBB_MEET: 'BigBlueButton',
+		WHATSAPP_MEET: 'WhatsApp',
+		GOOGLE_VALUE: 'Gmeet',
+		BBB_PLATFORM_VALUE: 'Big Blue Button',
+		GOOGLE_MEET_VALUE: 'Google Meet',
+	},
+	ACTIONS: { CREATE: 'Create', EDIT: 'Edit', DELETE: 'Delete' },
 	CSV_DATE_FORMAT: 'DD-MM-YYYY HH:mm',
 	SESSION_TYPE: {
 		PUBLIC: 'PUBLIC',
