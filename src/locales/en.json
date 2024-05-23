@@ -170,6 +170,6 @@
 	"CSV_UPLOADED_SUCCESSFULLY": "Sample Session Creation CSV Uploaded Successfully",
 	"CSV_UPDATE_FAILED": "Sample Session Creation CSV Upload Failed",
 	"SESSION_CSV_UPLOADED_FAILED": "Bulk Session Creation CSV Upload Failed",
-	"CSV_ROW_LIMIT_EXCEEDED": "You can only upload 20 sessions at a time",
+	"CSV_ROW_LIMIT_EXCEEDED": "The CSV file exceeds the maximum allowed rows of ",
 	"EMPTY_CSV": "No data found"
 }

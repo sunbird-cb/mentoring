@@ -2443,7 +2443,7 @@ module.exports = class SessionsHelper {
 			const csvData = await csv().fromFile(downloadCsv.result.downloadPath)
 
 			if (csvData.length === 0 || csvData.length > process.env.CSV_MAX_ROW) {
-				const messages = csvData.length === 0 ? 'EMPTY_CSV' : 'CSV_ROW_LIMIT_EXCEEDED'
+				const messages = csvData.length === 0 ? 'EMPTY_CSV' : 'CSV_ROW_LIMIT_EXCEEDED' + process.env.CSV_MAX_ROW
 				return responses.failureResponse({
 					message: messages,
 					statusCode: httpStatusCode.bad_request,
