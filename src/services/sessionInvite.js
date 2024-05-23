@@ -265,7 +265,9 @@ module.exports = class UserInviteHelper {
 			'meeting_info',
 		]
 
-		const missingFields = requiredFields.filter((field) => !session[field])
+		const missingFields = requiredFields.filter(
+			(field) => !session[field] || (Array.isArray(session[field]) && session[field].length === 0)
+		)
 		session.statusMessage = ''
 		if (missingFields.length > 0) {
 			session.status = 'Invalid'
@@ -309,7 +311,7 @@ module.exports = class UserInviteHelper {
 
 						if (!menteeId.result.id) {
 							session.mentees[i] = menteeEmail
-							session.statusMessage += ' Invalid Mentee Email'
+							session.statusMessage += ' Mentee Details are incorrect'
 						} else {
 							session.mentees[i] = menteeId.result.id
 						}
@@ -325,6 +327,13 @@ module.exports = class UserInviteHelper {
 					invalidRowsCount++
 				} else {
 					session.mentor_id = mentorId.result.id
+				}
+				if (
+					session.type == common.SESSION_TYPE.PRIVATE &&
+					!session.mentees.some((item) => typeof item === 'number')
+				) {
+					session.status = 'Invalid'
+					session.statusMessage += ' Mentee Details are incorrect '
 				}
 
 				if (session.meeting_info.link === '{}') {
@@ -343,7 +352,7 @@ module.exports = class UserInviteHelper {
 			let validRowsCount = 0
 			let invalidRowsCount = 0
 			for (const session of csvData) {
-				if (session.action === common.ACTIONS.CREATE) {
+				if (session.action.replace(/\s+/g, '').toLowerCase() === common.ACTIONS.CREATE) {
 					if (!session.session_id) {
 						const { validRowsCount: valid, invalidRowsCount: invalid } = await this.processSession(
 							session,
@@ -355,12 +364,12 @@ module.exports = class UserInviteHelper {
 						rowsWithStatus.push(session)
 					} else {
 						session.status = 'Invalid'
-						session.statusMessage = ' Invalid Row Action'
+						session.statusMessage = ' Session ID should be empty'
 						rowsWithStatus.push(session)
 					}
-				} else if (session.action === common.ACTIONS.EDIT) {
-					if (session.session_id === '') {
-						session.statusMessage = ' Mandatory fields Session ID not filled'
+				} else if (session.action.replace(/\s+/g, '').toLowerCase() === common.ACTIONS.EDIT) {
+					if (typeof session.session_id === 'string' || !session.session_id) {
+						session.statusMessage = ' Session ID not filled'
 						session.status = 'Invalid'
 						rowsWithStatus.push(session)
 					} else {
@@ -374,9 +383,9 @@ module.exports = class UserInviteHelper {
 						session.method = 'POST'
 						rowsWithStatus.push(session)
 					}
-				} else if (session.action === common.ACTIONS.DELETE) {
-					if (session.session_id === '') {
-						session.statusMessage = ' Mandatory fields Session ID not filled'
+				} else if (session.action.replace(/\s+/g, '').toLowerCase() === common.ACTIONS.DELETE) {
+					if (!session.session_id) {
+						session.statusMessage = ' Session ID not filled'
 						session.status = 'Invalid'
 						rowsWithStatus.push(session)
 					} else {
@@ -393,7 +402,7 @@ module.exports = class UserInviteHelper {
 					}
 				} else {
 					session.status = 'Invalid'
-					session.statusMessage = ' Action is empty or wrong'
+					session.statusMessage = ' Action is Empty/Wrong'
 				}
 			}
 			const BodyDataArray = rowsWithStatus.map((item) => ({
