@@ -141,13 +141,13 @@ module.exports = {
 	MEETING_VALUES: {
 		GOOGLE_MEET: 'Google meet',
 		ZOOM_MEET: 'Zoom',
-		BBB_MEET: 'BigBlueButton',
+		BBB_MEET: 'BigBlueButton (Default)',
 		WHATSAPP_MEET: 'WhatsApp',
 		GOOGLE_VALUE: 'Gmeet',
 		BBB_PLATFORM_VALUE: 'Big Blue Button',
 		GOOGLE_MEET_VALUE: 'Google Meet',
 	},
-	ACTIONS: { CREATE: 'Create', EDIT: 'Edit', DELETE: 'Delete' },
+	ACTIONS: { CREATE: 'create', EDIT: 'edit', DELETE: 'delete' },
 	CSV_DATE_FORMAT: 'DD-MM-YYYY HH:mm',
 	SESSION_TYPE: {
 		PUBLIC: 'PUBLIC',
