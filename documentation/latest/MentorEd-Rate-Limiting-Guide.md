@@ -1,8 +1,8 @@
-# Developer Guide: Elevate Rate-Limiting Overview
+# Developer Guide: Rate-Limiting Overview
 
 ## Introduction
 
-Elevate Rate-Limiting aims to efficiently manage the flow of requests to our services and prevent misuse. It employs the express-rate-limit middleware and is primarily enforced at the interface service level, serving as the gateway to all our services. This guide provides detailed instructions and necessary configurations for integrating rate limiters in the development environment.
+Rate-Limiting aims to efficiently manage the flow of requests to our services and prevent misuse. It employs the express-rate-limit middleware and is primarily enforced at the interface service level, serving as the gateway to all our services. This guide provides detailed instructions and necessary configurations for integrating rate limiters in the development environment.
 
 ## Rate Limiting Strategy
 
