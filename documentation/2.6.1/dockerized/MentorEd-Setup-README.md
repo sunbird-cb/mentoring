@@ -1,10 +1,16 @@
-## Dockerized Services & Dependencies
+## Dockerized Services and Dependencies
 
-Expectation: Upon following the prescribed steps, you will achieve a fully operational MentorEd application setup, complete with both the portal and backend services.
+Expectation: Upon following the prescribed steps, you will achieve a fully operational Mentor application setup, complete with both the portal and backend services.
 
 ## Prerequisites
 
-To set up the MentorEd application, ensure you have Docker and Docker Compose installed on your system. For Ubuntu users, detailed installation instructions for both can be found in the documentation here: [How To Install and Use Docker Compose on Ubuntu](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-compose-on-ubuntu-20-04). For Windows and MacOS users, you can refer to the Docker documentation for installation instructions: [Docker Compose Installation Guide](https://docs.docker.com/compose/install/). Once these prerequisites are in place, you're all set to get started with setting up the MentorEd application.
+To set up the application, you must install Docker and Docker Compose on your system using any one of the following ways:
+ 
+* Ubuntu users can refer to [How To Install and Use Docker Compose on Ubuntu](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-compose-on-ubuntu-20-04) for detailed installation instructions. 
+
+* Windows and MacOS users can refer to the [Docker Compose Installation Guide](https://docs.docker.com/compose/install/) for the installation instructions.
+
+Once these prerequisites are in place, you're all set to get started with setting up the application.
 
 ## Installation
 
@@ -18,7 +24,7 @@ To set up the MentorEd application, ensure you have Docker and Docker Compose in
     curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/master/documentation/2.6.1/dockerized/docker-compose-mentoring.yml
     ```
 
-    > Note: All commands are run from the mentoring directory.
+    > **Note:** Run all the commands from the mentoring directory.
 
     Directory structure:
 
@@ -53,9 +59,9 @@ To set up the MentorEd application, ensure you have Docker and Docker Compose in
 
     > **Note:** Modify the environment files as necessary for your deployment using any text editor, ensuring that the values are appropriate for your environment. The default values provided in the current files are functional and serve as a good starting point. Refer to the sample env files provided at the [Mentoring](https://github.com/ELEVATE-Project/mentoring/blob/master/src/.env.sample), [User](https://github.com/ELEVATE-Project/user/blob/master/src/.env.sample), [Notification](https://github.com/ELEVATE-Project/notification/blob/master/src/.env.sample), [Scheduler](https://github.com/ELEVATE-Project/scheduler/blob/master/src/.env.sample), and [Interface](https://github.com/ELEVATE-Project/interface-service/blob/main/src/.env.sample) repositories for reference.
 
-    > **Caution:** While the default values in the downloaded environment files enable the MentorEd Application to operate, certain features may not function correctly or could be impaired unless the adopter-specific environment variables are properly configured.
+    > **Caution:** While the default values in the downloaded environment files enable the application to operate, certain features may not function correctly or could be impaired unless the adopter-specific environment variables are properly configured.
     >
-    > For detailed instructions on adjusting these values, please consult the **[MentorEd Environment Variable Modification Guide](https://github.com/ELEVATE-Project/mentoring/blob/master/documentation/2.6.1/MentorEd-Env-Modification-README.md)**.
+    > For detailed instructions on adjusting these values, please consult the **[Environment Variable Modification Guide](https://github.com/ELEVATE-Project/mentoring/blob/master/documentation/2.6.1/MentorEd-Env-Modification-README.md)**.
 
     > **Important:** As mentioned in the above linked document, the **User SignUp** functionality may be compromised if key environment variables are not set correctly during deployment. If you opt to skip this setup, consider using the sample user account generator detailed in the `Sample User Accounts Generation` section of this document.
 
@@ -98,7 +104,7 @@ To set up the MentorEd application, ensure you have Docker and Docker Compose in
         >
         > \- /home/joffin/elevate/backend/environment.ts:/app/src/environments/environment.ts
 
-6.  **Download `docker-compose-up` & `docker-compose-down` Script Files**
+6.  **Download `docker-compose-up` and `docker-compose-down` Script Files**
 
     -   **Ubuntu/Linux/Mac**
 
@@ -132,7 +138,7 @@ To set up the MentorEd application, ensure you have Docker and Docker Compose in
         curl -OJL https://github.com/ELEVATE-Project/mentoring/raw/master/documentation/2.6.1/dockerized/scripts/windows/docker-compose-down.bat
         ```
 
-7.  **Run All Services & Dependencies:** All services and dependencies can be started using the `docker-compose-up` script file.
+7.  **Run All Services and Dependencies:** All services and dependencies can be started using the `docker-compose-up` script file.
 
     -   **Ubuntu/Linux/Mac**
         ```
@@ -148,9 +154,9 @@ To set up the MentorEd application, ensure you have Docker and Docker Compose in
 
         > **Note**: During the first Docker Compose run, the database, migration seeder files, and the script to set the default organization will be executed automatically.
 
-8.  **Access The MentorEd Application**: Once the services are up and the front-end app bundle is built successfully, navigate to **[localhost:8100](http://localhost:8100/)** to access the MentorEd app.
-9.  **Gracefully Stop All Services & Dependencies:** All containers which are part of the docker-compose can be gracefully stopped by pressing `Ctrl + c` in the same terminal where the services are running.
-10. **Remove All Service & Dependency Containers**: All docker containers can be stopped and removed by using the `docker-compose-down` file.
+8.  **Access The Application**: Once the services are up and the front-end app bundle is built successfully, navigate to **[localhost:8100](http://localhost:8100/)** to access the application.
+9.  **Gracefully Stop All Services and Dependencies:** All containers which are part of the docker-compose can be gracefully stopped by pressing `Ctrl + c` in the same terminal where the services are running.
+10. **Remove All Service and Dependency Containers**: All docker containers can be stopped and removed by using the `docker-compose-down` file.
 
     -   **Ubuntu/Linux/Mac**
         ```
@@ -166,11 +172,11 @@ To set up the MentorEd application, ensure you have Docker and Docker Compose in
 
 ## Enable Citus Extension
 
-MentorEd relies on PostgreSQL as its core database system. To boost performance and scalability, users can opt to enable the Citus extension. This transforms PostgreSQL into a distributed database, spreading data across multiple nodes to handle large datasets more efficiently as demand grows.
+The application relies on PostgreSQL as its core database system. To boost performance and scalability, users can opt to enable the Citus extension. This transforms PostgreSQL into a distributed database, spreading data across multiple nodes to handle large datasets more efficiently as demand grows.
 
 For more information, refer **[Citus Data](https://www.citusdata.com/)**.
 
-To enable the Citus extension for mentoring and user services, follow these steps.
+To enable the Citus extension for Mentor and User services, follow these steps.
 
 1. Create a sub-directory named `mentoring` and download `distributionColumns.sql` into it.
     ```
@@ -255,9 +261,9 @@ By implementing these adjustments, the configuration ensures that when the `dock
 
 ## Sample User Accounts Generation
 
-During the initial setup of MentorEd services with the default configuration, you may encounter issues creating new accounts through the regular SignUp flow on the MentorEd portal. This typically occurs because the default SignUp process includes OTP verification to prevent abuse. Until the notification service is configured correctly to send actual emails, you will not be able to create new accounts.
+During the initial setup of Mentor services with the default configuration, you may encounter issues creating new accounts through the regular Signup flow on the Mentor portal. This typically occurs because the default SignUp process includes OTP verification to prevent abuse. Until the notification service is configured correctly to send actual emails, you will not be able to create new accounts.
 
-In such cases, you can generate sample user accounts using the steps below. This allows you to explore the MentorEd services and portal immediately after setup.
+In such cases, you can generate sample user accounts using the steps below. This allows you to explore the services and portal immediately after setup.
 
 > **Warning:** Use this generator only immediately after the initial system setup and before any normal user accounts are created through the portal. It should not be used under any circumstances thereafter.
 
