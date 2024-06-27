@@ -1,16 +1,20 @@
-# MentorEd Environment Variable Modification Guide
+# Environment Variable Modification Guide
 
 ## Overview
 
-The existing MentorEd documentation and setup guides include a set of environment files with default environment variables. These serve as an excellent starting point for any deployment and offer a fully operational MentorEd application for you to explore. However, as expected, certain features may be impaired without replacing the default environment variables with adopter-specific values. For example, variables related to notification email services and cloud file upload.
+The existing documentation and setup guides include a set of environment files with default environment variables. These serve as an excellent starting point for any deployment and offer a fully operational Mentor application for you to explore. 
 
-This document acts as a reference for such functionalities/features and their related environment variables.
+However, as expected, certain features may be impaired without replacing the default environment variables with adopter-specific values. For example, variables related to notification email services and cloud file upload.
+
+This document acts as a reference for such functionalities or features and their related environment variables.
 
 ## Affected Features
 
-1. **User SignUp**
+1. **User Signup**
 
-    Since an email with an OTP code is sent to verify the email ID provided during the signup process, the notification service environment variables must be configured with real values sourced from an email service. Currently, MentorEd's notification service natively supports Sendgrid as the default email service. Therefore, the following environment variables must be set for this feature to function properly.
+    Since an email with an OTP code is sent to verify the email ID provided during the signup process, the Notification service environment variables must be configured with real values sourced from an email service. 
+    
+    Currently, the Notification service natively supports [Twilio® SendGrid](https://sendgrid.com/en-us) as the default email service. Therefore, the following environment variables must be set for this feature to function properly.
 
     ### Notification Service
 
@@ -25,17 +29,13 @@ This document acts as a reference for such functionalities/features and their re
     SENDGRID_FROM_EMAIL
     ```
 
-    > **Note:** If the **APPLICATION_ENV** in the user service is set to "**development**," the OTP code will be logged in the console. This feature might be advantageous in a local setup as it bypasses the need for a Sendgrid account. Logging is disabled in production environments (**APPLICATION_ENV=production**).
-
-    ### Relevant Resources
-
-    1. [Twilio SendGrid](https://sendgrid.com/en-us)
+    > **Note:** If the **APPLICATION_ENV** in the User service is set to "**development**," the OTP code will be logged in the console. This feature might be advantageous in a local setup as it bypasses the need for a Sendgrid account. Logging is disabled in production environments (**APPLICATION_ENV=production**).
 
 2. **File Upload**
 
-    MentorEd utilises file upload functionality to implement several features like profile and session image upload, bulk user creation and bulk session creation. Therefore it is expected that you have a bucket configured with a cloud provider of your choosing (AWS, GCP, AZURE or OCI). And relevant environment fields are set in the following services.
+    The application utilizes file upload functionality to implement several features like profile and session image upload, bulk user creation and bulk session creation. Therefore, it is expected that you have a bucket configured with a cloud provider of your choosing (AWS, GCP, AZURE, or OCI). And relevant environment fields are set in the following services.
 
-    ### Mentoring & User Services
+    ### Mentor and User Services
 
     **Docker Setup:** `mentoring_env`, `user_env`
 
@@ -80,17 +80,17 @@ This document acts as a reference for such functionalities/features and their re
 
 3. **Support Emails**
 
-    MentorEd provides a mechanism for users to generate request emails that are sent to a support team overseeing user requests. For example, if a user wants to delete their account or report an issue, they can trigger an email with their request message from the portal.
+    The application provides a mechanism for users to generate request emails that are sent to a support team overseeing user requests. For example, if a user wants to delete their account or report an issue, they can trigger an email with their request message from the portal.
 
     <div style="text-align: left; width: 100%;">
-        <h4 style="text-align: left;">MentorEd Report Issue Help Page</h4>
+        <h4 style="text-align: left;">Report Issue Help Page</h4>
         <img src="../../public/images/help_report_issue.png" alt="MentorEd Report Issue Help Page" 
             style="max-width: 100%; height: auto; width: auto; max-height: 300px;">
     </div>
 
-    For this feature to function, support email IDs and other values must be set in the mentoring service as listed below.
+    For this feature to function, support email IDs and other values must be set in the Mentor service as listed below.
 
-    ### Mentoring Service
+    ### Mentor Service
 
     **Docker Setup:** `mentoring_env`
 
@@ -103,11 +103,11 @@ This document acts as a reference for such functionalities/features and their re
     ENABLE_EMAIL_FOR_REPORT_ISSUE			-> Already enabled in default/sample env files
     ```
 
-    > **IMPORTANT:** As a prerequisite, the notification service must be configured with the proper SendGrid environment variables, as shown in the User SignUp section.
+    > **Important:** As a prerequisite, the Notification service must be configured with the proper SendGrid environment variables, as shown in the User SignUp section.
 
 4. **Email Encryption**
 
-    Since version 2.6.1, MentorEd has enhanced its security by implementing system-wide email encryption, now enabled by default. This update ensures that email IDs are not stored as plaintext in the database. Instead, they are encrypted using the `AES-256-CBC` algorithm. The encryption and decryption processes are governed by the following environment variables:
+    Since version 2.6.1, the application has enhanced its security by implementing system-wide email encryption, now enabled by default. This update ensures that email IDs are not stored as plaintext in the database. Instead, they are encrypted using the `AES-256-CBC` algorithm. The encryption and decryption processes are governed by the following environment variables:
 
     ### User Service
 
@@ -122,15 +122,15 @@ This document acts as a reference for such functionalities/features and their re
     EMAIL_ID_ENCRYPTION_IV
     ```
 
-    > **CRITICAL:** The default environment files provided with the deployment guide contain default but valid values for the encryption variables mentioned above. It is crucial to replace these default values with unique ones for your deployment to ensure the security of your data. Failing to do so exposes you to the risk of using a publicly available KEY and IV pair for encrypting your email IDs.
+    > **Critical:** The default environment files provided with the deployment guide contain default but valid values for the email encryption variables. Replace these default values with unique ones for your deployment to avoid the risk of using a publicly available KEY and IV pair for encrypting your email IDs.
 
     To generate a new, valid pair of KEY and IV, you can use the following script: [Generate Encryption Keys](https://github.com/ELEVATE-Project/user/blob/master/src/scripts/generateEncyrptionKeys.js).
 
 5. **CAPTCHA**
 
-    Since version 2.6.1, MentorEd has introduced the option to implement CAPTCHA using [Google reCAPTCHA](https://www.google.com/recaptcha/about/) on various portal pages such as Login and SignUp. By default, this feature is disabled in the configuration settings found in the default environment files included in the deployment guide.
+    Since version 2.6.1, the application has introduced the option to implement CAPTCHA using [Google reCAPTCHA](https://www.google.com/recaptcha/about/) on various portal pages such as Login and SignUp. By default, this feature is disabled in the configuration settings found in the default environment files included in the deployment guide.
 
-    If you wish to enable CAPTCHA, you will need to obtain a `site key` and `secret key` from Google. To do this, follow the instructions provided in the [reCAPTCHA Developer Guide](https://developers.google.com/recaptcha/intro). Once you have your keys, update the following environment variables to activate CAPTCHA on your site.
+    If you wish to enable CAPTCHA, you need to obtain a `site key` and `secret key` from Google. To do this, follow the instructions provided in the [reCAPTCHA Developer Guide](https://developers.google.com/recaptcha/intro). Once you have your keys, update the following environment variables to activate CAPTCHA on your site.
 
     ### User Service
 
@@ -159,7 +159,7 @@ This document acts as a reference for such functionalities/features and their re
 
 6. **Session Management**
 
-    Since version 2.6.1, MentorEd has implemented advanced features for user session management, such as inactivity timeouts, session tracking, and remote logout. These features are controlled by the following environment variables:
+    Since version 2.6.1, the application includes advanced features for user session management, such as inactivity timeouts, session tracking, and remote logout. These features are controlled by the following environment variables:
 
     ### User Service
 
@@ -182,7 +182,7 @@ This document acts as a reference for such functionalities/features and their re
 
 7. **Rate Limiting**
 
-    Since version 2.6.1, Elevate has implemented rate-limiting to enhance system stability and prevent abuse. This feature regulates the number of requests a user can make to the services within a given timeframe. Rate-limiting is enabled by default.
+    The rate-limiting feature has been introduced in version 2.6.1 to enhance system stability and prevent abuse. This feature regulates the number of requests a user can make to the services within a given timeframe. Rate-limiting is enabled by default.
 
     ### User Service
 
@@ -197,4 +197,4 @@ This document acts as a reference for such functionalities/features and their re
     RATE_LIMITER_ENABLED
     ```
 
-    Refer to the [MentorEd Rate-Limiting Guide](./MentorEd-Rate-Limiting-Guide.md) for more information on how to set these variables.
+    Refer to the [Rate-Limiting Guide](./MentorEd-Rate-Limiting-Guide.md) for more information on how to set these variables.
